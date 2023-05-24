@@ -36,3 +36,5 @@ out/
 .vscode/
 
 application-oauth.properties
+
+Temp_*
