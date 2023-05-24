@@ -13,20 +13,31 @@ repositories {
 }
 
 dependencies {
-	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:2.3.0'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+//	JSP
 	implementation 'org.apache.tomcat.embed:tomcat-embed-jasper'
 	implementation 'javax.servlet:jstl'
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+//	Oracle
 	runtimeOnly 'com.oracle.database.jdbc:ojdbc8'
-	runtimeOnly group: 'org.aspectj', name: 'aspectjrt', version: '1.9.7'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	implementation group: 'org.apache.commons', name: 'commons-dbcp2', version: '2.9.0'
+//	aspectj
+	runtimeOnly group: 'org.aspectj', name: 'aspectjrt', version: '1.9.7'
+//	Tiles
 	implementation group: 'org.apache.tiles', name: 'tiles-jsp', version: '3.0.8'
 	implementation group: 'org.apache.tiles', name: 'tiles-core', version: '3.0.8'
 	implementation group: 'org.apache.tiles', name: 'tiles-servlet', version: '3.0.8'
 	implementation group: 'commons-codec', name: 'commons-codec', version: '1.15'
-
+//	MYBatis
+	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:2.3.0'
+//	Spring Security
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	testImplementation 'org.springframework.security:spring-security-test'
+//	OAuth2 Client
+	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+//	Spring Session
+//	implementation 'org.springframework.session:spring-session-core'
 
 }
 

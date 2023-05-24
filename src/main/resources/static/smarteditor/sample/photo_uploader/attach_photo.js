@@ -334,7 +334,7 @@
     	var tempFile,
     		sUploadURL;
     	
-    	sUploadURL= '/board/image/multiplePhotoUpload.action'; 	//upload URL
+    	sUploadURL= '/challenge/image/multiplePhotoUpload.action'; 	//upload URL
     	
     	//파일을 하나씩 보내고, 결과를 받음.
     	for(var j=0, k=0; j < nImageInfoCnt; j++) {
@@ -478,7 +478,7 @@
  	 */
  	function callFileUploader (){
  		oFileUploader = new jindo.FileUploader(jindo.$("uploadInputBox"),{
- 			sUrl  : '/board/image/photoUpload.action',	// 파일업로드시 동작되는 컨트롤러 url
+ 			sUrl  : '/challenge/image/photoUpload.action',	// 파일업로드시 동작되는 컨트롤러 url
  	        sCallback : location.href.replace(/\/[^\/]*$/, '') + '/callback.html',	//업로드 이후  redirect 페이지 url
  	    	sFiletype : "*.jpg;*.png;*.bmp;*.gif",						//허용할 파일의 형식. ex) "*", "*.*", "*.jpg", 구분자(;)	
  	    	sMsgNotAllowedExt : 'JPG, GIF, PNG, BMP 확장자만 가능합니다',	//허용할 파일의 형식이 아닌경우에 띄워주는 경고창의 문구

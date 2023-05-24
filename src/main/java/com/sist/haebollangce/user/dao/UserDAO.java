@@ -1,6 +1,7 @@
 package com.sist.haebollangce.user.dao;
 
 import com.sist.haebollangce.common.mapper.InterMapper;
+import com.sist.haebollangce.user.dto.UserDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -25,5 +26,11 @@ public class UserDAO implements InterUserDAO{
     public String findById(String id) {
         String pw = mapper.findById(id);
         return pw;
+    }
+
+    @Override
+    public UserDTO getDetail(String userid) {
+        UserDTO user = mapper.getDetail(userid);
+        return user;
     }
 }

@@ -14,4 +14,11 @@
 
 	</select>
 
+	<select id="getDetail" parameterType="String" resultType="com.sist.haebollangce.user.dto.UserDTO">
+		select userid, email, name
+		from tbl_user where userid = #{userid}
+
+	</select>
+
+
 </mapper>

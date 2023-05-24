@@ -31,18 +31,26 @@
     <!-- 상단 네비게이션 시작 -->
 	<nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top mx-4 py-3">
 		<!-- Brand/logo --> 
-		<a class="navbar-brand" href="<%= ctxPath %>/index.action" style="margin-right: 10%;"><img src="images/sist_logo.png" /></a>
-		
+		<a class="navbar-brand" href="<%= ctxPath %>/index.action" style="margin-right: 10%;"><img src="/images/sist_logo.png" /></a>
+		<%-- @RestController at class,
+				/images/sist_logo.png ➡️ 사진 뜸.
+				test 단어만 리턴함.
+
+			 @Controller at class,
+			 	test ➡️ <form> 보여줌.
+			 	/images/sist_logo.png ➡️ 사진 뜸.
+
+		--%>
 		<!-- 아코디언 같은 Navigation Bar 만들기 -->
 	    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
 	      <span class="navbar-toggler-icon"></span>
 	    </button>
-		
+
 		<div class="collapse navbar-collapse" id="collapsibleNavbar">
-		  <ul class="navbar-nav h5"> <%-- .h5 는 글자크기임 --%>  
+		  <ul class="navbar-nav h5"> <%-- .h5 는 글자크기임 --%>
 		     <li class="nav-item dropdown">
-		        <a class="nav-link dropdown-toggle text-info" href="#" id="navbarDropdown" data-toggle="dropdown">Home</a> 
-		                                     <%-- .text-info 는 글자색으로 청록색임 --%>  
+		        <a class="nav-link dropdown-toggle text-info" href="#" id="navbarDropdown" data-toggle="dropdown">Home</a>
+		                                     <%-- .text-info 는 글자색으로 청록색임 --%>
 		        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
 		           <a class="dropdown-item" href="<%= ctxPath %>/index.action">Home</a>
 <%-- 		           <a class="dropdown-item" href="<%= serverName%><%=ctxPath%>/chatting/multichat.action">웹채팅</a>
