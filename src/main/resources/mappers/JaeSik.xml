@@ -5,20 +5,6 @@
 <!-- ==== #29. 루트 엘리먼트 & 네임스페이스 설정(프로젝트 전체내에서 유일해야 한다.) ==== -->
 <mapper namespace="com.sist.haebollangce.common.mapper.InterMapper">
 
-	<insert id="test_insert" parameterType="String">
-		insert into tbl_membertest(id,pw) values(#{userid}, 'dsf2qwe')
-	</insert>
-
-	<select id="findById" parameterType="String" resultType="String">
-		select pw from tbl_membertest where id = #{id}
-
-	</select>
-
-	<select id="getDetail" parameterType="String" resultType="com.sist.haebollangce.user.dto.UserDTO">
-		select userid, email, name
-		from tbl_user where userid = #{userid}
-
-	</select>
 
 
 </mapper>

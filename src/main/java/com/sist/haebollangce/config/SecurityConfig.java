@@ -23,7 +23,8 @@ public class SecurityConfig {
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
         // 인증 및 인가 예외 Path URL
-        return (web) -> web.ignoring().antMatchers( "/user/tiles-test",
+        return (web) -> web.ignoring().antMatchers( "/user/**",
+        											"/challenge/**",
                                                     "/bootstrap-4.6.0-dist/**",
                                                     "/css/**",
                                                     "/images/**",
