@@ -233,8 +233,6 @@
 
 </style>
 
-<!-- !jQuery 쓸래! (성명은 필수 입력사항임을 나타내기 위해) -->
-<script type="text/javascript" src="<%= ctxPath%>/js/jquery-3.6.4.min.js"></script>
 <script type="text/javascript">
 
 	$(document).ready(function(){
