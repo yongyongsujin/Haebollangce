@@ -39,6 +39,11 @@ dependencies {
 //	Spring Session
 //	implementation 'org.springframework.session:spring-session-core'
 
+//	Spring Boot Starter Mail
+	implementation 'org.springframework.boot:spring-boot-starter-mail'
+
+//	JSON In Java
+	implementation 'org.json:json:20200518'
 }
 
 tasks.named('test') {

@@ -2,141 +2,291 @@
     pageEncoding="UTF-8"%>
 
 <%@ page import="java.net.InetAddress"%>
-
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-<%-- ======= #27. tile1 중 header 페이지 만들기 (#26.번은 없다 샘이 장난침.) ======= --%>
-<%
-	String ctxPath = request.getContextPath();
+<%-- === #2. tile1 중 header 페이지 만들기 === --%>
+<% String ctxPath = request.getContextPath(); %>
 
-	// === #193. (웹채팅관련3) === 
-	// === 서버 IP 주소 알아오기(사용중인 IP주소가 유동IP 이라면 IP주소를 알아와야 한다.) ===
-//	InetAddress inet = InetAddress.getLocalHost(); 
-//	String serverIP = inet.getHostAddress();
-	
- // System.out.println("serverIP : " + serverIP);
- // serverIP : 211.238.142.72
-	
-	// String serverIP = "211.238.142.72"; 만약에 사용중인 IP주소가 고정IP 이라면 IP주소를 직접입력해주면 된다.
-	
-	// === 서버 포트번호 알아오기   ===
-//	int portnumber = request.getServerPort();
- // System.out.println("portnumber : " + portnumber);
- // portnumber : 9090
-	
-//	String serverName = "http://"+serverIP+":"+portnumber; 
- // System.out.println("serverName : " + serverName);
- // serverName : http://211.238.142.72:9090 
-%>
-    <!-- 상단 네비게이션 시작 -->
-	<nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top mx-4 py-3">
-		<!-- Brand/logo --> 
-		<a class="navbar-brand" href="<%= ctxPath %>/index.action" style="margin-right: 10%;"><img src="/images/sist_logo.png" /></a>
-		<%-- @RestController at class,
-				/images/sist_logo.png ➡️ 사진 뜸.
-				test 단어만 리턴함.
+<style type="text/css">
 
-			 @Controller at class,
-			 	test ➡️ <form> 보여줌.
-			 	/images/sist_logo.png ➡️ 사진 뜸.
+	@font-face {
+	    font-family: 'Pretendard-Regular';
+	    src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+	    font-weight: 400;
+	    font-style: normal;
+	}
+	
+	@font-face {
+	    font-family: 'SDSamliphopangche_Basic';
+	    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts-20-12@1.0/SDSamliphopangche_Basic.woff') format('woff');
+	    font-weight: normal;
+	    font-style: normal;
+	}
+	
+	body {
+	    font-family: 'Pretendard-Regular';
+	}
 
-		--%>
-		<!-- 아코디언 같은 Navigation Bar 만들기 -->
-	    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
-	      <span class="navbar-toggler-icon"></span>
-	    </button>
+	/* 헤더 */ 
+	header {
+	  	position: fixed;
+	  	top: 0;
+	  	left: 0;
+	  	right: 0;
+	  	z-index: 1;
+	}
+	
+	.headerlogo {
+		font-size:18pt;
+		color: black;
+		font-weight: bold;
+		font-family: 'SDSamliphopangche_Basic';
+		margin-right: 20px; letter-spacing: 2px;
+	}
+	
+	.headerfont {
+		font-size:12pt;
+		color: black;
+		font-weight: bold;
+		font-family: 'Pretendard-Regular';
+	}
+	
+	a.headerfont { 
+	  	display:inline-block; 
+	  	margin:0; 
+	}
+	a.headerfont:after {
+	  	display:block;
+	  	content: '';
+	  	border-bottom: solid 3px #F43630;  
+	  	transform: scaleX(0);  
+	  	transition: transform 250ms ease-in-out;
+	}
+	a.headerfont:hover:after { 
+		transform: scaleX(1); 
+	}
+	
+	
+	button.btn-habol {
+		color: #fff;
+		background-color: #F43630;
+		border-color: #F43630;
+		border-radius:10px;
+	}
+	
+	.btn-habol:hover {
+	  color: #fff;
+	  background-color: #c82333;
+	  border-color: #bd2130;
+	}
+	
+	.btn-danger:focus, .btn-habol.focus {
+	  color: #fff;
+	  background-color: #c82333;
+	  border-color: #bd2130;
+	  box-shadow: 0 0 0 0.2rem rgba(225, 83, 97, 0.5);
+	}
+	
+	.btn-habol.disabled, .btn-habol:disabled {
+	  color: #fff;
+	  background-color: #F43630;
+	  border-color: #F43630;
+	}
+	
+	.btn-habol:not(:disabled):not(.disabled):active, .btn-habol:not(:disabled):not(.disabled).active,
+	.show > .btn-habol.dropdown-toggle {
+	  color: #fff;
+	  background-color: #bd2130;
+	  border-color: #b21f2d;
+	}
+	
+	.btn-habol:not(:disabled):not(.disabled):active:focus, .btn-habol:not(:disabled):not(.disabled).active:focus,
+	.show > .btn-habol.dropdown-toggle:focus {
+	  box-shadow: 0 0 0 0.2rem rgba(225, 83, 97, 0.5);
+	}
+	
+	
+	/* loungeList */
+	.lounge_title_a {
+	    width: 100vw;
+	    height: 496px;
+	    display: flex;
+	    justify-content: center;
+	    align-items: center;
+	    flex-direction: column;
+	    margin-top: 80px;
+	}
+	
+	.lounge_title_b {
+	    font-weight: 700;
+	    font-size: 24px;
+	    line-height: 30px;
+	    display: flex;
+	    align-items: center;
+	    text-align: center;
+	    letter-spacing: -.4px;
+	    color: #ff8a7a;
+	    margin-bottom: 24px;
+	}
+	
+	.lounge_title_c {
+	    font-weight: 700;
+	    font-size: 44px;
+	    line-height: 60px;
+	    display: flex;
+	    text-align: center;
+	    letter-spacing: -.4px;
+	    white-space: pre-wrap;
+	    color: #000;
+	    margin-bottom: 32px;
+	}
+	.lounge_title_d {
+	font-weight: 400;
+	    font-size: 22px;
+	    line-height: 32px;
+	    letter-spacing: -.4px;
+	    color: #383535;
+	    display: flex;
+	    align-items: center;
+	    text-align: center;
+	}
 
-		<div class="collapse navbar-collapse" id="collapsibleNavbar">
-		  <ul class="navbar-nav h5"> <%-- .h5 는 글자크기임 --%>
-		     <li class="nav-item dropdown">
-		        <a class="nav-link dropdown-toggle text-info" href="#" id="navbarDropdown" data-toggle="dropdown">Home</a>
-		                                     <%-- .text-info 는 글자색으로 청록색임 --%>
-		        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-		           <a class="dropdown-item" href="<%= ctxPath %>/index.action">Home</a>
-<%-- 		           <a class="dropdown-item" href="<%= serverName%><%=ctxPath%>/chatting/multichat.action">웹채팅</a>
- --%>
-		        </div>
-		     </li>
-		     
-		     <li class="nav-item dropdown">
-		        <a class="nav-link dropdown-toggle text-info" href="#" id="navbarDropdown" data-toggle="dropdown">게시판</a>  
-		        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-		           	<a class="dropdown-item" href="<%=ctxPath%>/list.action">목록보기</a>
-		      	
-			      	<c:if test="${not empty sessionScope.loginuser}">
-			           <a class="dropdown-item" href="<%=ctxPath%>/add.action">글쓰기</a>
-			      	</c:if>
-		        
-		        </div>
-		     </li>
-		     
-		     <li class="nav-item dropdown">
-		        <a class="nav-link dropdown-toggle text-info" href="#" id="navbarDropdown" data-toggle="dropdown">로그인</a>  
-		        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-		           <c:if test="${empty sessionScope.loginuser}">
-			           <a class="dropdown-item" href="#">회원가입</a>
-			           <a class="dropdown-item" href="<%=ctxPath%>/login.action">로그인</a>
-		           </c:if>
-		           				
-				   <c:if test="${not empty sessionScope.loginuser}">
-					   <a class="dropdown-item" href="#">나의정보</a>
-					   <a class="dropdown-item" href="<%=ctxPath%>/logout.action">로그아웃</a>
-				   </c:if>
-		        </div>
-		     </li>
-		     
-		     <li class="nav-item dropdown">
-		        <a class="nav-link dropdown-toggle text-info" href="#" id="navbarDropdown" data-toggle="dropdown">인사관리</a>  
-		        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-		           <a class="dropdown-item" href="<%=ctxPath%>/emp/empList.action">직원목록</a>
-		           <a class="dropdown-item" href="<%=ctxPath%>/emp/chart.action">통계차트</a>
-		        </div>
-		     </li>
-		     
-  <%-- <c:if test="${sessionScope.loginuser.gradelevel == 10 }">  --%> 
-		     <li class="nav-item dropdown">
-		        <a class="nav-link dropdown-toggle text-info" href="#" id="navbarDropdown" data-toggle="dropdown">메일보내기(다중파일첨부)</a>  
-		        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-		           <a class="dropdown-item" href="<%=ctxPath%>/emailWrite.action">email작성</a>
-		        </div>
-		     </li>
-  <%-- </c:if>  --%> 
-	 	    
-		    <li class="nav-item dropdown">
-		        <a class="nav-link dropdown-toggle text-info" href="#" id="navbarDropdown" data-toggle="dropdown">일정관리</a>  
-		        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-		           <a class="dropdown-item" href="<%=ctxPath%>/schedule/scheduleManagement.action">일정관리</a>
-		        </div>
-		    </li>
-		    
-		    <!-- ==== 인터셉터 알아보기 ====  -->
-		    <li class="nav-item dropdown">
-		        <a class="nav-link dropdown-toggle text-info" href="#" id="navbarDropdown" data-toggle="dropdown">인터셉터알아보기</a>  
-		        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-		           <a class="dropdown-item" href="<%=ctxPath%>/anyone/anyone_a.action">누구나접근_A</a>
-		           <a class="dropdown-item" href="<%=ctxPath%>/anyone/anyone_b.action">누구나접근_B</a>
-		           <a class="dropdown-item" href="<%=ctxPath%>/member_only/member_a.action">회원누구나접근_A</a>
-		           <a class="dropdown-item" href="<%=ctxPath%>/member_only/member_b.action">회원누구나접근_B</a>
-		           <a class="dropdown-item" href="<%=ctxPath%>/special_member/special_member_a.action">특정회원만접근_A</a>
-		           <a class="dropdown-item" href="<%=ctxPath%>/special_member/special_member_b.action">특정회원만접근_B</a>
-		        </div>
-		    </li>
-		    
-		  </ul>
-		</div>
+	
+	/* loungeView */
+	body {
+	    background-color: #eee;
+	}
+	
+	.card {
+	    border: none;
+	    border-radius: 10px
+	}
+	
+	.c-details span {
+	    font-weight: 300;
+	    font-size: 13px
+	}
+	
+	.icon {
+	    width: 50px;
+	    height: 50px;
+	    background-color: #eee;
+	    border-radius: 15px;
+	    display: flex;
+	    align-items: center;
+	    justify-content: center;
+	    font-size: 39px
+	}
+	
+	.badge span {
+	    background-color: #fffbec;
+	    width: 60px;
+	    height: 25px;
+	    padding-bottom: 3px;
+	    border-radius: 5px;
+	    display: flex;
+	    color: #fed85d;
+	    justify-content: center;
+	    align-items: center
+	}
+	
+	.badge2 span {
+	    background-color: #fffbec;
+	    width: 80px;
+	    height: 35px;
+	    padding-bottom: 3px;
+	    border-radius: 5px;
+	    display: flex;
+	    color: #fed85d;
+	    justify-content: center;
+	    align-items: center;
+	    font-weight: bold;
+	}
+	
+	.progress {
+	    height: 10px;
+	    border-radius: 10px
+	}
+	
+	.progress div {
+	    background-color: red
+	}
+	
+	.text1 {
+	    font-size: 14px;
+	    font-weight: 600
+	}
+	
+	/* loungeView_댓글쓰기 */
+	span.lounge_comment_userid {
+		font-size: 14px;
+		font-weight: bold;
+	}
+	
+	.lounge_comment_content {
+		white-space: pre-line;
+	    font-size: 14px;
+	    line-height: 22px;
+	    display: flex;
+	}
+	
+
+</style>
+
+<script type="text/javascript">
+
+	$(document).ready(function(){
 		
-		<!-- === #49. 로그인이 성공되어지면 로그인되어진 사용자의 이메일 주소를 출력하기 === -->
-		<c:if test="${not empty sessionScope.loginuser}">
-			<div style="float: right;">
-			  <span style="color: navy; font-weight: bold;">${sessionScope.loginuser.email}</span> 님 로그인중.. 
-			</div>
-		</c:if>
-			
-	</nav>
-	<!-- 상단 네비게이션 끝 -->
-	
+		
+		
+	});
 
-		<p class="h5" style="margin: auto">
-			<marquee> [공지사항] 쌍용강북교육센터 G클래스 수강생 여러분들의 수료후 프로그래머 입사를 진심으로 기원합니다.</marquee>
-	  	</p>
+</script>
+
+<%-- 상단배너 시작 --%>
+<header>
+	<div id="main_header" class="container-fluid px-0">
+		<!-- 상단 네비게이션 시작 -->
+		<nav class="navbar navbar-expand-lg navbar-light py-3 " style="padding: 15px 100px; background-color: #e6e1e1; color: black;">
+		
+			<a class="navbar-brand headerlogo active" href="http://localhost:9090/finaltest/sujin/loungeList.jsp">HAEBOLLANGCE</a>
+			
+			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+		        <span class="navbar-toggler-icon"></span>
+		    </button>
+			
+			<div class="collapse navbar-collapse" id="navbarSupportedContent">
+			    <ul class="navbar-nav mr-auto"> <!-- .mr-auto : 가로축 미사용 공간 너비의 일부를 바깥 여백에 할당한다는 의미임. -->
+			        
+			        <li class="nav-item dropdown active">
+			        	<a class="nav-link dropdown-toggle headerfont" href="<%= ctxPath %>/challenge" id="navbardrop_chlg" data-toggle="dropdown">챌린지</a>
+			      		<div class="dropdown-menu" style="border:none;">
+					        <a class="dropdown-item" href="#">챌린지 개설하기</a>
+					        <a class="dropdown-item" href="#">챌린지 둘러보기</a>
+					    </div>
+			      	</li>
+			     	<li class="nav-item dropdown active">
+			        	<a class="nav-link dropdown-toggle headerfont" id="navbardrop_lng" data-toggle="dropdown">라운지</a>
+			      		<div class="dropdown-menu" style="border: none;">
+					        <a class="dropdown-item" href="http://localhost:9090/finaltest/sujin/loungeAdd.jsp">라운지 글게시하기</a>
+					        <a class="dropdown-item" href="http://localhost:9090/finaltest/sujin/loungeList.jsp">라운지 둘러보기</a>
+					    </div>
+			      	</li>
+			<%--<c:if test="${sessionScope.loginuser != null and sessionScope.loginuser.userid == 'admin'}"> <%-- admin 으로 로그인 했으면 --%>
+			      	<li class="nav-item">
+			        	<a class="nav-link headerfont fromCenter disabled" style="font-weight:bold;" href="<%= ctxPath %>/haebol_admin" tabindex="-1" aria-disabled="true">관리자</a>
+			      	</li>
+		    <%--</c:if> --%>
+			    </ul>
+			    <form class="form-inline my-2 my-lg-0">
+			    	<button type="button" class="  btn btn-sm btn-habol mx-2 my-2" style="color:white; font-weight:bold;" href="<%= ctxPath %>/login">회원가입</a>
+			    	<button type="button" class="  btn btn-sm btn-habol mx-2 my-2 " style="color:white; font-weight:bold;" href="<%= ctxPath %>/register">로그인</a>
+			    </form>
+			</div>
+			
+		</nav>
+		<!-- 상단 네비게이션 끝 -->
+	</div>
+</header>		
+<%-- 상단배너 끝 --%>
 
