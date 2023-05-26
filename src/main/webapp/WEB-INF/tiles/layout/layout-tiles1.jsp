@@ -5,6 +5,7 @@
 <%@ taglib prefix="tiles" uri="http://tiles.apache.org/tags-tiles" %>
 
 <% String ctxPath = request.getContextPath(); %>
+
     
 <!DOCTYPE html>
 <html>
@@ -44,7 +45,7 @@
 </head>
 <body>
 	<div id="mycontainer">
-		<div id="myheader">
+		<div id="myheader" style="margin-top:78px;">
 			<tiles:insertAttribute name="header" />
 		</div>
 		
