@@ -258,14 +258,17 @@
 			<div class="collapse navbar-collapse" id="navbarSupportedContent">
 			    <ul class="navbar-nav mr-auto"> <!-- .mr-auto : 가로축 미사용 공간 너비의 일부를 바깥 여백에 할당한다는 의미임. -->
 			        
-			        <li class="nav-item dropdown active">
+			        <li class="nav-item dropdown active mr-3">
 			        	<a class="nav-link dropdown-toggle headerfont" href="<%= ctxPath %>/challenge" id="navbardrop_chlg" data-toggle="dropdown">챌린지</a>
 			      		<div class="dropdown-menu" style="border:none;">
 					        <a class="dropdown-item" href="#">챌린지 개설하기</a>
 					        <a class="dropdown-item" href="#">챌린지 둘러보기</a>
 					    </div>
 			      	</li>
-			     	<li class="nav-item dropdown active">
+			      	<li class="nav-item dropdown active mr-3">
+			        	<a class="nav-link dropdown-toggle headerfont" href="<%= ctxPath %>/challenge_certify">챌린지 인증하기</a>
+			      	</li>
+			     	<li class="nav-item dropdown active mr-3">
 			        	<a class="nav-link dropdown-toggle headerfont" id="navbardrop_lng" data-toggle="dropdown">라운지</a>
 			      		<div class="dropdown-menu" style="border: none;">
 					        <a class="dropdown-item" href="http://localhost:9090/finaltest/sujin/loungeAdd.jsp">라운지 글게시하기</a>
