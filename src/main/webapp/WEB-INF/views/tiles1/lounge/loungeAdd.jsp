@@ -67,7 +67,7 @@
 			// 폼(form)을 전송(submit)
 			const frm = document.addFrm;
 			frm.method = "POST";
-			frm.action = "<%= ctxPath%>/addEnd.action";
+			frm.action = "<%= ctxPath%>/loungeAddEnd";
 			frm.submit();
         
 	  });
@@ -89,7 +89,7 @@
 		            <div class="d-flex flex-row align-items-center ">
 		                <div><img style="border-radius:60%; width:60px; height: 60px;" src="http://images.munto.kr/production-user/1684469607083-photo-g1p6z-101851-0?s=48x48" /> </div>
 		                <div class="c-details">
-		                    <input type="hidden" name="fk_userid" id="fk_userid" value="${sessionScope.loginuser.userid}" />
+		                    <input type="hidden" name="fk_userid" id="fk_userid" value="sudin" /> <!-- value="${sessionScope.loginuser.userid}" -->
 	                    	<span type="text" name="name"><h5 class="mb-0 ml-4">평일민주</h5></span> <!-- value="${sessionScope.loginuser.name}" readonly -->
             			</div>
 		            </div>
