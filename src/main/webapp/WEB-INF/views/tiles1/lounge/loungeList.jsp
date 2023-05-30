@@ -9,133 +9,15 @@
 
 	$(document).ready(function(){
 		
-		$('span.subject').on('mouseover', function(e){
-			$(e.target).addClass('subjectStyle');
-		});
-	  
-		$('span.subject').on('mouseout', function(e){
-			$('span.subject').removeClass('subjectStyle');
-		});
-		
-		$('input#searchWord').on('keydown', function(e){
-			
-			if(e.keyCode == 13) {
-				goSearch();
-			}
-		});
-		
-		if(${not empty requestScope.paraMap}) {
-			$('select#searchType').val('${paraMap.searchType}');
-			$('input#searchWord').val('${paraMap.searchWord}');
-			
-		}
-		
-		<%-- === #107. 검색어 입력시 자동완성하기 2 (처음에 감추기) === --%>
-		$('div#displayList').hide();
-		
-		$('input#searchWord').keyup(function(){
-			
-			// 검색어에서 공백을 제거한 길이를 알아온다.
-			const wordLength = $(this).val().trim().length;
-			
-			if(wordLength == 0) {
-				$('div#displayList').hide();
-				// 검색어가 공백 || 검색어 입력 후 전부 지울 시 내용이 안 나오도록 한다.
-			} else {
-				$.ajax({
-					url:'<%=ctxPath%>/wordSearchShow.action',
-					type:'GET',
-					data:{"searchType":$('select#searchType').val(),
-						  "searchWord":$('input#searchWord').val()},
-					dataType:'JSON',
-					success:function(json){
-						// console.log(JSON.stringify(json));
-						
-						<%-- === #112. 검색어 읿력시 자동글 완성하기 7 === --%>
-						if(json.length > 0) {
-							// 검색된 데이터 있는 경우
-							
-							let html = "";
-							
-							$.each(json, function(index, item){
-								const word = item.word;
-								// word ==> 오라클 JAVA 를 배우고 싶어요~
-								const idx = word.toLowerCase().indexOf($('input#searchWord').val().toLowerCase());
-								// 검색어(JaVa)가 나오는 idx == 4
-								
-								const len = $('input#searchWord').val().length;
-								// 검색어(JaVa)의 길이 len 은 4가 된다.
-							
-								// console.log('--- 시작 ---');
-								// console.log(word.substring(0, idx));		// 검색어 앞까지의 글자 "오라클 "
-								// console.log(word.substring(idx, idx+len));	// 검색어 : "JaVa"
-								// console.log(word.substring(idx+len));		// 검색어(JaVa) 뒤부터 끝까지 " 를 배우고 싶어요~"
-								// console.log('--- 끝 ---');
-							
-								const result = word.substring(0, idx) +
-									"<span style='color:blue;'>"+
-									word.substring(idx,idx+len) + "</span>"+word.substring(idx+len);
-								
-								html += "<span class='searchResult' style='cursor:pointer;'>" + result + "</span><br>";
-							});
-							
-							// 검색결과 div 의 width 크기를 검색어 입력 input 태그의 width 와 일치시키기
-							const input_width = $('input#searchWord').css('width');
-							
-
-							$('div#displayList').html(html);
-							$('div#displayList').show();
-							$('div#displayList').css('width', input_width);
-							
-						}
-						
-					},
-			    	error: function(request, status, error){
-			            alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
-			        }
-				});
-			}
-		}); // end of $('input#searchWord').keyup() ------------
-		
-		
-		<%-- === #113. 검색어 읿력시 자동글 완성하기 8 === --%>
-		$(document).on('click', 'span.searchResult', function(){
-			
-			const word = $(this).text();
-			$('input#searchWord').val(word); // 텍스트박스에 검색된 결과의 문자열을 입력해준다.
-			$('div#displayList').hide();
-			goSearch();
-		});
 		
 		
 	});// end of $(document).ready(function(){})-------------------------------
 
   
 	// Function Declaration
-	function goView(seq) {
+	function goView() {
 		
-		<%--location.href = '<%=ctxPath%>/view.action?seq='+seq; --%>
-		
-		// === #124. 페이징 처리되어진 후 특정 글제목을 클릭하여 상세내용을 본 이후
-	    //           사용자가 목록보기 버튼을 클릭했을 때 돌아갈 페이지를 알려주기 위해
-	    //           현재 페이지 주소를 뷰단으로 넘겨준다.
-
-	    const goPrevURL = '${goPrevURL}';
-		
-		alert(goPrevURL);
-		 
-		 const searchType = $('select#searchType').val();
-		 const searchWord = $('input#searchWord').val();
-		 
-		 
-		location.href = '<%=ctxPath%>/view.action?seq='+seq+'&searchType='+searchType+'&searchWord='+searchWord+'&goPrevURL='+goPrevURL;
-	}
-	
-	function goSearch() {
-		const frm = document.searchFrm;
-		frm.method = 'GET';
-		frm.action = '<%=ctxPath%>/list.action';
-		frm.submit();
+		location.href = "http://localhost:7070/lounge/loungeView"; 
 	}
 	
 </script>

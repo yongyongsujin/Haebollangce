@@ -249,7 +249,7 @@
 		<!-- 상단 네비게이션 시작 -->
 		<nav class="navbar navbar-expand-lg navbar-light py-3 " style="padding: 15px 100px; background-color: #e6e1e1; color: black;">
 		
-			<a class="navbar-brand headerlogo active" href="http://localhost:9090/finaltest/sujin/loungeList.jsp">HAEBOLLANGCE</a>
+			<a class="navbar-brand headerlogo active" href="<%=ctxPath%>/main">HAEBOLLANGCE</a>
 			
 			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 		        <span class="navbar-toggler-icon"></span>
@@ -259,10 +259,10 @@
 			    <ul class="navbar-nav mr-auto"> <!-- .mr-auto : 가로축 미사용 공간 너비의 일부를 바깥 여백에 할당한다는 의미임. -->
 			        
 			        <li class="nav-item dropdown active mr-3">
-			        	<a class="nav-link dropdown-toggle headerfont" href="<%= ctxPath %>/challenge" id="navbardrop_chlg" data-toggle="dropdown">챌린지</a>
+			        	<a class="nav-link dropdown-toggle headerfont" id="navbardrop_chlg" data-toggle="dropdown">챌린지</a>
 			      		<div class="dropdown-menu" style="border:none;">
-					        <a class="dropdown-item" href="#">챌린지 개설하기</a>
-					        <a class="dropdown-item" href="#">챌린지 둘러보기</a>
+					        <a class="dropdown-item" href="<%=ctxPath%>/main">챌린지 개설하기</a>
+					        <a class="dropdown-item" href="<%=ctxPath%>/chanllenge_all">챌린지 둘러보기</a>
 					    </div>
 			      	</li>
 			      	<li class="nav-item dropdown active mr-3">
@@ -271,8 +271,8 @@
 			     	<li class="nav-item dropdown active mr-3">
 			        	<a class="nav-link dropdown-toggle headerfont" id="navbardrop_lng" data-toggle="dropdown">라운지</a>
 			      		<div class="dropdown-menu" style="border: none;">
-					        <a class="dropdown-item" href="http://localhost:9090/finaltest/sujin/loungeAdd.jsp">라운지 글게시하기</a>
-					        <a class="dropdown-item" href="http://localhost:9090/finaltest/sujin/loungeList.jsp">라운지 둘러보기</a>
+					        <a class="dropdown-item" href="<%=ctxPath%>/lounge/loungeAdd">라운지 글게시하기</a>
+					        <a class="dropdown-item" href="<%=ctxPath%>/lounge/loungeList">라운지 둘러보기</a>
 					    </div>
 			      	</li>
 			<%--<c:if test="${sessionScope.loginuser != null and sessionScope.loginuser.userid == 'admin'}"> <%-- admin 으로 로그인 했으면 --%>
