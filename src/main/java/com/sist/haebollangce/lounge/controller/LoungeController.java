@@ -7,11 +7,12 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.sist.haebollangce.lounge.model.LoungeBoardVO;
+import com.sist.haebollangce.lounge.model.LoungeBoardDTO;
 import com.sist.haebollangce.lounge.service.InterLoungeService;
 
 
@@ -19,7 +20,7 @@ import com.sist.haebollangce.lounge.service.InterLoungeService;
 @RequestMapping("/lounge")
 public class LoungeController {
 
-	// === 1. 의존객체 주입 (Type 에 따라 알아서 Bean 을 주입해준다.)
+	// === 의존객체 주입 (Type 에 따라 알아서 Bean 을 주입해준다.)
 	@Autowired 
 	private InterLoungeService service;
 	
@@ -50,13 +51,13 @@ public class LoungeController {
 	
 	// === #2. 라운지 글쓰기 완료 요청 === (#54.)
 	@RequestMapping(value = "/loungeAddEnd", method= {RequestMethod.POST})
-	public ModelAndView loungeAdd(ModelAndView mav, LoungeBoardVO lgboardvo) {
+	public ModelAndView loungeAddEnd(ModelAndView mav, @ModelAttribute LoungeBoardDTO lgboardvo) throws Exception {
 		
 		int n = service.loungeAdd(lgboardvo);
+		System.out.println("Controller 에서 n : " + n);
 		
 		if(n==1) {
 			mav.setViewName("redirect:/loungeList");
-			// => /WEB-INF/views/tiles1/lounge/loungeList.jsp 
 		}
 		else {
 			mav.setViewName("lounge/error/add_error.tiles1");
@@ -71,7 +72,7 @@ public class LoungeController {
 	@RequestMapping(value = "/loungeList")
 	public ModelAndView loungeList(ModelAndView mav) {
 	
-		List<LoungeBoardVO> lgboardList = null; // 글이 없을 수도 있으니까 default 값으로 null 설정
+		List<LoungeBoardDTO> lgboardList = null; // 글이 없을 수도 있으니까 default 값으로 null 설정
 		
 		// --- 페이징 처리 안한 검색어 없는 전체 글 목록 보기 ---
 		lgboardList = service.lgboardListNoSearch();

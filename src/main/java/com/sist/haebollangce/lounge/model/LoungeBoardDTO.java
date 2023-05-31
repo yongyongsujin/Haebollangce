@@ -2,10 +2,10 @@ package com.sist.haebollangce.lounge.model;
 
 import org.springframework.web.multipart.MultipartFile;
 
-// === #52. VO 생성하기 ===
+// === #52. DTO 생성하기 ===
 // 먼저 Oracle 에서 tbl_board 테이블을 먼저 생성해야한다.
 
-public class LoungeBoardVO {
+public class LoungeBoardDTO {
 	
 	// insert 용 필드
 	private String seq;          // 글번호 
@@ -45,23 +45,6 @@ public class LoungeBoardVO {
 	////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	
-	// 기본 생성자
-	public LoungeBoardVO() {}
-	
-	// 필드 사용하는 생성자 
-	public LoungeBoardVO(String seq, String fk_userid, String name, String subject, String content, 
-			String pw, String readCount, String regDate, String status) {
-		this.seq = seq;
-		this.fk_userid = fk_userid;
-		this.name = name;
-		this.subject = subject;
-		this.content = content;
-		this.pw = pw;
-		this.readCount = readCount;
-		this.regDate = regDate;
-		this.status = status;
-	}
-
 	// getter & setter
 	public String getSeq() {
 		return seq;
