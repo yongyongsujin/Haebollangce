@@ -20,7 +20,7 @@
 	    nhn.husky.EZCreator.createInIFrame({
 	        oAppRef: obj,
 	        elPlaceHolder: "content",
-	        sSkinURI: "<%= ctxPath%>/resources/smarteditor/SmartEditor2Skin.html",
+	        sSkinURI: "/smarteditor/SmartEditor2Skin.html",
 	        htParams : {
 	            // 툴바 사용 여부 (true:사용/ false:사용하지 않음)
 	            bUseToolbar : true,            
@@ -77,7 +77,7 @@
 </script>
 
 <div class=" container-fluid mt-5 mb-5 mx-auto bg-white">
-	<div class=" col-md-10 mx-auto my-5 justify-content-center" style="width:50%; ">
+	<div class=" col-md-10 mx-auto my-5 justify-content-center" style="width:80%; ">
 
 		<h4 class="d-flex justify-content-center mb-1 pb-1" style="padding-top:50px;"><span style="border-bottom: solid 3px;">라운지 글작성하기</span></h4>
 	
@@ -90,16 +90,16 @@
 		                <div><img style="border-radius:60%; width:60px; height: 60px;" src="http://images.munto.kr/production-user/1684469607083-photo-g1p6z-101851-0?s=48x48" /> </div>
 		                <div class="c-details">
 		                    <input type="hidden" name="fk_userid" id="fk_userid" value="sudin" /> <!-- value="${sessionScope.loginuser.userid}" -->
-	                    	<span type="text" name="name"><h5 class="mb-0 ml-4">평일민주</h5></span> <!-- value="${sessionScope.loginuser.name}" readonly -->
+	                    	<input type="text" name="name" style="border:none; font-size:16pt; margin-left:10px;" value="평일민주"></input> <!-- value="${sessionScope.loginuser.name}" readonly -->
             			</div>
 		            </div>
 		        </div>
 		        
 		        <div class="mt-3">
-		        <input type="text" name="subject" id="subject" style="width:100%; margin-bottom:10px;" placeholder="글제목" />
-		           <textarea style="width:100%; height: 500px;" name="content" id="content" placeholder="글내용"></textarea>
-		            <div class="mt-2">
+		        	<input type="text" name="subject" id="subject" style="width:100%; border:none; font-size:20pt;" placeholder="제목" /><hr>
+		           	<textarea style="width:100%; height: 500px;" name="content" id="content" placeholder="글내용"></textarea>
 		            
+		            <div class="mt-2">
 		            	<div class="mt-2">
 		                	<span class="mr-4 align-center" style="width: 15%;">파일첨부</span>
 		                  	<input type="file" name="attach" />
@@ -108,7 +108,6 @@
 		                	<span class="mr-4" style="width: 15%;">작성암호</span>
 		                  	<input type="password" name="pw" id="pw" />
 		                </div>
-		                
 		            </div>
 		        </div>
 		        

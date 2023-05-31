@@ -18,18 +18,19 @@ public class LoungeDAO implements InterLoungeDAO {
 
 	// === #2. 게시판 글쓰기 완료 요청 ===
 	@Override
-	public int loungeAdd(LoungeBoardVO lgboardvo) {
+	public int loungeAdd(LoungeBoardDTO lgboardvo) throws Exception {
 		
 //      int n = sqlsession.insert("user.test_insert",userid);
 //      int n = mapper.test_insert(userid);
 		int n = mapper.loungeAdd(lgboardvo);
+		System.out.println("DAO 에서 n : " + n);
 		return n;
 	}
 
 	// --- #3-1. 페이징 처리 안한 검색어 없는 전체 글 목록 보기 ---
 	@Override
-	public List<LoungeBoardVO> lgboardListNoSearch() {
-		List<LoungeBoardVO> lgboardList = mapper.lgboardListNoSearch();
+	public List<LoungeBoardDTO> lgboardListNoSearch() {
+		List<LoungeBoardDTO> lgboardList = mapper.lgboardListNoSearch();
 		return lgboardList;
 	}
 	

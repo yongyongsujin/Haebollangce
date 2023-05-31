@@ -7,8 +7,10 @@
 
 	<!-- // === #2. 게시판 글쓰기 완료 요청 === -->
 	<insert id="loungeAdd" parameterType="com.sist.haebollangce.lounge.model.LoungeBoardVO">
+	<![CDATA[
 		insert into tbl_lounge_board(seq, fk_userid, name, subject, content, pw, readCount, regDate, status)
-		values(boardSeq.nextval, #{fk_userid}, #{name}, #{subject}, #{content}, #{pw}, default, default, default)
+		values(lounge_boardSeq.nextval, #{fk_userid}, #{name}, #{subject}, #{content}, #{pw}, default, default, default)
+	]]>
 	</insert>
 
 	<!-- // #3-1. 페이징 처리 안한 검색어 없는 전체 글 목록 보기  --> 
