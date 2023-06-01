@@ -33,14 +33,14 @@
 	<script type="text/javascript" src="<%= ctxPath%>/bootstrap-4.6.0-dist/js/bootstrap.bundle.min.js" ></script> 
 	 
 	<!-- 스마트에디터 -->
-	<script type="text/javascript" src="smarteditor/js/HuskyEZCreator.js" charset="utf-8"></script>
+	<script type="text/javascript" src="/smarteditor/js/HuskyEZCreator.js" charset="utf-8"></script>
 	
 	<%--  ===== 스피너 및 datepicker 를 사용하기 위해  jquery-ui 사용하기 ===== --%>
-	<link rel="stylesheet" type="text/css" href="jquery-ui-1.13.1.custom/jquery-ui.css" />
-	<script type="text/javascript" src="jquery-ui-1.13.1.custom/jquery-ui.js"></script>
+	<link rel="stylesheet" type="text/css" href="<%= ctxPath%>/jquery-ui-1.13.1.custom/jquery-ui.css" />
+	<script type="text/javascript" src="<%= ctxPath%>/jquery-ui-1.13.1.custom/jquery-ui.js"></script>
 	
 	<%-- *** ajax로 파일을 업로드할때 가장 널리 사용하는 방법 ==> ajaxForm *** --%>
-	<script type="text/javascript" src="js/jquery.form.min.js"></script>
+	<script type="text/javascript" src="<%= ctxPath%>/js/jquery.form.min.js"></script>
 
 </head>
 <body>
