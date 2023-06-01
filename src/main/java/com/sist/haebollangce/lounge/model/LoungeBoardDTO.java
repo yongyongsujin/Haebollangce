@@ -22,11 +22,6 @@ public class LoungeBoardDTO {
 	// === #81. 댓글형 게시판을 위한 댓글수  필드 추가
 	private String commentCount;	
 	
-	// === #137. 답변글쓰기 게시판을 위한 필드
-	private String groupno;
-	private String fk_seq;
-	private String depthno;
-	
 	// === #152. 파일을 첨부하도록 VO 수정
     private MultipartFile attach; 
 	/* 
@@ -41,8 +36,34 @@ public class LoungeBoardDTO {
 	private String orgFilename; // 진짜 파일명(강아지.png)  // 사용자가 파일을 업로드 하거나 파일을 다운로드 할때 사용되어지는 파일명
 	private String fileSize;    // 파일크기 
 	
+	//////////////////////////////////////////////////
+		
+	// 게시물 작성일로부터 경과한 일 수를 구하는데 사용
 	
-	////////////////////////////////////////////////////////////////////////////////////////////////////
+	private String regDate_ago;
+	
+	public String getRegDate_ago() {
+		return regDate_ago;
+	}
+
+	public void setRegDate_ago(String regDate_ago) {
+		this.regDate_ago = regDate_ago;
+	}
+	
+	
+	// 게시물의 좋아요 갯수
+	
+	private String likeCount;
+	
+	public String getLikeCount() {
+		return likeCount;
+	}
+	
+	public void setLikeCount(String likeCount) {
+		this.likeCount = likeCount;
+	}
+	
+	//////////////////////////////////////////////////
 	
 	
 	// getter & setter
@@ -125,32 +146,7 @@ public class LoungeBoardDTO {
 	public void setCommentCount(String commentCount) {
 		this.commentCount = commentCount;
 	}
-	
-	///////// #137. getter & setter 추가 /////////
-	public String getGroupno() {
-		return groupno;
-	}
 
-	public void setGroupno(String groupno) {
-		this.groupno = groupno;
-	}
-
-	public String getFk_seq() {
-		return fk_seq;
-	}
-
-	public void setFk_seq(String fk_seq) {
-		this.fk_seq = fk_seq;
-	}
-
-	public String getDepthno() {
-		return depthno;
-	}
-
-	public void setDepthno(String depthno) {
-		this.depthno = depthno;
-	}
-	
 	
 	///////// #152. getter & setter 추가 /////////
 	public MultipartFile getAttach() {
@@ -184,6 +180,7 @@ public class LoungeBoardDTO {
 	public void setFileSize(String fileSize) {
 		this.fileSize = fileSize;
 	}
+
 	
 	
 }

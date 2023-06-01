@@ -12,7 +12,13 @@ public class LoungeCommentDTO {
 	private String regDate;      // 작성일자
 	private String parentSeq;    // 원게시물 글번호
 	private String status;       // 글삭제여부
+	
 
+	// === #137. 답변글쓰기 게시판을 위한 필드
+	private String groupno;
+	private String fk_seq;
+	private String depthno;
+	
 	
 	////////////////////////////////////////////////////////
 		   
@@ -124,6 +130,32 @@ public class LoungeCommentDTO {
 		this.fileSize = fileSize;
 	}
 	
+	///////// #137. getter & setter 추가 /////////
+	public String getGroupno() {
+		return groupno;
+	}
+	
+	public void setGroupno(String groupno) {
+		this.groupno = groupno;
+	}
+	
+	public String getFk_seq() {
+		return fk_seq;
+	}
+	
+	public void setFk_seq(String fk_seq) {
+		this.fk_seq = fk_seq;
+	}
+	
+	public String getDepthno() {
+		return depthno;
+	}
+	
+	public void setDepthno(String depthno) {
+		this.depthno = depthno;
+	}
+
 	/////////////////////////////////////////
+	
 	
 }
