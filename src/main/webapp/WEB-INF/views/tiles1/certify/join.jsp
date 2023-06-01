@@ -2,8 +2,8 @@
     pageEncoding="UTF-8"%>
 
 
-<link href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@4/dark.css" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.6/dist/sweetalert2.all.min.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.6/dist/sweetalert2.min.css" rel="stylesheet">
 
 <style type="text/css">
 
@@ -109,7 +109,7 @@
 		background-color:transparent; 
 		text-align: center; 
 		font-size: 25pt; 
-		width: 120px;
+		width: 130px;
 		font-weight: bold;
 	}
 	div.challenge_join_btn{
@@ -201,7 +201,12 @@
 			const price = Number($(this).val());
 			
 			if ( 0 < price && price < 10000) {
-				swal.fire("최소 예치금액은 1만원입니다.");
+				Swal.fire({
+					icon: "warning",
+					title: "최소 예치금액은 1만원입니다.",
+					confirmButtonColor: "#EB534C",
+					confirmButtonText: "확인"
+				});
 				$("p#price_10000").trigger("click");
 				$(this).focus();
 			}
@@ -223,7 +228,7 @@
 			
 			window.open(url, "challengejoin", "left="+pop_left+", top="+pop_top+", width="+pop_width+", height="+pop_height);
 			
-			location.href="<%= request.getContextPath()%>/challenge/testmenu";
+			location.href="<%= request.getContextPath()%>/challenge/certifyList";
 			
 			/* $("button#btn_close").click(function(){
 				alert("join에서 닫기")
@@ -237,8 +242,10 @@
 	}); // end $(document).ready
 
 </script>
-<div class="container" style="background-color: white; width: 70% !important; padding: 0;"> 
-	
+<div class="container" style="background-color: white; width: 70% !important; padding: 0; text-align: center;"> 
+	<br>
+	<h3 style="font-weight: bold;">챌린지 참가하기</h3>
+	<br>
 	<div id="challenge_join_header" class="mx-5" style="height: 300px;">
 		<div class="join_body" style="display: flex; justify-content: center; align-items:center; width: 100%; height: 100%; border: solid 1px red;">
 			챌린지 내용

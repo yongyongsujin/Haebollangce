@@ -1,5 +1,6 @@
 package com.sist.haebollangce.common.mapper;
 
+import com.sist.haebollangce.challenge.dto.ChallengeDTO;
 import com.sist.haebollangce.lounge.model.LoungeBoardDTO;
 import com.sist.haebollangce.user.dto.UserDTO;
 
@@ -23,4 +24,7 @@ public interface InterMapper {
 
 	// --- #3-1. 페이징 처리 안한 검색어 없는 전체 글 목록 보기 --- 
 	List<LoungeBoardDTO> lgboardListNoSearch();
+	
+	List<ChallengeDTO> getJoinedChaList();
+	// 참가중인 챌린지 리스트 가져오기
 }
