@@ -25,7 +25,7 @@ public class MypageService implements InterMypageService {
 
 	@Autowired // DAO
 	private InterMypageDAO dao;
-
+ 
 	@Autowired // 암호, 이메일 복호화
 	private AES256 aes;
 	 
