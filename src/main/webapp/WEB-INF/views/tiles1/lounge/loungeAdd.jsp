@@ -33,7 +33,7 @@
 		<%-- === end of 스마트 에디터 구현  === --%>
 	  
      
-	  	$('button#btnWrite').bind('click',function(){
+	  	$("button#btnWrite").click(function(){
 		
 	  		<%-- #5-1. 스마트 에디터 구현 (id 가 content 인 textarea 에 에디터 대입) --%>
   			obj.getById["content"].exec("UPDATE_CONTENTS_FIELD", []);
@@ -45,12 +45,17 @@
   	            return;
   	        }
   	        
-  	      	<%-- === #166-2. 글내용 유효성 검사(스마트 에디터 사용 할 경우) === --%>
+
+			<%-- === #166-2. 글내용 유효성 검사(스마트 에디터 사용 할 경우) === --%>
 	  		<%-- --- 스마트에디터는 내부적으로 <p> 태그를 포함하므로 걷어내줘야 한다 --- --%>
 	        let content = $("textarea#content").val();
 	        content = content.replace(/&nbsp;/gi, "");
 	        content = content.substring(content.indexOf("<p>")+3);
  	  	 	content = content.substring(0, content.indexOf("</p>"));
+ 	  	 	
+ 	  	 	let Listcontent = $("textarea#content").val();
+ 	  	 	Listcontent = Listcontent.replace(/&nbsp;/gi, "");
+ 	  	 		
  	  	 	
  	  	 	if(content.trim().length == 0) {
  	  	 		alert("글내용을 입력하세요!!");
@@ -63,11 +68,15 @@
 			    alert("글암호를 입력하세요!!");
 			    return;
 			}
-			      
+			
+		//	console.log("subject : " + subject);
+		//	console.log("content : " + content);
+		//	console.log("pw : " + pw);
+			
 			// 폼(form)을 전송(submit)
 			const frm = document.addFrm;
 			frm.method = "POST";
-			frm.action = "<%= ctxPath%>/loungeAddEnd";
+			frm.action = "<%= ctxPath%>/lounge/loungeAddEnd";
 			frm.submit();
         
 	  });
