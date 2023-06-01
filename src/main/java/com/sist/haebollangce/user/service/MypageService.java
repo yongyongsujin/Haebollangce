@@ -28,7 +28,7 @@ public class MypageService implements InterMypageService {
  
 	@Autowired // 암호, 이메일 복호화
 	private AES256 aes;
-	 
+	  
 	@Autowired // 파일 업로드
 	private FileManager fileManager;
  

@@ -12,8 +12,17 @@ public class UserDTO {
     String registerdate;
     int status;
     String profile_pic;
+    String mobile;
+ 
+    public String getMobile() {
+		return mobile;
+	}
 
-    public String getUserid() {
+	public void setMobile(String mobile) {
+		this.mobile = mobile;
+	}
+
+	public String getUserid() {
         return userid;
     }
 
