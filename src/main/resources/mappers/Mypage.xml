@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ==== #29. mapper 기본설정 ==== -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- ==== #29. 루트 엘리먼트 & 네임스페이스 설정(프로젝트 전체내에서 유일해야 한다.) ==== -->
+<mapper namespace="com.sist.haebollangce.common.mapper.InterMypageMapper">
+
+	<!-- 결제한 후 예치금 충전 내역을 예치금 테이블에 넣기 -->
+	<insert id="go_purchase" parameterType="HashMap">
+		insert into tbl_deposit(purchase_code, fk_userid, purchase_date, purchase_price, purchase_status) 
+		values(seq_tbl_deposit_purchase_code.nextval, #{userid}, default, #{deposit}, 0)
+	</insert>
+	
+	<!-- 회원 테이블에 보유 예치금 양을 충전한만큼 늘려주기 -->
+	<update id="plus_deposit" parameterType="HashMap">
+		update tbl_user set deposit = deposit + #{deposit}
+		where userid= #{userid}
+	</update>
+
+	<!-- 사용한 상금량을 회원 테이블에 보유 상금량에서 빼주기 -->
+	<update id="reward_minus" parameterType="HashMap" >
+		update tbl_user set reward_balance = reward_balance - #{reward}
+		where userid = #{userid}
+	</update>
+
+	<!-- 상금 전환 테이블에 해당 내역 넣어주기 -->
+	<insert id="reward_convert" parameterType="HashMap">
+		insert into tbl_convert_reward(convert_code, fk_userid, convert_date, convert_reward) 
+		values(seq_tbl_convert_reward_convert_code.nextval, #{userid}, default, #{reward})
+	</insert>
+	
+	<!-- 예치금 충전 테이블에서 기록 가지고 오기 -->
+	<resultMap type="HashMap" id="mypage_search_data_map">
+		<result property="purchase_date"   column="purchase_date"   javaType="String" />
+		<result property="purchase_price"  column="purchase_price"  javaType="String" />
+		<result property="purchase_status" column="purchase_status" javaType="String" />
+		<result property="deposit" 		   column="deposit" 		javaType="String" />
+	</resultMap>
+	<select id="search_data" parameterType="HashMap" resultMap="mypage_search_data_map">
+		select D.purchase_date, D.purchase_price, D.purchase_status, U.deposit
+		from tbl_deposit D join tbl_user U
+		on D.fk_userid = U.userid
+		where U.userid=#{userid}
+	</select>
+	
+	<!-- 상금 충전 테이블과 상금 환전 테이블에서 정보 찾아오기 -->
+	<resultMap type="HashMap" id="mypage_search_reward_map">
+		<result property="reward_date" 	  column="reward_date" 	  javaType="String" />
+		<result property="reward" 		  column="reward" 		  javaType="String" />
+		<result property="challenge_name" column="challenge_name" javaType="String" />
+		<result property="convert_reward" column="convert_reward" javaType="String" />
+	</resultMap>
+	<select id="search_reward" parameterType="HashMap" resultMap="mypage_search_reward_map">
+		select R.reward_date, R.reward, C.challenge_name, V.convert_reward
+		from tbl_reward R 
+			JOIN tbl_challenge C
+				ON R.fk_challenge_code = C.challenge_code
+			JOIN tbl_convert_reward V
+				ON R.fk_userid = V.fk_userid
+		where R.fk_userid = #{userid}
+		order by R.reward_date asc
+	</select>
+
+	<!-- 정보수정하기 페이지에서 수정할 정보들 가지고 오기 -->
+	<select id="select_info" parameterType="HashMap" resultType="com.sist.haebollangce.user.dto.UserDTO">
+		select userid, email, pw, acct, mobile, profile_pic
+		from tbl_user
+		where userid = #{userid}
+	</select>
+	
+	<!-- 이메일 중복확인하기 -->
+	<select id="select_change_email" parameterType="String" resultType="int">
+		select count(*) 
+		from tbl_user
+		where email=#{change_email}
+	</select>
+	
+	<!-- 회원정보 수정하기 -->
+	<update id="mypage_info_edit" parameterType="HashMap">
+		update tbl_user set profile_pic=#{profile_pic}, 
+							pw=#{pw}, 
+							email=#{email}, 
+							acct=#{acct}, 
+							mobile=#{mobile}
+		where userid=#{userid}
+	</update>
+
+</mapper>
