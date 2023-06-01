@@ -5,6 +5,21 @@
 
 <% String ctxPath = request.getContextPath(); %>   
 
+<style type="text/css">
+	
+	div.lgcontent {
+		overflow: hidden;
+	    text-overflow: ellipsis;
+	    display: -webkit-box;
+	    -webkit-line-clamp: 3; /* 라인수 */
+	    -webkit-box-orient: vertical;
+	    word-wrap:break-word; 
+	    line-height: 1.2em;
+	    height: 3.6em; /* line-height 가 1.2em 이고 3라인을 자르기 때문에 height는 1.2em * 3 = 3.6em */
+	}
+
+</style>
+
 <script type="text/javascript">
 
 	$(document).ready(function(){
@@ -15,9 +30,8 @@
 
   
 	// Function Declaration
-	function goView() {
-		
-		location.href = "http://localhost:7070/lounge/loungeView"; 
+	function goView(seq) {
+		location.href = "<%= ctxPath%>/lounge/loungeView?seq="+seq; 
 	}
 	
 </script>
@@ -40,181 +54,45 @@
 <div class="container mt-5 mb-5">
     <div class="row">
     	<c:if test="${not empty requestScope.lgboardList}">
-			<c:forEach items="${requestScope.lgboardList}" var="lgboardvo">
+			<c:forEach items="${requestScope.lgboardList}" var="lgboarddto">
 			    <div class="col-md-3 col-sm-6">
-			        <div class="card p-3 mb-5">
+			        <div class="card p-3 mb-5 " style="min-height: 400px;">
 			            <div class="d-flex justify-content-between">
 			                <div class="d-flex flex-row align-items-center">
 		                        <div><img style="border-radius:60%; width:35px;" src="https://lh3.googleusercontent.com/ogw/AOLn63F1Ha6NDXd-seLYOJM9EFk7xFis5ODQaOFR0zDz0w=s32-c-mo" /> </div>
 		                        <div class=" c-details">
-		                            <h6 class="mb-0 ml-2">${lgboardvo.name}</h6> <span class="ml-2">${lgboardvo.regDate}</span>
+		                            <h6 class="mb-0 ml-2">${lgboarddto.name}</h6> 
+		                            <span class="ml-2">
+		                            	<c:if test="${lgboarddto.regDate_ago == 0}">today new</c:if>
+		                            	<c:if test="${lgboarddto.regDate_ago > 0}">${lgboarddto.regDate_ago} days ago</c:if>
+		                            </span>
 		                        </div>
 		                    </div>
 		                    <div class="badge"> <span>follow</span> </div>
 		                </div>
-		                <div class="mt-3">
+		                <div class="mt-3" onclick="goView(${lgboarddto.seq})" style="cursor:pointer;">
 		                    <img style="width:100%;" src="http://images.munto.kr/production-feed/1684333844811-photo-hut52-101851-0?s=384x384" />
-		                    <div class="mt-1">
-		                        <div>
-			                        🖤Black Party🖤: 
-									Let me teach you how to ‘BLACK'.    7기 
-									다들 첫차 타고 갔다는 소문을 들었어…..
-									‘다들 집에는 갔니?…..’ 라는 재원이의 단톡방메세지🫢
+		                    <div class="mt-2">
+		                        <div class="lgcontent">${lgboarddto.subject}</div>
+		                        <div class="mt-3"> 
+		                        	<span class="text1">
+		                        		<img src="https://images.munto.kr/munto-web/ic_action_like-empty-black_30px.svg?s=32x32"/>${lgboarddto.likeCount}
+			                        	<span class="text2">
+			                        		<img src="https://images.munto.kr/munto-web/ic_action_comment_30px.svg?s=32x32"/>${lgboarddto.commentCount}
+			                        	</span>
+			                        	<img src="https://images.munto.kr/munto-web/info_group.svg?s=32x32"/>${lgboarddto.readCount}
+		                        	</span> 
 		                        </div>
-		                        <div class="mt-3"> <span class="text1"><img src="https://images.munto.kr/munto-web/ic_action_like-empty-black_30px.svg?s=32x32"/>좋아요수<span class="text2"><img src="https://images.munto.kr/munto-web/ic_action_comment_30px.svg?s=32x32"/>댓글수</span></span> </div>
 		                    </div>
 		                </div>
 		            </div>
 		        </div>
         	</c:forEach>
         </c:if>
-        <div class="col-md-3 col-sm-6">
-            <div class="card p-3 mb-5">
-                <div class="d-flex justify-content-between">
-                    <div class="d-flex flex-row align-items-center">
-                        <div><img style="border-radius:60%; width:35px;" src="http://images.munto.kr/production-user/1684469607083-photo-g1p6z-101851-0?s=48x48" /> </div>
-                        <div class=" c-details">
-                            <h6 class="mb-0 ml-1">평일민주</h6> <span class="ml-1">1 days ago</span>
-                        </div>
-                    </div>
-                    <div class="badge"> <span>follow</span> </div>
-                </div>
-                <div class="mt-3" onclick="goView(${lgboardvo.seq})" style="cursor:pointer;">
-                    <img style="width:100%;" src="http://images.munto.kr/production-feed/1684289174510-photo-spznw-42282-0?s=1080x1080" />
-                    <div class="mt-1">
-                        <div>
-	                        🖤Black Party🖤: 
-							Let me teach you how to ‘BLACK'.    7기 
-							다들 첫차 타고 갔다는 소문을 들었어…..
-							‘다들 집에는 갔니?…..’ 라는 재원이의 단톡방메세지🫢
-                        </div>
-                        <div class="mt-3"> <span class="text1"><img src="https://images.munto.kr/munto-web/ic_action_like-empty-black_30px.svg?s=32x32"/>좋아요수<span class="text2"><img src="https://images.munto.kr/munto-web/ic_action_comment_30px.svg?s=32x32"/>댓글수</span></span> </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3 col-sm-6">
-            <div class="card p-3 mb-5">
-                <div class="d-flex justify-content-between">
-                    <div class="d-flex flex-row align-items-center">
-                        <div><img style="border-radius:60%; width:35px;" src="http://images.munto.kr/production-user/1675570371826-photo-5nj9g-129563-0?s=48x48" /> </div>
-                        <div class=" c-details">
-                            <h6 class="mb-0 ml-1">서현이</h6> <span class="ml-1">1 days ago</span>
-                        </div>
-                    </div>
-                    <div class="badge"> <span>follow</span> </div>
-                </div>
-                <div class="mt-3">
-                    <img style="width:100%;" src="http://images.munto.kr/production-feed/1684333844811-photo-hut52-101851-0?s=384x384" />
-                    <div class="mt-1">
-                        <div>
-	                        🖤Black Party🖤: 
-							Let me teach you how to ‘BLACK'.    7기 
-							다들 첫차 타고 갔다는 소문을 들었어…..
-							‘다들 집에는 갔니?…..’ 라는 재원이의 단톡방메세지🫢
-                        </div>
-                        <div class="mt-3"> <span class="text1"><img src="https://images.munto.kr/munto-web/ic_action_like-empty-black_30px.svg?s=32x32"/>좋아요수<span class="text2"><img src="https://images.munto.kr/munto-web/ic_action_comment_30px.svg?s=32x32"/>댓글수</span></span> </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3 col-sm-6">
-            <div class="card p-3 mb-5">
-                <div class="d-flex justify-content-between">
-                    <div class="d-flex flex-row align-items-center">
-                        <div><img style="border-radius:60%; width:35px;" src="https://lh3.googleusercontent.com/ogw/AOLn63F1Ha6NDXd-seLYOJM9EFk7xFis5ODQaOFR0zDz0w=s32-c-mo" /> </div>
-                        <div class=" c-details">
-                            <h6 class="mb-0 ml-1">sujin</h6> <span class="ml-1">1 days ago</span>
-                        </div>
-                    </div>
-                    <div class="badge"> <span>follow</span> </div>
-                </div>
-                <div class="mt-3">
-                    <img style="width:100%;" src="http://images.munto.kr/production-feed/1684333844811-photo-hut52-101851-0?s=384x384" />
-                    <div class="mt-1">
-                        <div>
-	                        🖤Black Party🖤: 
-							Let me teach you how to ‘BLACK'.    7기 
-							다들 첫차 타고 갔다는 소문을 들었어…..
-							‘다들 집에는 갔니?…..’ 라는 재원이의 단톡방메세지🫢
-                        </div>
-                        <div class="mt-3"> <span class="text1"><img src="https://images.munto.kr/munto-web/ic_action_like-empty-black_30px.svg?s=32x32"/>좋아요수<span class="text2"><img src="https://images.munto.kr/munto-web/ic_action_comment_30px.svg?s=32x32"/>댓글수</span></span> </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3 col-sm-6">
-            <div class="card p-3 mb-5">
-                <div class="d-flex justify-content-between">
-                    <div class="d-flex flex-row align-items-center">
-                        <div><img style="border-radius:60%; width:35px;" src="https://lh3.googleusercontent.com/ogw/AOLn63F1Ha6NDXd-seLYOJM9EFk7xFis5ODQaOFR0zDz0w=s32-c-mo" /> </div>
-                        <div class=" c-details">
-                            <h6 class="mb-0 ml-1">sujin</h6> <span class="ml-1">1 days ago</span>
-                        </div>
-                    </div>
-                    <div class="badge"> <span>follow</span> </div>
-                </div>
-                <div class="mt-3">
-                    <img style="width:100%;" src="http://images.munto.kr/production-feed/1684333844811-photo-hut52-101851-0?s=384x384" />
-                    <div class="mt-1">
-                        <div>
-	                        🖤Black Party🖤: 
-							Let me teach you how to ‘BLACK'.    7기 
-							다들 첫차 타고 갔다는 소문을 들었어…..
-							‘다들 집에는 갔니?…..’ 라는 재원이의 단톡방메세지🫢
-                        </div>
-                        <div class="mt-3"> <span class="text1"><img src="https://images.munto.kr/munto-web/ic_action_like-empty-black_30px.svg?s=32x32"/>좋아요수<span class="text2"><img src="https://images.munto.kr/munto-web/ic_action_comment_30px.svg?s=32x32"/>댓글수</span></span> </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3 col-sm-6">
-            <div class="card p-3 mb-5">
-                <div class="d-flex justify-content-between">
-                    <div class="d-flex flex-row align-items-center">
-                        <div><img style="border-radius:60%; width:35px;" src="https://lh3.googleusercontent.com/ogw/AOLn63F1Ha6NDXd-seLYOJM9EFk7xFis5ODQaOFR0zDz0w=s32-c-mo" /> </div>
-                        <div class=" c-details">
-                            <h6 class="mb-0 ml-1">sujin</h6> <span class="ml-1">1 days ago</span>
-                        </div>
-                    </div>
-                    <div class="badge"> <span>follow</span> </div>
-                </div>
-                <div class="mt-3">
-                    <img style="width:100%;" src="http://images.munto.kr/production-feed/1684333844811-photo-hut52-101851-0?s=384x384" />
-                    <div class="mt-1">
-                        <div>
-	                        🖤Black Party🖤: 
-							Let me teach you how to ‘BLACK'.    7기 
-							다들 첫차 타고 갔다는 소문을 들었어…..
-							‘다들 집에는 갔니?…..’ 라는 재원이의 단톡방메세지🫢
-                        </div>
-                        <div class="mt-3"> <span class="text1"><img src="https://images.munto.kr/munto-web/ic_action_like-empty-black_30px.svg?s=32x32"/>좋아요수<span class="text2"><img src="https://images.munto.kr/munto-web/ic_action_comment_30px.svg?s=32x32"/>댓글수</span></span> </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3 col-sm-6">
-            <div class="card p-3 mb-5">
-                <div class="d-flex justify-content-between">
-                    <div class="d-flex flex-row align-items-center">
-                        <div class="icon"> <i class="bx bxl-reddit"></i> </div>
-                        <div class=" c-details">
-                            <h6 class="mb-0">Reddit</h6> <span>2 days ago</span>
-                        </div>
-                    </div>
-                    <div class="badge"> <span>Design</span> </div>
-                </div>
-                <div class="mt-5">
-                    <h3 class="heading">Software Architect <br>Java - USA</h3>
-                    <div class="mt-5">
-                        <div class="progress">
-                            <div class="progress-bar" role="progressbar" style="width: 50%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
-                        </div>
-                        <div class="mt-3"> <span class="text1">52 Applied <span class="text2">of 100 capacity</span></span> </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <c:if test="${empty requestScope.lgboardList}">
+        	<h2>등록된 게시물이 존재하지 않습니다.</h2>
+        </c:if>
+        
     </div>
 </div>
 <!-- lounge_content 끝 -->
