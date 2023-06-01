@@ -1,5 +1,6 @@
 package com.sist.haebollangce.common.mapper;
 
+import com.sist.haebollangce.challenge.dto.ChallengeDTO;
 import com.sist.haebollangce.lounge.model.LoungeBoardDTO;
 import com.sist.haebollangce.user.dto.UserDTO;
 
@@ -10,7 +11,7 @@ import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
 public interface InterMapper {
-
+ 
     int test_insert(String userid);
 
     int fromBoard2(String userid);
@@ -35,5 +36,8 @@ public interface InterMapper {
 	int lgedit(LoungeBoardDTO lgboarddto);
 
 	// === #8. 라운지 글 삭제 페이지 요청 완료 ===
-	int lgdel(Map<String, String> paraMap);
+	int lgdel(Map<String, String> paraMap); 
+	
+	List<ChallengeDTO> getJoinedChaList();
+	// 참가중인 챌린지 리스트 가져오기
 }

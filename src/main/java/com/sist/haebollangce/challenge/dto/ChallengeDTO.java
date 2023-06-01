@@ -16,6 +16,12 @@ public class ChallengeDTO {
 	private String fk_userid;				// 개설자(방장)
 	
 	
+	private String category_name;
+	private String frequency;
+	private String hour_start;
+	private String hour_end;
+	private String enddate;
+	// join 용도
 	
 	
 	public String getChallenge_code() {
@@ -90,6 +96,42 @@ public class ChallengeDTO {
 	public void setFk_userid(String fk_userid) {
 		this.fk_userid = fk_userid;
 	}
-
+	
+	
+	
+	
+	public String getCategory_name() {
+		return category_name;
+	}
+	public void setCategory_name(String category_name) {
+		this.category_name = category_name;
+	}
+	public String getFrequency() {
+		return frequency;
+	}
+	public void setFrequency(String frequency) {
+		this.frequency = frequency;
+	}
+	public String getHour_start() {
+		return hour_start;
+	}
+	public void setHour_start(String hour_start) {
+		this.hour_start = hour_start;
+	}
+	public String getHour_end() {
+		return hour_end;
+	}
+	public void setHour_end(String hour_end) {
+		this.hour_end = hour_end;
+	}
+	public String getEnddate() {
+		return enddate;
+	}
+	public void setEnddate(String enddate) {
+		this.enddate = enddate;
+	}
+	
+	
+	
 	
 }

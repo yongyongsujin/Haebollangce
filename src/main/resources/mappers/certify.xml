@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- ==== #29. 루트 엘리먼트 & 네임스페이스 설정(프로젝트 전체내에서 유일해야 한다.) ==== -->
+<mapper namespace="com.sist.haebollangce.common.mapper.Temp_InterMapper">
+
+	<select id="getJoinedChaList" resultType="com.sist.haebollangce.challenge.dto.ChallengeDTO">
+		select C.challenge_code, fk_category_code, G.category_name as category_name, challenge_name, content, regDate
+		     , challenge_exp, member_count, thumbnail, fk_freq_type, F.frequency, fk_during_type, D.set_date
+		     , to_char(startDate, 'yyyy-mm-dd') as startdate, fk_userid
+		     , to_char(hour_start, 'hh24:mi') as hour_start, to_char(hour_end, 'hh24:mi') as hour_end
+		     , success_img, fail_img, example
+		     , to_char( startdate + (to_number(fk_during_type) * 7), 'yyyy-mm-dd') as enddate
+		from tbl_challenge C 
+		join tbl_category G             on G.category_code = C.fk_category_code
+		join tbl_challenge_during D     on D.during_type = C.fk_during_type
+		join tbl_certify_freq F         on F.freq_type = C.fk_freq_type
+		join tbl_certify_hour H         on H.challenge_code = C.challenge_code
+		left join tbl_certify_exam E    on E.challenge_code = C.challenge_code
+		order by C.challenge_code desc
+	</select>
+
+</mapper>

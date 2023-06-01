@@ -266,7 +266,7 @@
 					    </div>
 			      	</li>
 			      	<li class="nav-item dropdown active mr-3">
-			        	<a class="nav-link dropdown-toggle headerfont" href="<%= ctxPath %>/challenge_certify">챌린지 인증하기</a>
+			        	<a class="nav-link dropdown-toggle headerfont" href="<%= ctxPath %>/challenge/certifyList">챌린지 인증</a>
 			      	</li>
 			     	<li class="nav-item dropdown active mr-3">
 			        	<a class="nav-link dropdown-toggle headerfont" id="navbardrop_lng" data-toggle="dropdown">라운지</a>
