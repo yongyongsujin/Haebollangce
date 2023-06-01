@@ -35,5 +35,5 @@ public interface InterMapper {
 	int lgedit(LoungeBoardDTO lgboarddto);
 
 	// === #8. 라운지 글 삭제 페이지 요청 완료 ===
-	int lgdel(Map<String, String> paraMap);
+	int lgdel(Map<String, String> paraMap); 
 }
