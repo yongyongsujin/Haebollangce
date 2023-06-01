@@ -1,7 +1,7 @@
 ---
 name: Bug Report Template
 about: 버그 발견 및 대응
-title: "[버그] "
+title: ''
 labels: bug
 assignees: ''
 
