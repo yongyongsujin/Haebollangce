@@ -157,7 +157,7 @@ public class MypageService implements InterMypageService {
 	public String mypage_info_edit(Map<String, Object> paraMap) {
 
 		int n = dao.mypage_info_edit(paraMap);
-		
+		 
 		// System.out.println("service n " + n);
 		
 		JSONObject jsonObj = null;
