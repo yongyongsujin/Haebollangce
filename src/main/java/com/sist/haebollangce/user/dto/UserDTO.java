@@ -1,104 +1,37 @@
 package com.sist.haebollangce.user.dto;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class UserDTO {
 
     String userid;
     String email;
     String pw;
     String name;
-    String fk_level;
-    int exp;
-    int coin;
-    String registerdate;
-    int status;
-    String profile_pic;
+    String fkLevel;
+    String exp;
+    String regdate;
+    String status;
+    String profilePic;
+    String acct;
     String mobile;
- 
-    public String getMobile() {
-		return mobile;
-	}
+    String fkRoleId;
 
-	public void setMobile(String mobile) {
-		this.mobile = mobile;
-	}
+    public static class UserLoginDTO {
+        private String userid;
+        private String pw;
 
-	public String getUserid() {
-        return userid;
+        public UserLoginDTO(String userid, String pw) {
+            this.userid = userid;
+            this.pw = pw;
+        }
+
+        public UserLoginDTO getInstance(String userid, String pw) {
+            return new UserLoginDTO(userid, pw);
+        }
     }
 
-    public void setUserid(String userid) {
-        this.userid = userid;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPw() {
-        return pw;
-    }
-
-    public void setPw(String pw) {
-        this.pw = pw;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getFk_level() {
-        return fk_level;
-    }
-
-    public void setFk_level(String fk_level) {
-        this.fk_level = fk_level;
-    }
-
-    public int getExp() {
-        return exp;
-    }
-
-    public void setExp(int exp) {
-        this.exp = exp;
-    }
-
-    public int getCoin() {
-        return coin;
-    }
-
-    public void setCoin(int coin) {
-        this.coin = coin;
-    }
-
-    public String getRegisterdate() {
-        return registerdate;
-    }
-
-    public void setRegisterdate(String registerdate) {
-        this.registerdate = registerdate;
-    }
-
-    public int getStatus() {
-        return status;
-    }
-
-    public void setStatus(int status) {
-        this.status = status;
-    }
-
-    public String getProfile_pic() {
-        return profile_pic;
-    }
-
-    public void setProfile_pic(String profile_pic) {
-        this.profile_pic = profile_pic;
-    }
 }

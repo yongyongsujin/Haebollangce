@@ -76,10 +76,7 @@ public class MypageController {
 		// 예치금 결제하기
 		int n = service.go_purchase(paraMap);
 
-		// 예치금을 보유예치금에 추가하기
-		int plus = service.plus_deposit(paraMap);
-
-		if (n == 1 && plus == 1) {
+		if (n == 1) {
 			mav.setViewName("mypage/mypageHome.tiles5");
 		}
 

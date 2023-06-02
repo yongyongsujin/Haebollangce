@@ -44,12 +44,28 @@ dependencies {
 
 //	JSON In Java
 	implementation 'org.json:json:20200518'
-	
+
 	implementation 'net.nurigo:sdk:4.2.7'
 	implementation group: 'net.nurigo', name: 'javaSDK', version: '2.2'
 
 	implementation 'commons-io:commons-io:2.11.0'    /* Apache commons-io */
 	implementation group: 'commons-fileupload', name: 'commons-fileupload', version: '1.4' /* Apache Commons FileUpload */
+
+//	DTO validation DTO에서 값검증 위함
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+//	JWT
+	implementation 'io.jsonwebtoken:jjwt-api:0.11.2'
+	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.2'
+	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.2'
+
+// GSON
+	implementation 'com.google.code.gson:gson'
+
+//	Lombok
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+
+
 }
 
 tasks.named('test') {
