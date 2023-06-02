@@ -37,15 +37,21 @@ public class RootConfig implements TransactionManagementConfigurer {
     public SqlSessionFactoryBean sqlSessionFactoryBean(DataSource dataSource) throws Exception {
         SqlSessionFactoryBean sessionFactory = new SqlSessionFactoryBean();
         sessionFactory.setDataSource(dataSource);
+
+        org.apache.ibatis.session.Configuration configuration = new org.apache.ibatis.session.Configuration();
+        configuration.setMapUnderscoreToCamelCase(true);
+        sessionFactory.setConfiguration(configuration);
+
         sessionFactory.setMapperLocations(
                 new PathMatchingResourcePatternResolver().getResources("classpath*:mappers/*.xml"));
+
         return sessionFactory;
     }
 
-    @Bean
-    public SqlSessionTemplate sqlSession(SqlSessionFactory sqlSessionFactory) {
-        return new SqlSessionTemplate(sqlSessionFactory);
-    }
+//    @Bean
+//    public SqlSessionTemplate sqlSession(SqlSessionFactory sqlSessionFactory) {
+//        return new SqlSessionTemplate(sqlSessionFactory);
+//    }
 
     @Bean
     public DataSourceTransactionManager transactionManager() {

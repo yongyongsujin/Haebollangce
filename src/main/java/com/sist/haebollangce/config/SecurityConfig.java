@@ -24,13 +24,13 @@ public class SecurityConfig {
     public WebSecurityCustomizer webSecurityCustomizer() {
         // 인증 및 인가 예외 Path URL
         return (web) -> web.ignoring().antMatchers( "/**",
-                                                    "/login/**",
-                                                    "/bootstrap-4.6.0-dist/**",
-                                                    "/css/**",
-                                                    "/images/**",
-                                                    "/jquery-ui-1.13.1.custom/**",
-                                                    "/js/**",
-                                                    "/smarteditor/**");
+                "/login/**",
+                "/bootstrap-4.6.0-dist/**",
+                "/css/**",
+                "/images/**",
+                "/jquery-ui-1.13.1.custom/**",
+                "/js/**",
+                "/smarteditor/**");
     }
 
     @Bean
