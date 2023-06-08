@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ==== #29. mapper 기본설정 ==== -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- ==== #29. 루트 엘리먼트 & 네임스페이스 설정(프로젝트 전체내에서 유일해야 한다.) ==== -->
+<mapper namespace="com.sist.haebollangce.common.mapper.InterMapper">
+
+	<!-- 카테고리 리스트 가져오기 -->
+	<select id="getcategoryList" resultType="com.sist.haebollangce.challenge.dto.ChallengeDTO">
+		select category_code, category_name
+		from tbl_category
+	</select>
+	
+	<!-- 인증빈도 리스트 가져오기 -->
+	<select id="getfreq" resultType="com.sist.haebollangce.challenge.dto.ChallengeDTO">
+		select freq_type, frequency
+		from tbl_certify_freq
+	</select>
+	
+	<!-- 챌린지 기간 가져오기  -->
+	<select id="getduring" resultType="com.sist.haebollangce.challenge.dto.ChallengeDTO">
+		select during_type, set_date
+		from tbl_challenge_during
+	</select>
+	
+	
+	
+	<!-- 챌린지 게시글 조회하기 -->
+
+	<select id="getview" parameterType="HashMap" resultType="com.sist.haebollangce.challenge.dto.ChallengeDTO">
+		select C.challenge_code, 
+			   fk_category_code, 
+			   G.category_name as category_name, 
+			   challenge_name, 
+			   content, 
+			   C.regDate,
+		       challenge_exp, 
+		       member_count, 
+		       thumbnail, 
+		       fk_freq_type, 
+		       F.frequency, 
+		       fk_during_type, 
+		       D.set_date,
+		       to_char(startDate, 'yyyy-mm-dd') as startdate, 
+		       C.fk_userid,
+		       to_char(hour_start, 'hh24:mi') as hour_start, 
+		       to_char(hour_end, 'hh24:mi') as hour_end,
+		       success_img, 
+		       fail_img, 
+		       example,
+		       startdate + (to_number(fk_during_type) * 7) as enddate,
+		       U.profile_pic
+		from tbl_challenge C 
+		join tbl_category G             on G.category_code = C.fk_category_code
+		join tbl_user U				    on C.fk_userid = U.userid
+		join tbl_challenge_during D     on D.during_type = C.fk_during_type
+		join tbl_certify_freq F         on F.freq_type = C.fk_freq_type
+		join tbl_certify_hour H         on H.challenge_code = C.challenge_code
+		left join tbl_certify_exam E    on E.challenge_code = C.challenge_code
+		where C.challenge_code = #{challengeCode}
+	</select>
+	
+	<!-- 챌린지 개설 -->
+	<insert id="addChallenge" parameterType="com.sist.haebollangce.challenge.dto.ChallengeDTO">
+  		INSERT INTO tbl_challenge (challenge_code, fk_category_code, challenge_name, content, regDate, challenge_exp, member_count, thumbnail, fk_freq_type, fk_during_type, startDate, fk_userid)
+  		VALUES (challenge_code_seq.nextval, to_number(#{fk_categoryCode}), #{challengeName}, #{content, jdbcType=CLOB}, sysdate, #{challengeExp}, 0, #{thumbnail}, to_number(#{fk_freqType}), to_number(#{fk_duringType}), to_date(#{startDate},'yyyy-mm-dd'), #{fk_userid})
+	</insert>
+	
+	<insert id="addCertifyHour" parameterType="com.sist.haebollangce.challenge.dto.ChallengeDTO">
+		INSERT INTO tbl_certify_hour (challenge_code, hour_start, hour_end)
+		VALUES (challenge_code_seq.currval, to_date(#{hourStart}, 'hh24:mi'), to_date(#{hourEnd}, 'hh24:mi'))
+	</insert>
+	
+	<insert id="addCertifyExam" parameterType="com.sist.haebollangce.challenge.dto.ChallengeDTO">
+		INSERT INTO tbl_certify_exam(challenge_code, success_img, fail_img, example)
+		VALUES (challenge_code_seq.currval, #{successImg}, #{failImg}, #{example})
+	</insert>
+	
+	
+
+</mapper>

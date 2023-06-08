@@ -1,46 +1,72 @@
 package com.sist.haebollangce.challenge.dto;
 
+import org.springframework.web.multipart.MultipartFile;
+
 public class ChallengeDTO {
 	
-	private String challenge_code;			// 챌린지 일련번호
-	private String fk_category_code;		// 카테고리 코드   
-	private String challenge_name;			// 챌린지이름
+	private String challengeCode;			// 챌린지 일련번호
+	private String fk_categoryCode;		// 카테고리 코드   
+	private String challengeName;			// 챌린지이름
 	private String content;            		// 챌린지 본문(내용)
 	private String regDate; 				// 등록일자
-	private String challenge_exp;			// 경험치
-	private String member_count; 			// 참가인원
+	private String challengeExp;			// 경험치
+	private String memberCount; 			// 참가인원
 	private String thumbnail;				// 대표이미지   
-	private String fk_freq_type;			// 인증빈도 일련번호
-	private String fk_during_type;			// 기간 일련번호
+	private String fk_freqType;			// 인증빈도 일련번호
+	private String fk_duringType;			// 기간 일련번호
 	private String startDate;				// 시작날짜
-	private String fk_userid;				// 개설자(방장)
+	private String fkUserid;				// 개설자(방장)
 	
 	
-	private String category_name;
+	private String categoryName;
 	private String frequency;
-	private String hour_start;
-	private String hour_end;
+	private String hourStart;
+	private String hourEnd;
 	private String enddate;
 	// join 용도
 	
+	private String categoryCode;
+	private String setDate;
+	private String duringType;
+	private String freqType;
+	private String example;
+	private String successImg;
+	private String failImg;
 	
-	public String getChallenge_code() {
-		return challenge_code;
+	private MultipartFile attach;
+	private MultipartFile successImgAttach;
+	private MultipartFile failImgAttach;
+	
+	private String successImgFileName;
+	private String failImgFileName;
+	
+	private String profilePic;
+	
+	public ChallengeDTO() {};
+	
+	
+	
+	
+	public String getChallengeCode() {
+		return challengeCode;
 	}
-	public void setChallenge_code(String challenge_code) {
-		this.challenge_code = challenge_code;
+	public void setChallengeCode(String challengeCode) {
+		this.challengeCode = challengeCode;
 	}
-	public String getFk_category_code() {
-		return fk_category_code;
+	
+	public String getFk_categoryCode() {
+		return fk_categoryCode;
 	}
-	public void setFk_category_code(String fk_category_code) {
-		this.fk_category_code = fk_category_code;
+
+	public void setFk_categoryCode(String fk_categoryCode) {
+		this.fk_categoryCode = fk_categoryCode;
 	}
-	public String getChallenge_name() {
-		return challenge_name;
+
+	public String getChallengeName() {
+		return challengeName;
 	}
-	public void setChallenge_name(String challenge_name) {
-		this.challenge_name = challenge_name;
+	public void setChallengeName(String challengeName) {
+		this.challengeName = challengeName;
 	}
 	public String getContent() {
 		return content;
@@ -54,17 +80,17 @@ public class ChallengeDTO {
 	public void setRegDate(String regDate) {
 		this.regDate = regDate;
 	}
-	public String getChallenge_exp() {
-		return challenge_exp;
+	public String getChallengeExp() {
+		return challengeExp;
 	}
-	public void setChallenge_exp(String challenge_exp) {
-		this.challenge_exp = challenge_exp;
+	public void setChallengeExp(String challengeExp) {
+		this.challengeExp = challengeExp;
 	}
-	public String getMember_count() {
-		return member_count;
+	public String getMemberCount() {
+		return memberCount;
 	}
-	public void setMember_count(String member_count) {
-		this.member_count = member_count;
+	public void setMemberCount(String memberCount) {
+		this.memberCount = memberCount;
 	}
 	public String getThumbnail() {
 		return thumbnail;
@@ -72,17 +98,17 @@ public class ChallengeDTO {
 	public void setThumbnail(String thumbnail) {
 		this.thumbnail = thumbnail;
 	}
-	public String getFk_freq_type() {
-		return fk_freq_type;
+	public String getFk_freqType() {
+		return fk_freqType;
 	}
-	public void setFk_freq_type(String fk_freq_type) {
-		this.fk_freq_type = fk_freq_type;
+	public void setFk_freqType(String fk_freqType) {
+		this.fk_freqType = fk_freqType;
 	}
-	public String getFk_during_type() {
-		return fk_during_type;
+	public String getFk_duringType() {
+		return fk_duringType;
 	}
-	public void setFk_during_type(String fk_during_type) {
-		this.fk_during_type = fk_during_type;
+	public void setFk_duringType(String fk_duringType) {
+		this.fk_duringType = fk_duringType;
 	}
 	public String getStartDate() {
 		return startDate;
@@ -90,21 +116,19 @@ public class ChallengeDTO {
 	public void setStartDate(String startDate) {
 		this.startDate = startDate;
 	}
-	public String getFk_userid() {
-		return fk_userid;
+	public String getfkUserid() {
+		return fkUserid;
 	}
-	public void setFk_userid(String fk_userid) {
-		this.fk_userid = fk_userid;
+	public void setfkUserid(String fkUserid) {
+		this.fkUserid = fkUserid;
 	}
 	
 	
-	
-	
-	public String getCategory_name() {
-		return category_name;
+	public String getCategoryName() {
+		return categoryName;
 	}
-	public void setCategory_name(String category_name) {
-		this.category_name = category_name;
+	public void setCategoryName(String categoryName) {
+		this.categoryName = categoryName;
 	}
 	public String getFrequency() {
 		return frequency;
@@ -112,17 +136,17 @@ public class ChallengeDTO {
 	public void setFrequency(String frequency) {
 		this.frequency = frequency;
 	}
-	public String getHour_start() {
-		return hour_start;
+	public String getHourStart() {
+		return hourStart;
 	}
-	public void setHour_start(String hour_start) {
-		this.hour_start = hour_start;
+	public void setHourStart(String hourStart) {
+		this.hourStart = hourStart;
 	}
-	public String getHour_end() {
-		return hour_end;
+	public String getHourEnd() {
+		return hourEnd;
 	}
-	public void setHour_end(String hour_end) {
-		this.hour_end = hour_end;
+	public void setHourEnd(String hourEnd) {
+		this.hourEnd = hourEnd;
 	}
 	public String getEnddate() {
 		return enddate;
@@ -130,6 +154,104 @@ public class ChallengeDTO {
 	public void setEnddate(String enddate) {
 		this.enddate = enddate;
 	}
+	
+	public String getCategoryCode() {
+		return categoryCode;
+	}
+	public void setCategoryCode(String categoryCode) {
+		this.categoryCode = categoryCode;
+	}
+	public String getSetDate() {
+		return setDate;
+	}
+	public void setSetDate(String setDate) {
+		this.setDate = setDate;
+	}
+	public String getDuringType() {
+		return duringType;
+	}
+	public void setDuringType(String duringType) {
+		this.duringType = duringType;
+	}
+	public String getFreqType() {
+		return freqType;
+	}
+	public void setFreqType(String freqType) {
+		this.freqType = freqType;
+	}
+	public String getExample() {
+		return example;
+	}
+	public void setExample(String example) {
+		this.example = example;
+	}
+	public String getSuccessImg() {
+		return successImg;
+	}
+	public void setSuccessImg(String successImg) {
+		this.successImg = successImg;
+	}
+	public String getFailImg() {
+		return failImg;
+	}
+	public void setFailImg(String failImg) {
+		this.failImg = failImg;
+	}
+
+	public MultipartFile getAttach() {
+		return attach;
+	}
+
+	public void setAttach(MultipartFile attach) {
+		this.attach = attach;
+	}
+	
+	public MultipartFile getSuccessImgAttach() {
+		return successImgAttach;
+	}
+
+	public void setSuccessImgAttach(MultipartFile successImgAttach) {
+		this.successImgAttach = successImgAttach;
+	}
+
+	public MultipartFile getFailImgAttach() {
+		return failImgAttach;
+	}
+
+	public void setFailImgAttach(MultipartFile failImgAttach) {
+		this.failImgAttach = failImgAttach;
+	}
+
+
+
+
+	public String getSuccessImgFileName() {
+		return successImgFileName;
+	}
+
+	public void setSuccessImgFileName(String successImgFileName) {
+		this.successImgFileName = successImgFileName;
+	}
+
+	public String getFailImgFileName() {
+		return failImgFileName;
+	}
+
+	public void setFailImgFileName(String failImgFileName) {
+		this.failImgFileName = failImgFileName;
+	}
+
+	
+
+	public String getProfilePic() {
+		return profilePic;
+	}
+
+	public void setProfilePic(String profilePic) {
+		this.profilePic = profilePic;
+	}
+	
+	
 	
 	
 	

@@ -1,10 +1,12 @@
 package com.sist.haebollangce.common;
 
 
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.util.Calendar;
+
 
 
 import org.springframework.stereotype.Component;
@@ -121,65 +123,8 @@ public class FileManager {
 		is.close();
 		
 		return newFilename;
-	}	
+	}
 	
-	
-	
-	
-	/*
-	 * // == 파일 삭제 하기 == public void doFileDelete(String saveFilename, String path)
-	 * throws Exception {
-	 * 
-	 * String pathname = path + File.separator + saveFilename;
-	 * 
-	 * File file = new File(pathname);
-	 * 
-	 * if(file.exists()) { file.delete(); } }
-	 */
-  /*	
-	스마트에디터로 texteare 에 글을 쓸 때 사진 첨부 시 해당 사진의 원본 크기로 출력되는 현상이 발생하였다.
-	사진 사이즈 조절이 필요해서 SmartEditor 내에서 사이즈 조절 레이어가 나타나게끔 구현하고자 한다. 
-	https://joorang.tistory.com/10 
-	사이트를 참조 하면 잘 된다.
-  */
-	/*
-	 * // 이미지 폭 public int getImageWidth(String pathname) {
-	 * 
-	 * int width = -1;
-	 * 
-	 * File file = new File(pathname);
-	 * 
-	 * if (! file.exists()) return width;
-	 * 
-	 * ParameterBlock pb=new ParameterBlock(); pb.add(pathname);
-	 * 
-	 * RenderedOp rOp=JAI.create("fileload",pb);
-	 * 
-	 * BufferedImage bi=rOp.getAsBufferedImage();
-	 * 
-	 * width = bi.getWidth();
-	 * 
-	 * return width; }
-	 * 
-	 * // 이미지 높이 public int getImageHeight(String pathname) {
-	 * 
-	 * int height = -1;
-	 * 
-	 * File file = new File(pathname);
-	 * 
-	 * if (! file.exists()) return height;
-	 * 
-	 * ParameterBlock pb=new ParameterBlock(); pb.add(pathname);
-	 * 
-	 * RenderedOp rOp=JAI.create("fileload",pb);
-	 * 
-	 * BufferedImage bi=rOp.getAsBufferedImage();
-	 * 
-	 * height = bi.getHeight();
-	 * 
-	 * return height; }
-	 */
-		
 }
 
 

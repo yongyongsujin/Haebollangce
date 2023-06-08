@@ -232,15 +232,15 @@ public class MypageController {
 
 		UserDTO udto = service.select_info(paraMap);
 
-		String hp1 = udto.getMobile().substring(3, 7);
+		//String hp1 = udto.getMobile().substring(3, 7);
 
-		String hp2 = udto.getMobile().substring(7);
+		//String hp2 = udto.getMobile().substring(7);
 
 		request.setAttribute("udto", udto);
 
-		request.setAttribute("hp1", hp1);
+		//request.setAttribute("hp1", hp1);
 
-		request.setAttribute("hp2", hp2);
+		//request.setAttribute("hp2", hp2);
 
 		return "mypage/mypageInfoEdit.tiles5";
 	}
