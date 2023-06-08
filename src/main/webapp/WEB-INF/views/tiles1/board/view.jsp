@@ -112,16 +112,28 @@
 				let html = ``;
 				if(json.length > 0) {
 					$.each(json, function(index, item){
-						html += `<tr>
-								 	<td class="comment">\${index+1}</td>
-								 	<td class="comment">\${item.content}</td>
-								 	<td></td>
-								 	<td></td>
-								 	<td class="comment">\${item.name}</td>
-								 	<td class="comment">\${item.regdate}</td>
-								 </tr>`;
+						html += "<tr>";
+						html +=	" 	<td class='comment'>"+(index+1)+"</td>";
+						html +=	" 	<td class='comment'>"+item.content+"</td>";
 						
-					});
+						<%-- 첨부파일의 기능이 추가되는 경우 시작 --%>
+					 	if(${sessionScope.loginuser != null} ) {
+					 		html += "<td><a href='<%=request.getContextPath()%>/downloadComment.action?seq="+ item.seq + "'>"+ item.orgFilename +"</a></td>";
+					 	} 
+					 	else {
+					 		html += "<td>" + item.orgFilename + "</td>";
+					 	}
+					 	if(item.fileSize.trim() == "") {
+					 		html += "<td>" + Number(item.fileSize) + "</td>";
+					 	}
+					 	else {
+							html += "<td>" + Number(item.fileSize).toLocaleString('en') + "</td>";
+					 	} 	
+						html += "<td class='comment'>"+item.name+"</td>";
+						html += "<td class='comment'>"+item.regdate+"</td>";
+						html += "</tr>";
+						
+				});
 					
 				} else {
 					html += `<tr><td colspan="6" class="comment">댓글이 없습니다.</td></tr>`;

@@ -7,7 +7,6 @@
 
 <style>
 	body {
-		font-family: "Lato", sans-serif;
 		background-color:#f4f4f4
 	}
 
@@ -73,6 +72,20 @@
 		float: right;
 		padding-right: 8px;
 	}
+	
+	button.submit_button {
+		border: none;
+		background-color: white;
+		padding: 23px 8px 23px 16px;
+		text-decoration: none;
+		font-size: 18px;
+		display: block;
+		width: 100%;
+		text-align: left;
+		cursor: pointer;
+		outline: none;
+		font-weight: bold;
+	}
 
 </style>
 
@@ -129,16 +142,20 @@
 			<i class="fa fa-caret-down"></i>
 		</button>
 		<div class="dropdown-container">
-			<a href="#" style="color:black;">찜한 챌린지</a>
-			<a href="#" style="color:black;">찜한 라운지글</a>
+			<a href="<%=ctxPath%>/mypage/mypageChallengeLike" style="color:black;">찜한 챌린지</a>
+			<a href="<%=ctxPath%>/mypage/mypageLoungeLike" style="color:black;">찜한 라운지글</a>
 		</div>
 		
 		<button class="dropdown-btn">개인정보 수정 
 		    <i class="fa fa-caret-down"></i>
 		</button>
 		<div class="dropdown-container">
-			<a href="<%=ctxPath%>/mypage/mypagePwdIdentify" style="color:black;">회원정보 수정</a>
-			<a href="<%=ctxPath%>/mypage/mypagePwdIdentify" style="color:black;">회원탈퇴</a>
+			<form action="mypagePwdIdentify" method="post">
+				<input type="hidden" name="result" value="0" />
+				<button type="submit" class="submit_button">회원정보수정</button>
+				
+				<button type="submit" class="submit_button">회원탈퇴하기</button>
+			</form>
 		</div>
 	</div>
 	<!-- 마이페이지 메뉴바 끝 -->

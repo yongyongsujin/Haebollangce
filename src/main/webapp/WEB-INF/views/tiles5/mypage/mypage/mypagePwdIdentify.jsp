@@ -120,7 +120,7 @@ width: 100%;
 						<span id="MPI_underline"></span>
 						<input type="hidden" name="userid" id="userid" value="jisu"/>
 						<input type="hidden" name="pwd" id="pwd" value="qwer1234$"/>
-						<button type="button" onclick="go_identify();">확인</button>
+						<input type="hidden" name="result" value="${requestScope.result}" />
 					</div>
 				</div>
 			</div>

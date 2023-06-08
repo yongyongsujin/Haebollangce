@@ -39,29 +39,37 @@
 	
 	<%-- 이미지 시작 --%>
 	img#second_img_button {
-		height: 78%;
+		height: 68%;
 		width: 100%;
 		border: solid 1px gray;
 		border-radius: 50%; 
-		object-fit: contain;
+		object-fit: cover;
+		margin-left: 23%;
 	}
 	
 	button#img_button {
 		background-color: white;
-		padding: 12px;
+		padding: 15px;
 		border: none;
-		margin-left: -13%;
-		margin-top: 80%;
+		margin-left: 97%;
+		margin-top: -9%;
 		position: absolute;
 	}
 	<%-- 이미지 끝 --%>
+	
+	div#interset {
+		border: solid 1px black;
+		width: 100%;
+		height: 17%;
+		margin: 17px 0;
+	}
 	
 	<%-- 비밀번호, 이메일 버튼 시작 --%>
 	button#plz_identify {
 		background-color: #e6e1e1;
 		border: none;
 		color: black;
-		padding: 6px 0;
+		padding: 4% 9%;
 		text-align: center;
 		font-size: 10pt;
 		transition: 0.3s;
@@ -128,6 +136,7 @@
 	
 	$(document).ready(function(){
 		
+		
 		//$("input#email").val("${requestScope.udto.email}");
 		
 		$("button#edit_button").prop("disabled", true); // 버튼 비활성화
@@ -148,20 +157,32 @@
 		
 		<%-- 프로필사진 변경 시작 --%>
 		$("input#profile_pic_file").change(function(event){
+			// alert($("input#profile_pic_file").val());
+			/* 
+			let tmpPath = URL.createObjectURL(event.target.files[0]).substring(5);  // 실제 경로를 가지고 옴
 			
-			let tmpPath = URL.createObjectURL(event.target.files[0]);  // 실제 경로를 가지고 옴
-			$("#profile_pic").val(tmpPath);
+			console.log(tmpPath);
+			$("#profilePic").val(tmpPath);
 
-			document.getElementById("second_img_button").src = $("#profile_pic").val();
+			document.getElementById("second_img_button").src = $("#profilepic").val();
 			
-			var fileName = $("#profile_pic_file").val().split('/').pop().split('\\').pop();  // fakePath만 지워줌
+			var fileName = $("input#profile_pic_file").val().split('/').pop().split('\\').pop();  // fakePath만 지워줌
 			
-			$("input#profile_pic").val(fileName);
+			document.getElementById('second_img_button').src.substring(0, 22)+fileName
+			
+			$("#profilePic").val(fileName);
 			
 			$("button#edit_button").prop("disabled", false);
 			$("button#edit_button").addClass("sucess_button_change");
+			 */
 		});
 		<%-- 프로필사진 변경 끝 --%>
+		
+		<%-- 관심태그 시작 --%>
+		all_interest();
+		
+		interest();
+		<%-- 관심태그 끝 --%>
 		
 		<%-- 비밀번호 입력 시작 --%>
 		$("input#input_pwd").change(function() {
@@ -379,10 +400,8 @@
         		// 정규표현식에 위배되지 않았을 경우 이메일 버튼과 수정 버튼을 활성화시켜준다.
 				$("div.email_error").hide();
         		
-				//$("button#edit_button").prop("disabled", false);
 				$("button#email_button").prop("disabled", false);
 				
-				//$("button#edit_button").addClass("sucess_button_change");
 				$("button#email_button").addClass("sucess_button_change");
 				
 				
@@ -415,10 +434,182 @@
        });
        
 	}); // end of document.ready -----
+
+	function img_change(input){
+		
+		if(input.files && input.files[0]) {
+			var reader = new FileReader();
+			reader.onload = function(e) {
+				document.getElementById("second_img_button").src = e.target.result;
+			};
+			reader.readAsDataURL(input.files[0]);
+			
+			var fileName = $("input#profile_pic_file").val().split('/').pop().split('\\').pop();  // fakePath만 지워줌
+			
+			document.getElementById('second_img_button').src.substring(0, 22)+fileName
+			
+			$("#profilePic").val(fileName);
+			
+			$("button#edit_button").prop("disabled", false);
+			$("button#edit_button").addClass("sucess_button_change");
+		}
+		else {
+			document.getElementById("second_img_button").src = "";
+		}
+		
+	}
+
+	 
+	<%-- 모든 관심코드 불러오기 시작 --%>
+	function all_interest() {
+		 $.ajax ({
+			url: "/mypage/all_interest_ajax",
+			type: "get",
+			dataType: "json",
+			success:function(json){
+				//console.log(JSON.stringify(json));
+				
+				let html = "";
+				
+				if(json.length > 0) {
+					
+					for(var i=0; i<json.length; i++) {
+						
+						html += "<span onclick='plus_interest(" + json[i].category_code + ");' value='"+json[i].category_name+"'>" + json[i].category_name + "</span>";
+						
+					}
+					
+				} // end of if(json.length > 0) {} -----
+				
+				else {
+					html += "등록된 관심태그가 없습니다."
+				}
+				
+				$("div#all_interest").html(html); 
+				
+			},
+			error: function(request, status, error){
+				alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+	        }
+		});
+	}
+	<%-- 모든 관심코드 불러오기 끝 --%>
 	
+	
+	<%-- 관심코드 알아오기 시작 --%>
+	function interest() {
+		$.ajax ({
+			url: "/mypage/interest_ajax",
+			type: "get",
+			data: {
+				"userid":$("input#userid").val()
+			},
+			dataType: "json",
+			success:function(json){
+				// console.log(JSON.stringify(json));
+				
+				let html = "";
+				
+				if(json.length > 0) {
+					
+					for(var i=0; i<json.length; i++) {
+						
+						html += "<span onclick='del_interest(" + json[i].category_code + ");' value='"+json[i].category_name+"'>" + json[i].category_name + "</span>";
+						
+					}
+					
+				} // end of if(json.length > 0) {} -----
+				
+				else {
+					html += "등록된 태그가 없습니다.";
+				}
+				
+				$("div#interset").html(html);
+				
+			},
+			error: function(request, status, error){
+				alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+	        }
+		});
+	}
+	<%-- 관심코드 알아오기 끝 --%>
+	
+	
+	<%-- 관심코드 추가하기 시작 --%>
+	function plus_interest(code) {
+		
+		$.ajax ({
+			url:"/mypage/plus_interest_ajax",
+			type:"GET",
+			dataType:"json",
+			data:{
+				"userid":$("input#userid").val(),
+				"category_code":code
+			},
+			success:function(json){
+				
+				// console.log("~~~~ 확인용 : " + JSON.stringify(json));
+				
+				if ( json.n == 0) {
+					alert("이미 있는 태그입니다.");
+				}
+				else {
+					interest();
+					
+					$("button#edit_button").prop("disabled", false);
+					$("button#edit_button").addClass("sucess_button_change");
+				}
+								
+			},
+			error: function(request, status, error){
+				alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+	        }	
+		});
+		
+	}
+	<%-- 관심코드 추가하기 끝 --%>
+	
+
+	
+	<%-- 관심코드 삭제하기 시작 --%>
+	function del_interest(code) {
+		
+		$.ajax ({
+			url:"/mypage/del_interest_ajax",
+			type:"GET",
+			dataType:"json",
+			data:{
+				"userid":$("input#userid").val(),
+				"category_code":code
+			},
+			success:function(json){
+				
+				// console.log("~~~~ 확인용 : " + JSON.stringify(json));
+				
+				if ( json.n == 0) {
+					alert("이미 있는 삭제된 태그입니다.");
+				}
+				else {
+
+					interest();
+					
+					$("button#edit_button").prop("disabled", false);
+					$("button#edit_button").addClass("sucess_button_change");
+				}
+				
+				// $("div#interest").append(html);
+				
+			},
+			error: function(request, status, error){
+				alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+	        }	
+		});
+		
+	}
+	<%-- 관심코드 삭제하기 끝 --%> 
 	
 	<%-- 이메일 중복확인버튼 누르기 시작 --%> 
-	function email_check(){
+	function email_check() {
 		
 		b_flag_emailDuplicate_click = true;
 		
@@ -560,7 +751,12 @@
                 
                 if(json.n == 1) {
                 	alert("정보수정에 성공했습니다.");
-                	location.href = "mypageHome";
+                	
+                	const frm = document.editFrm;
+           	     
+	           	    frm.action = '/mypage/mypageHome';
+	           	    frm.method = 'POST';
+	           	    frm.submit();
                 }
                 else {
                    alert("정보수정에 실패했습니다.\n고객센터에 문의바랍니다.");
@@ -587,22 +783,29 @@
 		
 		<div class="row" id="MFE_row">
 		
-			<div class="col-lg-4 offset-lg-1" style="padding-top:82px;">
+			<div class="col-lg-4" style="padding-top:32px;">
 				
-				<img id="second_img_button" alt="프로필이미지" onclick="document.all.profile_pic_file.click();" src="<%= ctxPath%>/images/${requestScope.udto.profile_pic}" />
+				<img id="second_img_button" alt="프로필이미지" onclick="document.all.profile_pic_file.click();"
+				src="<%= ctxPath%>/images/${requestScope.udto.profilePic}" alt="Blob URL Image"  />
 				
 				<button type="button" id="img_button" onclick="document.all.profile_pic_file.click();">
 					<i class="fas fa-camera fa-lg" style="font-size:21pt;"></i>
 				</button>
+				<div style="height:80%;">
+				    <div style="font-size:15pt;font-weight:bold;margin-top:35px;">관심태그</div>
+				    <div id="all_interest" style="width:154%;"></div>
+				    <div id="interset" style="width:132%;"></div>
+			    </div>
 			</div>
 		
-			<form name="editFrm" id="editFrm" class="offset-lg-1 col-lg-6" method="post" enctype="multipart/form-data" style="max-width:100%;">
-				<input type="file" id="profile_pic_file" name="profile_pic_file" accept=".gif, .jpg, .png" style="display:none;" />
-				<input type="hidden" name="profile_pic" id="profile_pic" value="${requestScope.udto.profile_pic}" />
+			<form name="editFrm" id="editFrm" class="offset-lg-2 col-lg-6" method="post" enctype="multipart/form-data" style="max-width:100%;">
+				<input type="file" id="profile_pic_file" name="profile_pic_file" accept=".gif, .jpg, .png" onchange="img_change(this);" style="display:none;" />
+				<input type="hidden" name="profilePic" id="profilePic" value="${requestScope.udto.profilePic}" />
 			      
-			      <input type="hidden" name="userid" id="userid" value="${requestScope.udto.userid}" />
+			    <input type="hidden" name="userid" id="userid" value="${requestScope.udto.userid}" />
+			    
 			      
-			      <table id="tblMemberUpdate">
+			    <table id="tblMemberUpdate">
 			         
 			         <tr>
 			            <td style="width: 26%; font-weight: bold;">비밀번호&nbsp;</td>
@@ -676,7 +879,6 @@
 			              <button type="button" id="edit_button" onclick="go_edit();">수  정</button> 
 			            </td>
 			         </tr>
-			         
 			      </table>
 				</form>
            </div>

@@ -11,62 +11,177 @@
 		values(seq_tbl_deposit_purchase_code.nextval, #{userid}, default, #{deposit}, 0)
 	</insert>
 	
-	<!-- 회원 테이블에 보유 예치금 양을 충전한만큼 늘려주기 -->
-	<update id="plus_deposit" parameterType="HashMap">
-		update tbl_user set deposit = deposit + #{deposit}
-		where userid= #{userid}
-	</update>
-
-	<!-- 사용한 상금량을 회원 테이블에 보유 상금량에서 빼주기 -->
-	<update id="reward_minus" parameterType="HashMap" >
-		update tbl_user set reward_balance = reward_balance - #{reward}
-		where userid = #{userid}
-	</update>
-
 	<!-- 상금 전환 테이블에 해당 내역 넣어주기 -->
 	<insert id="reward_convert" parameterType="HashMap">
 		insert into tbl_convert_reward(convert_code, fk_userid, convert_date, convert_reward) 
 		values(seq_tbl_convert_reward_convert_code.nextval, #{userid}, default, #{reward})
 	</insert>
 	
-	<!-- 예치금 충전 테이블에서 기록 가지고 오기 -->
-	<resultMap type="HashMap" id="mypage_search_data_map">
-		<result property="purchase_date"   column="purchase_date"   javaType="String" />
-		<result property="purchase_price"  column="purchase_price"  javaType="String" />
-		<result property="purchase_status" column="purchase_status" javaType="String" />
-		<result property="deposit" 		   column="deposit" 		javaType="String" />
-	</resultMap>
-	<select id="search_data" parameterType="HashMap" resultMap="mypage_search_data_map">
-		select D.purchase_date, D.purchase_price, D.purchase_status, U.deposit
-		from tbl_deposit D join tbl_user U
-		on D.fk_userid = U.userid
-		where U.userid=#{userid}
+	<!-- 사용자가 보유하고 있는 예치금양 가지고 오기 -->
+	<select id="user_deposit" parameterType="String" resultType="int">
+		select purchase_price-entry_fee AS user_deposit
+		from
+		(
+    		select fk_userid, sum(nvl(purchase_price, 0)) as purchase_price
+    		from tbl_deposit
+    		where purchase_status = '0'
+    		group by fk_userid
+		) D join
+		(
+    		select nvl(fk_userid, #{userid}) as fk_userid, sum(nvl(entry_fee, 0)) as entry_fee
+    		from tbl_challenge_info right outer join dual
+		    on fk_userid = #{userid}
+		    group by fk_userid
+		) C
+		on D.fk_userid = C.fk_userid
+		where D.fk_userid = #{userid}
 	</select>
 	
-	<!-- 상금 충전 테이블과 상금 환전 테이블에서 정보 찾아오기 -->
-	<resultMap type="HashMap" id="mypage_search_reward_map">
-		<result property="reward_date" 	  column="reward_date" 	  javaType="String" />
-		<result property="reward" 		  column="reward" 		  javaType="String" />
-		<result property="challenge_name" column="challenge_name" javaType="String" />
-		<result property="convert_reward" column="convert_reward" javaType="String" />
+	<!-- 유저가 챌린지에 사용한 모든 예치금 -->
+	<select id="user_challenge_deposit" parameterType="String" resultType="int">
+		select sum(nvl(entry_fee, 0)) as entry_fee
+		from tbl_challenge_info right outer join dual
+		on fk_userid = #{userid}
+		group by fk_userid
+	</select>
+	
+	<!-- 사용자가 보유한 상금 가지고 오기 -->
+	<select id="user_reward" parameterType="String" resultType="int">
+		select sum(nvl(reward, 0)) as reward
+		from tbl_reward right outer join dual
+		on fk_userid = #{userid}
+		group by fk_userid
+	</select>
+
+	<!-- 사용자가 보유한 상금 가지고 오기 -->
+	<select id="user_convert" parameterType="String" resultType="int">
+		select sum(nvl(convert_reward, 0)) as convert_reward
+		from tbl_convert_reward right outer join dual
+		on fk_userid = #{userid}
+		group by fk_userid
+	</select>
+	
+	<!-- 결제 취소하기 -->
+	<update id="purchase_cancel" parameterType="HashMap">
+		update tbl_deposit set purchase_status = 1
+		where fk_userid = #{userid} and purchase_code = #{purchase_code}
+	</update>
+	
+	<!-- 예치금 충전 테이블에서 기록 가지고 오기 -->
+	<resultMap type="HashMap" id="mypage_deposit_data_map">
+		<result property="purchase_code"   column="purchase_code"   javaType="int" />
+		<result property="purchase_date"   column="purchase_date"   javaType="String" />
+		<result property="purchase_price"  column="purchase_price"  javaType="int" />
+		<result property="purchase_status" column="purchase_status" javaType="int" />
 	</resultMap>
-	<select id="search_reward" parameterType="HashMap" resultMap="mypage_search_reward_map">
-		select R.reward_date, R.reward, C.challenge_name, V.convert_reward
-		from tbl_reward R 
-			JOIN tbl_challenge C
-				ON R.fk_challenge_code = C.challenge_code
-			JOIN tbl_convert_reward V
-				ON R.fk_userid = V.fk_userid
+	<select id="deposit_data" parameterType="HashMap" resultMap="mypage_deposit_data_map">
+		select purchase_code, purchase_date, purchase_price, purchase_status
+		from tbl_deposit
+		where fk_userid=#{userid}
+		<if test="start_date != '' and end_date != ''">
+			and to_char(purchase_date, 'yyyy-mm-dd') between #{start} and #{end}
+		</if>
+		order by purchase_date desc
+	</select>
+	
+	<!-- 사용자가 챌린지 참여에 쓴 예치금 내역 알아오기 -->
+	<resultMap type="HashMap" id="mypage_during_deposit_map">
+		<result property="entry_fee"   	  column="entry_fee"   	  javaType="int" />
+		<result property="challenge_name" column="challenge_name" javaType="String" />
+		<result property="startdate"  	  column="startdate"  	  javaType="String" />
+		<result property="fk_category_code"  	  column="fk_category_code"  	  javaType="String" />
+		<result property="category_name"  	  column="category_name"  	  javaType="String" />
+	</resultMap>
+	<select id="challenge_during_deposit" parameterType="HashMap" resultMap="mypage_during_deposit_map">
+		select entry_fee, challenge_name, startdate, fk_category_code, category_name
+		from tbl_challenge_info I join tbl_challenge C
+									on I.fk_challenge_code = C.challenge_code
+								  join tbl_category T
+								  	on C.fk_category_code = T.category_code
+		where I.fk_userid=#{userid}
+		<if test="start_date != '' and end_date != ''">
+			and to_char(startdate, 'yyyy-mm-dd') between #{start} and #{end}
+		</if>
+		order by startdate desc
+	</select>
+	
+	<!-- 상금 충전 테이블 정보 찾아오기 -->
+	<resultMap type="HashMap" id="mypage_reward_data_map">
+		<result property="reward_date" 	  column="reward_date" 	  javaType="String" />
+		<result property="reward" 		  column="reward" 		  javaType="int" />
+		<result property="challenge_name" column="challenge_name" javaType="String" />
+	</resultMap>
+	<select id="reward_data" parameterType="HashMap" resultMap="mypage_reward_data_map">
+		select R.reward_date, R.reward, C.challenge_name
+		from tbl_reward R JOIN tbl_challenge C
+			ON R.fk_challenge_code = C.challenge_code
 		where R.fk_userid = #{userid}
 		order by R.reward_date asc
+	</select>
+	
+	<!-- 상금 환전 테이블에서 정보 찾아오기 -->
+	<resultMap type="HashMap" id="mypage_convert_reward_data_map">
+		<result property="convert_date"		column="convert_date"	javaType="String" />
+		<result property="convert_reward"	column="convert_reward" javaType="int" />
+	</resultMap>
+	<select id="convert_reward_data" parameterType="HashMap" resultMap="mypage_convert_reward_data_map">
+		select convert_date, convert_reward
+		from tbl_convert_reward
+		where fk_userid = #{userid}
 	</select>
 
 	<!-- 정보수정하기 페이지에서 수정할 정보들 가지고 오기 -->
 	<select id="select_info" parameterType="HashMap" resultType="com.sist.haebollangce.user.dto.UserDTO">
-		select userid, email, pw, acct, mobile, profile_pic
+		select userid, email, pw, acct, mobile, profile_pic, name, exp
 		from tbl_user
 		where userid = #{userid}
 	</select>
+	
+	<!-- 관심태그 모두 가져오기 -->
+	<resultMap type="HashMap" id="mypage_all_interest_map">
+		<result property="category_code" 	  column="category_code" 	  javaType="int" />
+		<result property="category_name" 	  column="category_name" 	  javaType="String" />
+	</resultMap>
+	<select id="all_interest" resultMap="mypage_all_interest_map">
+		select category_code, category_name
+		from tbl_category 
+	</select>
+	
+	<!-- 관심태그 알아오기 -->
+	<resultMap type="HashMap" id="mypage_interest_map">
+		<result property="thumbnail" 	  column="thumbnail" 	  javaType="String" />
+		<result property="category_code"  column="category_code"  javaType="String" />
+		<result property="category_name"  column="category_name"  javaType="String" />
+		<result property="challenge_name" column="challenge_name" javaType="String" />
+		<result property="regDate" 	  	  column="regDate" 	      javaType="String" />
+		<result property="startdate" 	  column="startdate" 	  javaType="String" />
+		<result property="member_count"   column="member_count"   javaType="String" />
+		<result property="fk_userid" 	  column="fk_userid" 	  javaType="String" />
+	</resultMap>
+	<select id="interest" parameterType="HashMap" resultMap="mypage_interest_map">
+		select category_code, category_name, C.challenge_name, thumbnail,
+			   to_char(C.regDate, 'yyyy-mm-dd') AS regDate, 
+			   to_char(C.startdate, 'yyyy-mm-dd') AS startdate,
+			   C.member_count, C.fk_userid
+		from tbl_interest I join tbl_category T
+							  on I.fk_category_code = T.category_code
+                            join tbl_challenge C
+                                on I.fk_category_code = C.fk_category_code 
+		where I.fk_userid = #{userid}
+		order by regDate desc
+	</select>
+	
+	<!-- 관심태그 추가하기 -->
+	<insert id="plus_interest" parameterType="HashMap">
+		insert into tbl_interest(interest_code, fk_userid, fk_category_code) 
+		values(seq_tbl_interest_interest_code.nextval, #{userid}, #{category_code})
+	</insert>
+	
+	<!-- 관심태그 삭제하기 -->
+	<delete id="del_interest" parameterType="HashMap">
+		delete from tbl_interest
+		where fk_userid = #{userid} and fk_category_code = #{category_code}
+	</delete>
 	
 	<!-- 이메일 중복확인하기 -->
 	<select id="select_change_email" parameterType="String" resultType="int">
@@ -77,12 +192,156 @@
 	
 	<!-- 회원정보 수정하기 -->
 	<update id="mypage_info_edit" parameterType="HashMap">
-		update tbl_user set profile_pic=#{profile_pic}, 
+		update tbl_user set profile_pic=#{profilePic}, 
 							pw=#{pw}, 
 							email=#{email}, 
 							acct=#{acct}, 
 							mobile=#{mobile}
 		where userid=#{userid}
 	</update>
+	
+	<!-- 회원 탈퇴하기 -->
+	<update id="delete_user" parameterType="HashMap">
+		update tbl_user set status=1
+		where userid=#{userid}
+	</update>
+	
+	<!-- 찜한 챌린지 불러오기 -->
+	<resultMap type="HashMap" id="mypage_select_like_challenge_map">
+		<result property="thumbnail" 	  column="thumbnail" 	  javaType="String" />
+		<result property="challenge_code" column="challenge_code" javaType="int" />
+		<result property="challenge_name" column="challenge_name" javaType="String" />
+		<result property="startdate" 	  column="startdate" 	  javaType="String" />
+		<result property="enddate"   	  column="enddate"   	  javaType="String" />
+	</resultMap>
+	<select id="select_like_challenge" parameterType="String" resultMap="mypage_select_like_challenge_map">
+		select C.thumbnail, C.challenge_code, C.challenge_name, 
+       		   to_char(C.startdate, 'yyyy-mm-dd') AS startdate, 
+       		   to_char(C.startdate+func_challeng_during(C.fk_during_type), 'yyyy-mm-dd') AS enddate
+		from tbl_challenge C join tbl_challenge_during D
+    					     on C.fk_during_type = D.during_type
+    						 join tbl_like L
+    						 on C.challenge_code = L.fk_challenge_code
+		where L.fk_userid = #{userid}
+		order by C.startdate asc
+	</select>
+	
+	<!-- 찜한 라운지 불러오기 -->
+	<resultMap type="HashMap" id="mypage_select_like_lounge_map">
+		<result property="seq" 	 	    column="seq" 		  javaType="String" />
+		<result property="name" 	    column="name" 	 	  javaType="String" />
+		<result property="subject" 	    column="subject" 	  javaType="String" />
+		<result property="content" 	    column="content" 	  javaType="String" />
+		<result property="likeCount" 	column="likeCount" 	  javaType="String" />
+		<result property="commentCount" column="commentCount" javaType="String" />
+		<result property="readCount" 	column="readCount" 	  javaType="String" />
+		<result property="profile_pic" 	column="profile_pic"  javaType="String" />
+		<result property="filename" 	column="filename"     javaType="String" />
+	</resultMap>
+	<select id="select_like_lounge" parameterType="String" resultMap="mypage_select_like_lounge_map">
+		select seq, B.name, subject, content, likeCount, 
+			   commentCount, readCount, profile_pic, filename
+		from TBL_LOUNGE_LIKE L join tbl_lounge_board B
+									on L.fk_seq = B.seq
+							   join tbl_user U
+									on B.fk_userid = U.userid
+		where L.fk_userid = #{userid}
+	</select>
+	
+	
+	<!-- 진행중인 챌린지 페이지 정보 가지고오기 -->
+	<resultMap type="HashMap" id="mypage_challenging_map">
+		<result property="fk_challenge_code" 	    column="fk_challenge_code" 	      javaType="String" />
+		<result property="thumbnail" 	    column="thumbnail" 	      javaType="String" />
+		<result property="challenge_name"   column="challenge_name"   javaType="String" />
+		<result property="set_date" 	    column="set_date" 	      javaType="String" />
+		<result property="fk_userid" 	    column="fk_userid" 	      javaType="String" />
+		<result property="freq_type" 	    column="freq_type" 	      javaType="String" />
+		<result property="frequency" 	    column="frequency" 	      javaType="String" />
+		<result property="startdate" 	    column="startdate" 	      javaType="String" />
+		<result property="hour_start" 	    column="hour_start"       javaType="String" />
+		<result property="hour_end" 	    column="hour_end" 	      javaType="String" />
+		<result property="finish_day" 	    column="finish_day"       javaType="String" />
+	</resultMap>
+	<select id="mypage_challenging" parameterType="HashMap" resultMap="mypage_challenging_map">
+		select I.fk_challenge_code, C.thumbnail, C.challenge_name, D.set_date, C.fk_userid, F.freq_type ,F.frequency,
+			   to_char(C.startdate, 'yyyy-mm-dd') AS startdate,
+			   to_char(H.hour_start, 'hh24:mi:ss') AS hour_start, 
+			   to_char(H.hour_end, 'hh24:mi:ss') AS hour_end,
+			   to_char(C.startdate + func_challeng_during(D.during_type), 'yyyy-mm-dd') AS finish_day
+		from tbl_challenge C join tbl_challenge_info I
+                       		 	on I.fk_challenge_code = C.challenge_code
+                    		 join tbl_challenge_during D
+                        		on C.fk_during_type = D.during_type
+                        	join tbl_certify_hour H
+                        		on C.challenge_code = H.challenge_code
+                        	join tbl_certify_freq F
+                       		     on F.freq_type = C.fk_freq_type
+		where I.fk_userid = #{userid}
+		<if test="fk_category_code != 0">
+			and C.fk_category_code = #{fk_category_code}
+		</if>
+	</select>
+
+	
+	<!-- 사용자 정보 가지고 오기 -->
+	<resultMap type="HashMap" id="user_information_map">
+		<result property="userid" 	   column="userid" 		javaType="String" />
+		<result property="name" 	   column="name"	    javaType="String" />
+		<result property="fk_level"    column="fk_level" 	javaType="String" />
+		<result property="exp" 		   column="exp"  		javaType="String" />
+		<result property="profile_pic" column="profile_pic" javaType="String" />
+	</resultMap>
+	<select id="user_information" parameterType="String" resultMap="user_information_map">
+		select userid, name, fk_level, exp, profile_pic
+		from tbl_user
+		where userid = #{userid} 
+	</select>
+	
+	<!-- 진행중인 챌린지 중 오늘 하루 인증했는지 여부 -->
+	<resultMap type="HashMap" id="mypage_certify_challenge_map">
+		<result property="fk_challenge_code" 	   column="fk_challenge_code" 		javaType="String" />
+	</resultMap>
+	<select id="mypage_certify_challenge" parameterType="HashMap" resultMap="mypage_certify_challenge_map">
+		select fk_challenge_code
+		from tbl_certify_history 
+		where trunc(certify_time) = trunc(sysdate) and fk_userid = #{userid}
+	</select>
+	
+	<!-- 완료된 챌린지 갯수 불러오기 -->
+	<select id="finish_count" parameterType="HashMap" resultType="int">
+		select count(*)
+		from tbl_challenge C join tbl_challenge_during D
+                        		on C.fk_during_type = D.during_type
+                     		 join tbl_challenge_info I
+                         		on I.fk_challenge_code = C.challenge_code
+		where I.fk_userid = #{userid} and <![CDATA[trunc(C.startdate + func_challeng_during(D.during_type)) < trunc(sysdate)]]>
+		<!-- 여기에서 < 는 태그로 인식하기 때문에 <![CDATA[조건문]]> 으로 작성해주어야한다. -->
+	</select>
+	
+	
+	<!-- 마이페이지 100% 인증한 챌린지 갯수 불러오기 -->
+	<select id="finish_100_count" parameterType="HashMap" resultType="int">
+		select count(*)
+		from tbl_challenge_info
+		where fk_userid = #{userid} and achievement_pct = 100
+	</select>
+	
+	<!-- 마이페이지 홈 챌린지 그래프-챌린지 참여 횟수 -->
+	<resultMap type="HashMap" id="chart_challenging_map">
+		<result property="month" 	   column="month" 		javaType="String" />
+		<result property="count" 	   column="count" 		javaType="String" />
+	</resultMap>
+	<select id="chart_challenging" parameterType="HashMap" resultMap="chart_challenging_map">
+		select extract(month from C.startdate) AS month, 
+       		   count(*) as count
+		from tbl_challenge C join tbl_challenge_info I
+                        		on C.challenge_code = I.fk_challenge_code
+		where I.fk_userid = #{userid}
+    		  and <![CDATA[extract(month from C.startdate) <= extract(month from sysdate)]]>
+   			  and <![CDATA[extract(month from C.startdate) > extract(month from sysdate)-12]]>
+		group by extract(month from C.startdate)
+		order by count desc
+	</select>
 
 </mapper>

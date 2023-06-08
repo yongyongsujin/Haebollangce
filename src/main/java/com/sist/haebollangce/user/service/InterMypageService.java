@@ -5,6 +5,7 @@ import java.util.Map;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import com.google.gson.JsonObject;
 import com.sist.haebollangce.user.dto.UserDTO;
 
 public interface InterMypageService {
@@ -12,31 +13,70 @@ public interface InterMypageService {
 	// 결제하기 시작
 	int go_purchase(Map<String, String> paraMap);
 	
-	// 결제한 예치금을 보유예치금에 추가하기
-	int plus_deposit(Map<String, String> paraMap);
+	// 유저가 보유하고 있는 예치금 알아오기
+	JsonObject user_deposit(String userid);
 	
-	// 전환한 상금 감소시키기
-	int reward_minus(Map<String, String> paraMap);
-
 	// 상금 테이블에 전환된 내용 넣기
 	int reward_convert(Map<String, String> paraMap);
 
 	// 결제 현황 페이지에서 내역 알아오기
-	String search_data(Map<String, Object> paraMap);
-
+	String search_data(Map<String, String> paraMap);
+	
+	// 취소 가능 건 알아오기
+	String cancel_data(Map<String, String> paraMap);
+	
+	// 결제 취소하기
+	String purchase_cancel(Map<String, String> paraMap);
+	
 	// 비밀번호 확인 후 회원 정보수정 페이지 가기
 	UserDTO select_info(Map<String, String> paraMap);
+	
+	// 모든 관심태그 가지고오기
+	String all_interest();
+	
+	// 관심태그 가지고오기
+	String interest(String userid);
+	
+	// 관심태그 추가하기
+	String plus_interest(Map<String, String> paraMap);
+
+	// 관심태그 삭제하기
+	String del_interest(Map<String, String> paraMap);
 
 	// 이메일 중복확인 하기
 	String select_change_email(String change_email);
 
 	// 사용자 정보 수정하기
 	String mypage_info_edit(Map<String, Object> paraMap);
-
-	// String profile_upload_ajax(UserDTO udto, MultipartHttpServletRequest mrequest, MultipartFile profile_pic_file);
-
-
 	
+	// 회원 탈퇴하기
+	int delete_user(Map<String, String> paraMap);
 	
+	// 찜한 챌린지 불러오기
+	String like_challenge(String userid);
+
+	// 찜한 라운지 불러오기
+	String like_lounge(String userid);
 	
+	// 진행중인 챌린지 페이지 정보 가지고오기
+	String mypage_challenging(Map<String, String> paraMap);
+	
+	// 챌린지 추천하기
+	String recommend(String userid);
+
+	// 진행중인 챌린지 페이지에서 그래프 그리기
+	String graph_challenge_during(String userid);
+
+	// 마이페이지 홈화면 사용자 정보 불러오기
+	String user_information(String userid);
+
+	// 마이페이지 인증 필요한 챌린지 불러오기
+	String mypage_certify_challenging(Map<String, String> paraMap);
+
+	// 마이페이지 100% 인증한 챌린지들 불러오기
+	String finish_100_count(Map<String, String> paraMap);
+
+	// 마이페이지 홈 챌린지 그래프-챌린지 참여 횟수
+	String chart_challenging(Map<String, String> paraMap);
+
 }

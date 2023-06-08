@@ -134,7 +134,7 @@
 	
 	<!-- 폴더명/폴더명2/폴더명3/파일명 -->
 	<definition name="*/*/*/*.tiles5" extends="layout-tiles5">
-		<put-attribute name="mypage" value="/WEB-INF/views/tiles5/{1}/content/{2}/{3}/{4}.jsp"/>
+		<put-attribute name="mypage" value="/WEB-INF/views/tiles5/{1}/mypage/{2}/{3}/{4}.jsp"/>
 		<put-attribute name="side" value="/WEB-INF/views/tiles5/{1}/side.jsp"/>
 	</definition>
 
