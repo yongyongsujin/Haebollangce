@@ -252,7 +252,7 @@
 		    	<tr>
 	        		<th>성명</th>
 	         	<td>
-	            	<input type="text" name="fk_userid" />
+	            	<input type="text" name="fkUserid" />
 	           <!--  	<input type="hidden" name="fk_userid" value="${sessionScope.loginuser.userid}" readonly/> -->
 	         	</td>
 	      	</tr>
@@ -274,7 +274,7 @@
 	      	<tr>
 	      		<th>카테고리</th>
 	      		<td>
-	      			<select name="fk_categoryCode" id="category_code"> 
+	      			<select name="fkCategoryCode" id="category_code"> 
 			            <option value="">:::선택하세요:::</option> 
 			            <c:forEach var="map" items="${requestScope.categoryList}">
 			            	<option value="${map.categoryCode}">${map.categoryName}</option>
@@ -324,7 +324,7 @@
 	 	  			<div class="challenge_during_group">
 		 	  			<c:forEach var="during" items="${requestScope.duringList}">	
 		 	  				<div class="challenge_during_form">
-		 	  					<input type="radio" class="challenge_during" name="fk_duringType" id="${during.setDate}" value="${during.duringType}" />
+		 	  					<input type="radio" class="challenge_during" name="fkDuringType" id="${during.setDate}" value="${during.duringType}" />
 		 	  					<label for="${during.setDate}">${during.setDate}</label>
 		 	  				</div>
 		 	  			</c:forEach>	
@@ -357,7 +357,7 @@
 	 	  		<div class="certify_freq_group">
 	 	  			<c:forEach var="freq" items="${requestScope.freqList}">
 			 	  		<div class="certify_freq_form">
-				 	  		<input type="radio" class="certify_freq" name="fk_freqType" id="${freq.frequency}" value="${freq.freqType}"/>
+				 	  		<input type="radio" class="certify_freq" name="fkFreqType" id="${freq.frequency}" value="${freq.freqType}"/>
 				 	  		<label for="${freq.frequency}">${freq.frequency}</label>
 			 	  		</div>
 		 	  		</c:forEach>

@@ -63,7 +63,7 @@
 	<!-- 챌린지 개설 -->
 	<insert id="addChallenge" parameterType="com.sist.haebollangce.challenge.dto.ChallengeDTO">
   		INSERT INTO tbl_challenge (challenge_code, fk_category_code, challenge_name, content, regDate, challenge_exp, member_count, thumbnail, fk_freq_type, fk_during_type, startDate, fk_userid)
-  		VALUES (challenge_code_seq.nextval, to_number(#{fk_categoryCode}), #{challengeName}, #{content, jdbcType=CLOB}, sysdate, #{challengeExp}, 0, #{thumbnail}, to_number(#{fk_freqType}), to_number(#{fk_duringType}), to_date(#{startDate},'yyyy-mm-dd'), #{fk_userid})
+  		VALUES (challenge_code_seq.nextval, to_number(#{fkCategoryCode}), #{challengeName}, #{content, jdbcType=CLOB}, sysdate, #{challengeExp}, 0, #{thumbnail}, to_number(#{fkFreqType}), to_number(#{fkDuringType}), to_date(#{startDate},'yyyy-mm-dd'), #{fkUserid})
 	</insert>
 	
 	<insert id="addCertifyHour" parameterType="com.sist.haebollangce.challenge.dto.ChallengeDTO">

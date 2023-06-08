@@ -5,15 +5,15 @@ import org.springframework.web.multipart.MultipartFile;
 public class ChallengeDTO {
 	
 	private String challengeCode;			// 챌린지 일련번호
-	private String fk_categoryCode;		// 카테고리 코드   
+	private String fkCategoryCode;		// 카테고리 코드   
 	private String challengeName;			// 챌린지이름
 	private String content;            		// 챌린지 본문(내용)
 	private String regDate; 				// 등록일자
 	private String challengeExp;			// 경험치
 	private String memberCount; 			// 참가인원
 	private String thumbnail;				// 대표이미지   
-	private String fk_freqType;			// 인증빈도 일련번호
-	private String fk_duringType;			// 기간 일련번호
+	private String fkFreqType;			// 인증빈도 일련번호
+	private String fkDuringType;			// 기간 일련번호
 	private String startDate;				// 시작날짜
 	private String fkUserid;				// 개설자(방장)
 	
@@ -54,12 +54,12 @@ public class ChallengeDTO {
 		this.challengeCode = challengeCode;
 	}
 	
-	public String getFk_categoryCode() {
-		return fk_categoryCode;
+	public String getfkCategoryCode() {
+		return fkCategoryCode;
 	}
 
-	public void setFk_categoryCode(String fk_categoryCode) {
-		this.fk_categoryCode = fk_categoryCode;
+	public void setfkCategoryCode(String fkCategoryCode) {
+		this.fkCategoryCode = fkCategoryCode;
 	}
 
 	public String getChallengeName() {
@@ -98,17 +98,17 @@ public class ChallengeDTO {
 	public void setThumbnail(String thumbnail) {
 		this.thumbnail = thumbnail;
 	}
-	public String getFk_freqType() {
-		return fk_freqType;
+	public String getfkFreqType() {
+		return fkFreqType;
 	}
-	public void setFk_freqType(String fk_freqType) {
-		this.fk_freqType = fk_freqType;
+	public void setfkFreqType(String fkFreqType) {
+		this.fkFreqType = fkFreqType;
 	}
-	public String getFk_duringType() {
-		return fk_duringType;
+	public String getfkDuringType() {
+		return fkDuringType;
 	}
-	public void setFk_duringType(String fk_duringType) {
-		this.fk_duringType = fk_duringType;
+	public void setfkDuringType(String fkDuringType) {
+		this.fkDuringType = fkDuringType;
 	}
 	public String getStartDate() {
 		return startDate;
