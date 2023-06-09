@@ -178,5 +178,27 @@ public class ChallengeDAO implements InterChallengeDAO {
 		return categoryList;
 	}
 
+	// 챌린지 불러오기
+	@Override
+	public List<challengeVO> challengeList() {
+	    
+		return mapper.challengeList();
+	}
+
+	// 카테고리 불러오기
+	@Override
+	public List<challengeVO> categoryList() {
+		
+		
+		return mapper.categoryList();
+	}
+
+	// 카테고리별 챌린지 불러오기
+	@Override
+	public List<challengeVO> challengelist() {
+		
+		
+		return mapper.challengelist();
+	}
 	
 }

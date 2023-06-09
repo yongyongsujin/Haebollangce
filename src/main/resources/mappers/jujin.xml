@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.sist.haebollangce.common.mapper.InterMapper">
+
+	<select id="challengeList" resultType="com.sist.haebollangce.challenge.dao.challengeVO">
+		SELECT c.challenge_name AS challenge_name
+		FROM tbl_challenge c
+		JOIN TBL_CATEGORY cat ON c.fk_category_code = cat.category_code
+	</select>
+
+	<select id="categoryList" resultType="com.sist.haebollangce.challenge.dao.challengeVO">
+		select category_code, category_name
+		from TBL_CATEGORY
+	</select>
+	
+
+	<select id="challengelist" resultType="com.sist.haebollangce.challenge.dao.challengeVO">
+	  SELECT
+	  a.category_name AS category_name,
+	  b.challenge_name,
+	  b.thumbnail as thumbnail,
+	  b.content,
+	  b.startDate,
+	  b.fk_during_type,
+	  c.set_date,
+	  b.member_count,
+	  b.fk_category_code,
+	  a.category_code AS category_code
+	FROM
+	  tbl_challenge b
+	  JOIN tbl_category a ON b.fk_category_code = a.category_code
+	  JOIN tbl_challenge_during c ON b.fk_during_type = c.during_type
+	<where>
+	  <if test="category_code != null and category_name != '전체'">
+	    AND a.category_code = #{categoryCode}
+	  </if>
+	</where>
+	</select>
+
+
+
+</mapper>

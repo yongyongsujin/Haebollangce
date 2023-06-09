@@ -1,6 +1,7 @@
 package com.sist.haebollangce.challenge.service;
 
 import com.sist.haebollangce.challenge.dao.InterChallengeDAO;
+import com.sist.haebollangce.challenge.dao.challengeVO;
 import com.sist.haebollangce.challenge.dto.CertifyDTO;
 import com.sist.haebollangce.challenge.dto.ChallengeDTO;
 
@@ -182,4 +183,35 @@ public class ChallengeService implements InterChallengeService {
 	}
 
 	
+	
+	// 챌린지 불러오기
+	@Override
+	public List<challengeVO> challengeList() {
+		
+		List<challengeVO> challengeList = dao.challengeList();
+		
+		return challengeList;
+		
+	}
+
+	// 카테고리 불러오기
+	@Override
+	public List<challengeVO> categoryList() {
+		
+		List<challengeVO> categoryLsit = dao.categoryList();
+		
+		return categoryLsit;
+	}
+
+	// 카테고리별 챌린지 불러오기
+	@Override
+	public List<challengeVO> challengelist() {
+		
+		List<challengeVO> challengelist = dao.challengelist();
+		
+		
+		return challengelist;
+		
+		
+	}
 }

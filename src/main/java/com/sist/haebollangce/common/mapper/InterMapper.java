@@ -1,5 +1,6 @@
 package com.sist.haebollangce.common.mapper;
 
+import com.sist.haebollangce.challenge.dao.challengeVO;
 import com.sist.haebollangce.challenge.dto.CertifyDTO;
 import com.sist.haebollangce.challenge.dto.ChallengeDTO;
 import com.sist.haebollangce.lounge.model.LoungeBoardDTO;
@@ -102,7 +103,11 @@ public interface InterMapper {
 	int checkTodayCertify(Map<String, String> paraMap);
 	// 오늘 인증하였는지 체크 / return 1이면 오늘 인증 한 것
 	
-	
+    List<challengeVO> challengeList();
+    
+    List<challengeVO> categoryList();
+
+	List<challengeVO> challengelist();
 	
 	
 }

@@ -74,4 +74,13 @@ public interface InterChallengeDAO {
 	// 인증 예시 등록하기
 	int addCertifyExam(ChallengeDTO challengedto);
 
+	
+	// 챌린지 불러오기
+	List<challengeVO> challengeList();
+
+	// 카테고리 불러오기
+	List<challengeVO> categoryList();
+
+	// 카테고리별 챌린지 불러오기
+	List<challengeVO> challengelist();
 }
