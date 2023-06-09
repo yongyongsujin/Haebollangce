@@ -4,6 +4,8 @@
 	String ctxPath = request.getContextPath();
 %>
 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.6/dist/sweetalert2.all.min.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.6/dist/sweetalert2.min.css" rel="stylesheet">
 
 <style type="text/css">
 
@@ -39,6 +41,7 @@
 		color: white;
 	}
 	p.img_OX {
+		line-height: 48px;
 		width: 100%; 
 		height: 10%;
 		border-bottom-left-radius: 20px; 
@@ -63,7 +66,6 @@
 			// jQuery선택자.get(0) 은 jQuery 선택자인
 			// jQuery Object 를 DOM (document object Model) element 로 바꿔주는 것이다. 
 	        // DOM element 로 바꿔주어야 순수한 javascript 문법과 명령어를 사용할 수 있게 된다.
-	        
 	        
 	        // console.log(input_file.files);
 	        /*
@@ -115,7 +117,27 @@
 	        
 		}); // end $(document).on("change", "input.img_file", function(e)
 		
-	});
+				
+		$("button#btn_certify").click(function(){
+			
+			if ( $("input#input_file").val() == "" ) {
+				Swal.fire({
+					icon: "error",
+					title: "인증사진을 선택해주세요",
+					confirmButtonColor: "#EB534C",
+					confirmButtonText: "확인"
+				});
+				return;
+			}
+			
+			const frm = document.certifyform;
+			frm.method = "post";
+			frm.action = "<%= ctxPath%>/challenge/certify";
+			frm.submit();
+			
+		});
+		
+	}); // end
 	
 </script>
 
@@ -126,25 +148,22 @@
 	<div style="height: 783px; justify-content: center;">
 		<div id="img_exam">
 			<div style="width: 50%; border-radius: 20px;">
-				<img class="img_insert" src="" width="100%" height="90%"/>
+				<img class="img_insert" src="${oneExample.success_img}" width="100%" height="90%" style="object-fit: cover;"/>
 				<p class="img_OX" style="background-color:#57B585;">○</p>
 			</div>
 			<div style="width: 50%; border-radius: 20px;">
-				<img class="img_insert" src="" width="100%" height="90%"/>
+				<img class="img_insert" src="${oneExample.fail_img}" width="100%" height="90%" style="object-fit: cover;"/>
 				<p class="img_OX" style="background-color:#AF2317;">✕</p>
 			</div>
 		</div>
-		<div class="my-3" style="font-size: 18pt; font-weight: bold;">(DB에서 읽어온 인증예시 내용)</div>
+		<div class="my-3" style="font-size: 18pt; font-weight: bold;">${oneExample.example}</div>
 		<div class="my-3" style="font-size: 18pt; font-weight: bold;">꼭 알아주세요 !</div>
 		<div>
 			<div class="examInfo my-2">
-				<span class="examInfo_left">인증 가능 요일</span><span class="examInfo_right">월 화 수 목 금 토 일</span>
+				<span class="examInfo_left">인증 빈도</span><span class="examInfo_right">${oneExample.frequency}</span>
 			</div>
 			<div class="examInfo my-2">
-				<span class="examInfo_left">인증 빈도</span><span class="examInfo_right">매일</span>
-			</div>
-			<div class="examInfo my-2">
-				<span class="examInfo_left">인증 가능 시간</span><span class="examInfo_right">00시 00분 ~ 23시 59분</span>
+				<span class="examInfo_left">인증 가능 시간</span><span class="examInfo_right">${oneExample.hour_start} ~ ${oneExample.hour_end}</span>
 			</div>
 			<div class="examInfo my-2">
 				<span class="examInfo_left">하루 인증 횟수</span><span class="examInfo_right">1회</span>
@@ -157,14 +176,16 @@
 	</div>
 	<div style="display: flex; justify-content: center;">
 		<br>
-		<form name="imagefrm">
+		<form name="certifyform" enctype="multipart/form-data">
 			<label id="label_file" for="input_file" class="mx-3 my-3">사진 선택</label>
-			<input id="input_file" type="file" accept="image/*" capture="camera" style="display: none;">
+			<input id="input_file" name="certify_img" type="file" accept="image/*" capture="camera" style="display: none;">
+			<input name="fk_userid" type="text" value="${paraMap.fk_userid}">
+			<input name="fk_challenge_code" type="text" value="${paraMap.challenge_code}">
 		</form>
 		<br>
 	</div>
 	<div style="display: flex; justify-content: center;">
-	    <button type="button" class="btn btn-secondary btn-md mb-3" id="btnWrite">인증하기</button>
+	    <button type="button" class="btn btn-secondary btn-md mb-3" id="btn_certify">인증하기</button>
 	</div>
         
 </div>

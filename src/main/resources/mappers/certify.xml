@@ -4,7 +4,24 @@
 <!-- ==== #29. 루트 엘리먼트 & 네임스페이스 설정(프로젝트 전체내에서 유일해야 한다.) ==== -->
 <mapper namespace="com.sist.haebollangce.common.mapper.InterMapper">
 
-	<select id="getJoinedChaList" resultType="com.sist.haebollangce.challenge.dto.ChallengeDTO">
+	<select id="getJoinedChaList" parameterType="String" resultType="com.sist.haebollangce.challenge.dto.ChallengeDTO">
+		select C.challenge_code, G.category_name, challenge_name, thumbnail, fk_freq_type, frequency, D.set_date
+		     , to_char(startDate, 'yyyy-mm-dd') as startdate
+		     , to_char( startdate + (to_number(fk_during_type) * 7), 'yyyy-mm-dd') as enddate
+		     , to_char(hour_start, 'hh24:mi') as hour_start
+		     , to_char(hour_end, 'hh24:mi') as hour_end
+		     , achievement_pct
+		from tbl_challenge C 
+		join tbl_category G             on G.category_code = C.fk_category_code
+		join tbl_challenge_during D     on D.during_type = C.fk_during_type
+		join tbl_certify_freq F         on F.freq_type = C.fk_freq_type
+		join tbl_certify_hour H         on H.challenge_code = C.challenge_code
+		join tbl_challenge_info I       on I.fk_challenge_code = C.challenge_code
+		where I.fk_userid = #{fk_userid}
+		order by C.challenge_code desc
+	</select>
+
+	<select id="getOneChallengeInfo" parameterType="String" resultType="com.sist.haebollangce.challenge.dto.ChallengeDTO">
 		select C.challenge_code, fk_category_code, G.category_name as category_name, challenge_name, content, regDate
 		     , challenge_exp, member_count, thumbnail, fk_freq_type, F.frequency, fk_during_type, D.set_date
 		     , to_char(startDate, 'yyyy-mm-dd') as startdate, fk_userid
@@ -16,8 +33,192 @@
 		join tbl_challenge_during D     on D.during_type = C.fk_during_type
 		join tbl_certify_freq F         on F.freq_type = C.fk_freq_type
 		join tbl_certify_hour H         on H.challenge_code = C.challenge_code
-		left join tbl_certify_exam E    on E.challenge_code = C.challenge_code
-		order by C.challenge_code desc
+		join tbl_certify_exam E    		on E.challenge_code = C.challenge_code
+		where C.challenge_code = #{challenge_code}
 	</select>
-
+	
+	<insert id="joinChallenge" parameterType="HashMap">
+		insert into tbl_challenge_info (challenge_info, fk_userid, fk_challenge_code, entry_fee, achievement_pct) 
+    		values( seq_tbl_challenge_info_challenge_info.nextval, 'qwer1234', #{fk_challenge_code}, #{entry_fee}, default)
+	</insert>
+	
+	
+	<resultMap type="HashMap" id="checkJoinedChall_Map">
+		<result property="challenge_info" 	 column="challenge_info" 	javaType="String"/>
+		<result property="fk_userid" 		 column="fk_userid" 		javaType="String"/>
+		<result property="fk_challenge_code" column="fk_challenge_code" javaType="String"/>
+	</resultMap>
+	<select id="checkJoinedChall" parameterType="HashMap" resultMap="checkJoinedChall_Map">
+		select challenge_info, fk_userid, fk_challenge_code, achievement_pct
+		from tbl_challenge_info 
+		where fk_userid = #{fk_userid} and fk_challenge_code = #{fk_challenge_code}
+	</select>
+	
+	
+	<resultMap type="HashMap" id="getCertifyExample_Map">
+		<result property="challenge_code" 	column="challenge_code" 	javaType="String"/>
+		<result property="challenge_name" 	column="challenge_name" 	javaType="String"/>
+		<result property="fk_freq_type" 	column="fk_freq_type" 		javaType="String"/>
+		<result property="frequency" 		column="frequency" 			javaType="String"/>
+		<result property="fk_during_type" 	column="fk_during_type" 	javaType="String"/>
+		<result property="set_date" 		column="set_date" 			javaType="String"/>
+		<result property="startdate" 		column="startdate" 			javaType="String"/>
+		<result property="hour_start" 		column="hour_start" 		javaType="String"/>
+		<result property="hour_end" 		column="hour_end" 			javaType="String"/>
+		<result property="success_img" 		column="success_img" 		javaType="String"/>
+		<result property="fail_img" 		column="fail_img" 			javaType="String"/>
+		<result property="example" 			column="example" 			javaType="String"/>
+		<result property="enddate" 			column="enddate" 			javaType="String"/>
+	</resultMap>
+	<select id="getCertifyInfo" parameterType="HashMap" resultMap="getCertifyExample_Map">
+		select C.challenge_code, challenge_name
+		     , fk_freq_type, F.frequency, fk_during_type, D.set_date
+		     , to_char(startDate, 'yyyy-mm-dd') as startdate
+		     , to_char(hour_start, 'hh24:mi') as hour_start
+		     , to_char(hour_end, 'hh24:mi') as hour_end
+		     , success_img, fail_img, example
+		     , to_char( startdate + (to_number(fk_during_type) * 7), 'yyyy-mm-dd') as enddate
+		from tbl_challenge C 
+		join tbl_challenge_during D     on D.during_type = C.fk_during_type
+		join tbl_certify_freq F         on F.freq_type = C.fk_freq_type
+		join tbl_certify_hour H         on H.challenge_code = C.challenge_code
+		join tbl_certify_exam E         on E.challenge_code = C.challenge_code
+		where C.challenge_code = #{challenge_code}
+	</select>
+	
+	
+	<select id="getUserDeposit" parameterType="String" resultType="String">
+		select
+		    (
+		    select nvl(sum(purchase_price), 0)
+		    from tbl_deposit
+		    where fk_userid = #{fk_userid} and purchase_status = 0
+		    ) -
+		    (
+		    select nvl(sum(entry_fee), 0)
+		    from tbl_challenge_info
+		    where fk_userid = #{fk_userid}
+		    ) as user_deposit
+		from dual
+	</select>
+	
+	
+	<insert id="doCertify" parameterType="HashMap">
+		insert into tbl_certify_history (certify_no, fk_userid, fk_challenge_code, certify_time, certify_img) 
+    		values(certify_no_seq.nextval, #{fk_userid}, #{fk_challenge_code}, default, #{certify_img})
+	</insert>
+	
+	
+	<update id="updateMemberCount" parameterType="HashMap">
+		update tbl_challenge set member_count = member_count + 1 
+		where challenge_code = #{fk_challenge_code}
+	</update>
+	
+	
+	<resultMap type="HashMap" id="getJoinedChallengeInfo_Map">
+		<result property="challenge_code" 	column="challenge_code" javaType="String"/>
+		<result property="category_name" 	column="category_name" 	javaType="String"/>
+		<result property="challenge_name" 	column="challenge_name" javaType="String"/>
+		<result property="content" 			column="content" 		javaType="String"/>
+		<result property="thumbnail" 		column="thumbnail" 		javaType="String"/>
+		<result property="fk_freq_type" 	column="fk_freq_type" 	javaType="String"/>
+		<result property="fk_during_type" 	column="fk_during_type" javaType="String"/>
+		<result property="startDate" 		column="startDate" 		javaType="String"/>
+		<result property="hour_end" 		column="hour_end" 		javaType="String"/>
+		<result property="enddate" 			column="enddate" 		javaType="String"/>
+		<result property="fk_userid" 		column="fk_userid" 		javaType="String"/>
+		<result property="entry_fee" 		column="entry_fee" 		javaType="String"/>
+	</resultMap>
+	<select id="getJoinedChallengeInfo" parameterType="HashMap" resultMap="getJoinedChallengeInfo_Map">
+		select C.challenge_code, G.category_name, challenge_name, content, thumbnail, fk_freq_type, fk_during_type
+		     , to_char(startDate, 'yyyy-mm-dd') as startDate
+		     , to_char(hour_start, 'hh24:mi') as hour_start
+		     , to_char(hour_end, 'hh24:mi') as hour_end
+		     , to_char( startdate + (to_number(fk_during_type) * 7), 'yyyy-mm-dd') as enddate
+		     , I.fk_userid as fk_userid, entry_fee
+		from tbl_challenge C 
+		join tbl_category G             on G.category_code = C.fk_category_code
+		join tbl_challenge_during D     on D.during_type = C.fk_during_type
+		join tbl_certify_freq F         on F.freq_type = C.fk_freq_type
+		join tbl_certify_hour H         on H.challenge_code = C.challenge_code
+		join tbl_challenge_info I       on I.fk_challenge_code = C.challenge_code
+		where C.challenge_code = #{challenge_code} and I.fk_userid = #{fk_userid}
+	</select>
+	
+	
+	<select id="getMyCertifyHistory" parameterType="HashMap" resultType="com.sist.haebollangce.challenge.dto.CertifyDTO">
+		select certify_no, fk_userid, fk_challenge_code, certify_time, certify_img
+		from tbl_certify_history
+		where 
+		<if test="fk_userid != ''">
+			fk_userid = #{fk_userid} and 
+		</if>
+		fk_challenge_code = #{challenge_code}
+		order by certify_no desc
+	</select>
+	
+	
+	<resultMap type="HashMap" id="getUserAchieveCharts_Map">
+		<result property="member_count" 		column="member_count" 			javaType="String"/>
+		<result property="achievement_pct_avg" 	column="achievement_pct_avg" 	javaType="String"/>
+		<result property="hundredCnt" 			column="hundredCnt" 			javaType="String"/>
+		<result property="eighty_up_cnt" 		column="eighty_up_cnt" 				javaType="String"/>
+		<result property="eighty_down_cnt" 		column="eighty_down_cnt" 			javaType="String"/>
+	</resultMap>
+	<select id="getUserAchieveCharts" parameterType="String" resultMap="getUserAchieveCharts_Map">
+		select count(*) as member_count
+		     , avg(achievement_pct) as achievement_pct_avg
+		     , count (case when achievement_pct = 100 then 1 end) as hundredCnt
+		     , count (case when achievement_pct <![CDATA[>=]]> 80 and not (achievement_pct = 100) then 2 end) as eighty_up_cnt
+		     , count (case when achievement_pct <![CDATA[<]]> 80 then 3 end) as eighty_down_cnt
+		from tbl_challenge_info
+		where fk_challenge_code = #{challenge_code}
+	</select>
+	
+	
+	<resultMap type="HashMap" id="getUserAchievePct_Map">
+		<result property="startDate" 		column="startDate"			javaType="String"/>
+		<result property="certifyCnt" 		column="certifyCnt"			javaType="String"/>
+		<result property="totalCertify" 	column="totalCertify"		javaType="String"/>
+		<result property="achievement_pct" 	column="achievement_pct"	javaType="String"/>
+	</resultMap>
+	<select id="getUserAchievePct" parameterType="HashMap" resultMap="getUserAchievePct_Map">
+		select to_char(startdate, 'yyyy-mm-dd') as startdate
+		     , (select count(*) from tbl_certify_history where fk_userid = #{fk_userid} and fk_challenge_code = #{fk_challenge_code}) as certifycnt
+		     ,  case
+		            when (to_char(startdate, 'D') between 2 and 6 and fk_freq_type in ('100', '101')) or (to_char(startdate, 'D') in (1, 7) and fk_freq_type = '102') then
+		                to_number(decode(fk_freq_type, '100', 7, '101', 5, '102', 2, 0)) * to_number(fk_during_type) + 1
+		            when to_char(startdate, 'D') in (1, 7) and fk_freq_type = '100' then
+		                to_number(decode(fk_freq_type, '100', 7, '101', 5, '102', 2, 0)) * to_number(fk_during_type) + 1
+		            else
+		                to_number(decode(fk_freq_type, '100', 7, '101', 5, '102', 2, 0)) * to_number(fk_during_type)
+		        end as totalcertify
+		     , trunc((select count(*) from tbl_certify_history where fk_userid = #{fk_userid} and fk_challenge_code = #{fk_challenge_code}) 
+		       / case
+		            when (to_char(startdate, 'D') between 2 and 6 and fk_freq_type in ('100', '101')) or (to_char(startdate, 'D') in (1, 7) and fk_freq_type = '102') then
+		                to_number(decode(fk_freq_type, '100', 7, '101', '102', 2, 0)) * to_number(fk_during_type) + 1
+		            when to_char(startdate, 'D') in (1, 7) and fk_freq_type = '100' then
+		                to_number(decode(fk_freq_type, '100', 7, '101', '102', 2, 0)) * to_number(fk_during_type) + 1
+		            else
+		                to_number(decode(fk_freq_type, '100', 7, '101', '102', 2, 0)) * to_number(fk_during_type)
+		            end * 100 ) as achievement_pct
+		from tbl_challenge c
+		join tbl_challenge_during d on d.during_type = c.fk_during_type
+		join tbl_certify_freq f     on f.freq_type = c.fk_freq_type
+		join tbl_challenge_info i   on i.fk_challenge_code = c.challenge_code
+		where c.challenge_code = #{fk_challenge_code} and i.fk_userid = #{fk_userid}
+	</select>
+	
+	
+	<insert id="updateAchievePct" parameterType="HashMap">
+		update tbl_challenge_info set achievement_pct = to_number(#{achievement_pct}) where fk_userid = #{fk_userid} and fk_challenge_code = #{fk_challenge_code}
+	</insert>
+	
+	
+	<select id="checkTodayCertify" parameterType="HashMap" resultType="int">
+		select count(*)
+		from tbl_certify_history 
+		where trunc(certify_time) = trunc(sysdate) and fk_userid = #{fk_userid} and fk_challenge_code = #{challenge_code}
+	</select>
+	
 </mapper>

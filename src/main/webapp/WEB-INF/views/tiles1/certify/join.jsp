@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.6/dist/sweetalert2.all.min.js"></script>
 <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.6/dist/sweetalert2.min.css" rel="stylesheet">
@@ -134,6 +134,25 @@
 
 	$(document).ready(function(){
 		
+		const str_startDate = "${chaDTO.startDate}";
+		
+		const startDate = new Date(str_startDate);
+		const today = new Date();
+
+		if (startDate <= today) {
+			// 챌린지가 이미 시작되었을 경우
+			
+			Swal.fire({
+				icon: "error",
+				// title: "주의",
+				html : "<div style='font-weight: bold; font-size: 16pt;'>이미 시작된 챌린지로<br>참여가 불가합니다.</div>",
+				confirmButtonColor: "#EB534C",
+				confirmButtonText: "확인"
+			}).then(function(){
+				location.href="<%= request.getContextPath()%>/challenge/certifyList";
+			});
+		}
+		
 		// 챌린지 안내 호버 효과
 		$("div#challenge_info").hover(function(e) {
 			$(e.target).css({"background-color":"#EB534C","color":"white"});
@@ -153,11 +172,10 @@
 
 			const success_price = "(예상) "+Number(($(this).children().text())).toLocaleString('en')+" ~ "+(Number(($(this).children().text())) * 1.035).toLocaleString('en')+"원"
 			$("span#success_price").html(success_price);
-		
+			change_deposit();
 		}); // end $("p.price_choice").bind("click")
 		
 		$("p#price_10000").trigger("click"); // 초기화면용
-		
 		
 		// 금액 키보드로 입력시 함수
 		$("input#price").on("keyup", function(e){
@@ -191,6 +209,11 @@
 				
 			});
 			
+			if (price == 10000) {
+				$("p#price_10000").trigger("click");
+			}
+			
+			change_deposit();
 			
 		}); // end $("input#price").on("keyup")
 		
@@ -210,12 +233,26 @@
 				$("p#price_10000").trigger("click");
 				$(this).focus();
 			}
-
 		});
 		
 		
 		// 참가하기 클릭시
 		$("div#join_challenge").click(function(){
+			
+			const check_deposit = $("span#after_deposit").html();
+			
+			if ( check_deposit == '잔액부족' ) {
+				Swal.fire({
+					icon: "error",
+					title: "예치금 잔액이 부족합니다.<br>예치금 충전 후 이용해주세요.",
+					confirmButtonColor: "#EB534C",
+					confirmButtonText: "확인"
+				});
+				return;
+			}
+			
+			// insert 할 form 전송
+			
 			
 			// 팝업창 띄우기
 			const url = "<%= request.getContextPath()%>/challenge/joinEnd";
@@ -223,36 +260,86 @@
 			// 너비 800, 높이 600인 팝업창을 화면 가운데 위치시키기
 			const pop_width = 600;
 			const pop_height = 400;
-			const pop_left = Math.ceil((window.screen.width - pop_width)/2); <%-- 정수로 만듬 --%>
+			const pop_left = Math.ceil((window.screen.width - pop_width)/2); // 정수로 만듬
 			const pop_top = Math.ceil((window.screen.height - pop_height)/2);
 			
 			window.open(url, "challengejoin", "left="+pop_left+", top="+pop_top+", width="+pop_width+", height="+pop_height);
 			
+			const frm = document.challenge_info;
+			frm.action = "<%= request.getContextPath()%>/challenge/joinEnd";
+			frm.method = "post";
+			frm.target = "challengejoin"; // 팝업창으로 form 데이터 전송
+			frm.submit();
+			
 			location.href="<%= request.getContextPath()%>/challenge/certifyList";
 			
-			/* $("button#btn_close").click(function(){
-				alert("join에서 닫기")
-				self.close();
-				window.close();
-			}); */
 		});
 		
 		
 		
 	}); // end $(document).ready
 
+	// 보유 예치금에 따른 결제 후 보유예치금 계산하는 함수
+	function change_deposit() {
+		
+		let userDeposit = "${userDeposit}"; 
+
+		let join_price = $("span#join_price").html();
+		join_price = join_price.replace("원", "").replace(",", "").trim();
+		
+		let after_deposit = Number(userDeposit) - Number(join_price);
+
+		$("input#after_deposit").val(after_deposit);
+		
+		if ( after_deposit < 0 ) {
+			after_deposit = '잔액부족';
+		}
+		else {
+			after_deposit = after_deposit.toLocaleString('en')+"원";
+		}
+		
+		$("span#after_deposit").html(after_deposit);
+	}
+	
 </script>
 <div class="container" style="background-color: white; width: 70% !important; padding: 0; text-align: center;"> 
 	<br>
 	<h3 style="font-weight: bold;">챌린지 참가하기</h3>
 	<br>
-	<div id="challenge_join_header" class="mx-5" style="height: 300px;">
-		<div class="join_body" style="display: flex; justify-content: center; align-items:center; width: 100%; height: 100%; border: solid 1px red;">
-			챌린지 내용
+	<div id="challenge_join_header" class="mx-5" style="height: 250px;">
+		<div class="join_body" style="box-shadow: 0px 0px 10px 1px gray; display: flex; justify-content: center; align-items:center; width: 100%; height: 100%; border-radius: 20px; font-size: 16pt;">
+			<div style="height: 100%; width: 30%;">
+	  			<img src="${chaDTO.thumbnail}" style="object-fit: cover; height:90%; width: 90%; margin-top:12px; border-radius: 20px;"/>
+  			</div>
+  			<div style="text-align: left; width: 70%;">
+  				<div style="display: flex; justify-content: space-between;">
+	  				<div class="mt-1" style="width: 180px; height: 35px; line-height: 34px; background-color: rgb(244, 244, 244); text-align: center; border-radius: 20px;">
+	  					<div>${chaDTO.categoryName}</div>
+	  				</div>
+	  				<div class="mt-1 pr-3" style="font-weight: bold;">
+	  					<span class="mr-2">${chaDTO.memberCount}명 참가 중</span>
+	  				</div>
+  				</div>
+  				<div style="display: flex; justify-content: space-between;">
+	  				<h4 class="my-3" style="font-weight: bold; display:inline-block;">${chaDTO.challengeName}</h4>
+	  				<span class="pr-3" style="display:flex; align-items: center;">개설자 : ${chaDTO.fkUserid}</span>
+  				</div>
+  				<div class="mt-4 pr-3" style="display: flex; justify-content: space-between;">
+  					<div><span>인증빈도 - </span><span>${chaDTO.frequency }</span></div>
+  					<div><span>인증시간 - </span><span>${chaDTO.hourStart} ~ ${chaDTO.hourEnd}</span></div>
+  				</div>
+  				<div class="mr-3" style="display: flex; justify-content: space-between; margin-top: 30px;">
+	  				<div></div>
+	  				<div>
+		  				<span>기간 : </span>
+		  				<h5 class="pt-3" style="display: inline-block;">${chaDTO.startDate} ~ ${chaDTO.enddate}</h5>
+	  				</div>
+  				</div>
+  			</div>
 		</div>
 	</div>
 
-	<div id="challenge_join_price" class="mx-5" style="height: 300px;"> 
+	<div id="challenge_join_price" class="mx-5 mb-3 mt-5" style="height: 300px;"> 
 		<div class="join_body bold pl-5" style="height: 25%;">예치금</div>
 		<div class="join_body basic pl-5" style="height: 15%;">시작 전에 돈을 걸면 종료 후 환급해드려요 !</div>
 		<div class="join_body px-5 pb-3" style="height: 25%; width: 100%;">
@@ -274,13 +361,13 @@
 	 
 	<div id="challenge_join_guide" class="px-5" style="height: 300px; background-color: #F5F5F5;">
 		<div class="join_body basic px-5" style="height: 20%;"><span>100% 성공</span><span id="success_price"></span></div>
-		<div class="join_body basic px-5" style="height: 20%;"><span>85% 이상 성공</span><span id="join_price"></span></div>
-		<div class="join_body basic px-5" style="height: 20%;"><span>85% 미만 성공</span><span>예치금 일부 환급 (성공률 만큼)</span></div>
+		<div class="join_body basic px-5" style="height: 20%;"><span>80% 이상 성공</span><span id="join_price"></span></div>
+		<div class="join_body basic px-5" style="height: 20%;"><span>80% 미만 성공</span><span>예치금 일부 환급 (성공률 만큼)</span></div>
 		<div class="join_body" style="height: 40%; align-items: center; justify-content:center; ">
 			<div id="challenge_info" data-toggle="modal" data-target="#challenge_info_Modal">챌린지 환급 안내</div>
 			<%-- 모달창 --%>
 			<div class="modal fade" id="challenge_info_Modal">
-				<div class="modal-dialog"> 
+				<div class="modal-dialog modal-dialog-centered"> 
 					<div class="modal-content">
 						<div class="modal-header">
 							<h5 class="modal-title" style="font-weight: bold;">챌린지 환급 안내</h5>
@@ -291,15 +378,15 @@
 				        		<span>100% 성공</span><span>예치금 전액 환급 + 상금</span>
 			        		</div>
 			        		<div class="my-2" style="display: flex; justify-content: space-between;">
-			        			<span>85% 이상 성공</span><span>예치금 전액 환급</span>
+			        			<span>80% 이상 성공</span><span>예치금 전액 환급</span>
 			        		</div>
 			        		<div class="my-2" style="display: flex; justify-content: space-between;">
-			        			<span>85% 미만 성공</span><span>예치금 일부 환급 (성공률 만큼)</span>
+			        			<span>80% 미만 성공</span><span>예치금 일부 환급 (성공률 만큼)</span>
 			        		</div>
 			      		</div>
 			     		<div class="modal-body">
-							<ul style="padding-left: 20px;">
-								<li class="my-1">상금은 85% 미만 성공한 참가자들의 벌금으로 마련돼요.</li>
+							<ul style="padding-left: 20px; text-align: left;">
+								<li class="my-1">상금은 80% 미만 성공한 참가자들의 벌금으로 마련돼요.</li>
 								<li class="my-1">최종 상금은 내가 건 돈에 비례해서 정해져요. 그래서 예치금이 많을수록 상금도 높아져요!</li>
 								<li class="my-1">인증을 놓쳤을 때는 인증패스를 사용해서 만회할 수 있어요. 단, 인증패스를 사용해서 100% 성공한 경우 공정성을 위해 상금은 받을 수 없어요.</li>
 							</ul>
@@ -317,9 +404,9 @@
 	<div id="challenge_join_body" class="mx-5" style="height: 300px;">
 		<div style="width: 100%; height: 100%;">
 			<div class="join_body bold px-5" style="height: 25%;"><span>예치금 충전 및 결제</span><div id="point_charge">예치금 충전</div></div>
-			<div class="join_body basic px-5" style="height: 17%;"><span>현재 보유 예치금</span><span>100,000 원</span></div>
+			<div class="join_body basic px-5" style="height: 17%;"><span>현재 보유 예치금</span><span id="current_deposit"><fmt:formatNumber value="${userDeposit}" pattern="#,###" ></fmt:formatNumber>원</span></div>
 			<div class="join_body basic px-5" style="height: 17%;"><span>참가 예치금</span><span id="join_price"></span></div>
-			<div class="join_body basic px-5" style="height: 17%;"><span>결제 후 보유 예치금</span><span>90,000원</span></div> 
+			<div class="join_body basic px-5" style="height: 17%;"><span>결제 후 보유 예치금</span><span id="after_deposit"></span></div> 
 			<div class="join_body bold px-5" style="height: 25%;"><span>최종 결제 금액</span><span id="join_price"></span></div>
 		</div> 
 	</div>
@@ -328,3 +415,10 @@
 		<div id="join_challenge" class="ml-3 challenge_join_btn" style="display: flex;">참가하기</div>
 	</div>
 </div>
+
+<form name="challenge_info">
+	<input type="text" id="userid" name="fk_userid" value="${userid}">
+	<input type="number" id="price" name="entry_fee" value="">
+	<input type="text" id="challenge_code" name="fk_challenge_code" value="${chaDTO.challengeCode}">
+	<input type="text" id="after_deposit" name="after_deposit" value="">
+</form>
