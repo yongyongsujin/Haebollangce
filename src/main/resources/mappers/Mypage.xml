@@ -333,15 +333,38 @@
 		<result property="count" 	   column="count" 		javaType="String" />
 	</resultMap>
 	<select id="chart_challenging" parameterType="HashMap" resultMap="chart_challenging_map">
-		select extract(month from C.startdate) AS month, 
-       		   count(*) as count
+		select V.month as month, NVL(T.count, 0) as count
+		from 
+			(
+				select level as month
+				from dual
+				<![CDATA[connect by level <= 12]]>
+			) V left join
+			(
+				select extract(month from C.startdate) as month, count(*) as count
+				from tbl_challenge C join tbl_challenge_info I
+                        			on C.challenge_code = I.fk_challenge_code
+				where I.fk_userid = #{userid}
+				group by extract(month from C.startdate)
+			) T 
+			on V.month = T.month
+			order by V.month
+	</select>
+	<resultMap type="HashMap" id="chart_category_map">
+		<result property="category_name" column="category_name" javaType="String" />
+		<result property="percentage" 	 column="percentage" 	javaType="String" />
+	</resultMap>
+	<select id="chart_category" parameterType="HashMap" resultMap="chart_category_map">
+		select G.category_name as category_name,
+        		round(count(*)/(select count(*) from tbl_challenge_info where fk_userid=#{userid})*100, 2) as percentage
 		from tbl_challenge C join tbl_challenge_info I
                         		on C.challenge_code = I.fk_challenge_code
-		where I.fk_userid = #{userid}
-    		  and <![CDATA[extract(month from C.startdate) <= extract(month from sysdate)]]>
-   			  and <![CDATA[extract(month from C.startdate) > extract(month from sysdate)-12]]>
-		group by extract(month from C.startdate)
-		order by count desc
+                    		 join tbl_category G
+                       			 on C.fk_category_code = G.category_code
+		where I.fk_userid = #{userid} and to_char(C.startdate, 'mm') = ${month}
+		group by G.category_name
+		order by percentage desc
 	</select>
+
 
 </mapper>

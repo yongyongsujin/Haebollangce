@@ -1,26 +1,16 @@
 package com.sist.haebollangce.user.service;
 
-import java.io.File;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpSession;
-
-import org.json.JSONArray;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ObjectUtils;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.sist.haebollangce.common.FileManager;
 import com.sist.haebollangce.user.dao.InterMypageDAO;
 import com.sist.haebollangce.user.dto.UserDTO;
 import com.sist.haebollangce.user.util.AES256;
@@ -681,6 +671,8 @@ public class MypageService implements InterMypageService {
 		
 		List<Map<String, String>> chart_challenging_list = dao.chart_challenging(paraMap);
 		
+		// System.out.println("chart_challenging_list " + chart_challenging_list.toString());
+		
 		JsonArray jsonArr = new JsonArray();
 		
 		if(chart_challenging_list != null && chart_challenging_list.size() > 0) {
@@ -696,6 +688,30 @@ public class MypageService implements InterMypageService {
 				
 			}
 			
+		}
+		
+		return new Gson().toJson(jsonArr);
+	}
+	@Override
+	public String chart_category(Map<String, String> paraMap) {
+
+		List<Map<String, String>> category_list = dao.chart_category(paraMap);
+		
+		// System.out.println("servicee userid : " + paraMap.get("userid"));
+		// System.out.println("servicee userid : " + paraMap.get("month"));
+		
+		// System.out.println("category_list " + category_list.toString());
+		
+		JsonArray jsonArr = new JsonArray();
+		
+		for(Map<String, String> map : category_list) {
+			
+			JsonObject jsonObj = new JsonObject();
+			
+			jsonObj.addProperty("category_name", map.get("category_name"));
+			jsonObj.addProperty("percentage", map.get("percentage"));
+			
+			jsonArr.add(jsonObj);
 		}
 		
 		return new Gson().toJson(jsonArr);

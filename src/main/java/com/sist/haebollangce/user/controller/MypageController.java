@@ -767,6 +767,24 @@ public class MypageController {
 		
 		return json;
 	}
+	@ResponseBody
+	@RequestMapping(value = "/chart_category", method = {RequestMethod.GET}, produces = "text/plain;charset=UTF-8")
+	public String chart_category(HttpServletRequest request){
+		
+		String userid = request.getParameter("userid");
+		String month = request.getParameter("month");
+		
+		// System.out.println(userid);
+		// System.out.println(month);
+		
+		Map<String, String> paraMap = new HashMap<>();
+		paraMap.put("userid", userid);
+		paraMap.put("month", month);
+		
+		String json = service.chart_category(paraMap);
+		
+		return json;
+	}
 	/* 마이페이지 홈 챌린지 그래프 끝*/
 	
 	

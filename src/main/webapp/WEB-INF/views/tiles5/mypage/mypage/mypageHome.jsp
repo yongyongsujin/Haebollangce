@@ -108,6 +108,55 @@
 		margin-bottom: 8%;
 	}
 	
+	/* 하이차트 css 시작 */
+	.highcharts-figure,
+	.highcharts-data-table table {
+		min-width: 310px;
+		max-width: 800px;
+		margin: 1em auto;
+	}
+
+	#container {
+		height: 400px;
+	}
+
+	.highcharts-data-table table {
+		font-family: Verdana, sans-serif;
+		border-collapse: collapse;
+		border: 1px solid #ebebeb;
+		margin: 10px auto;
+		text-align: center;
+		width: 100%;
+		max-width: 500px;
+	}
+
+	.highcharts-data-table caption {
+		padding: 1em 0;
+		font-size: 1.2em;
+		color: #555;
+	}
+
+	.highcharts-data-table th {
+		font-weight: 600;
+		padding: 0.5em;
+	}
+
+	.highcharts-data-table td,
+	.highcharts-data-table th,
+	.highcharts-data-table caption {
+		padding: 0.5em;
+	}
+
+	.highcharts-data-table thead tr,
+	.highcharts-data-table tr:nth-child(even) {
+		background: #f8f8f8;
+	}
+
+	.highcharts-data-table tr:hover {
+		background: #f1f7ff;
+	}
+	/* 하이차트 css 끝 */
+	
 </style>
 
 <script type="text/javascript">
@@ -422,61 +471,148 @@
 		
 		<%-- 챌린지 그래프 시작 --%>
 	
+		
 		$.ajax({
 			url: "/mypage/chart_challenging",
 			data:{
 				"userid":"jisu"
 			},
 			dataType:"json",
-			success:function(json) {
+			success:function(json1) {
 				
-				let month_challenging = []; // 월별 참여한 챌린지
+				// console.log(JSON.stringify(json1));
 				
-				let genderArr = []; // 참여한 챌린지별 태그 비율
+				let month_challenging_arr = []; // 월별 참여한 챌린지
 				
-				//console.log(JSON.stringify(json1));
+				let category_arr = []; // 참여한 챌린지별 태그 비율
 				
+				var ajaxCounter = 0;
+				var totalAjaxCalls = json1.length;
 				
 				$.each(json1, function(index, item){
-					month_challenging.push({
-						 			name: item.month,
-		                 			cnt: item.count,
-		                 			drilldown: item.month
-					});
+					month_challenging_arr.push({
+						 					name: item.month,
+		                 					cnt: item.count,
+		                 					drilldown: item.month
+										});
 				}); // end of $.each(json, function(index, item){}) -----
-			/* 	
+				
 				$.each(json1, function(index1, item1){
 					
 					$.ajax({
 						url:"/mypage/chart_category",
 						type:"get",
 						data:{
-							"deptname":item1.department_name
+							"userid":"jisu",
+							"month":item1.month
 						},
 						dataType:"json",
+						async: false,
 						success: function(json2){
-							// json2 는 그 부서에 있는 성별을 뜻한다.
+							// 달 별 참여한 챌린지 태그 비율
+							
+							// console.log(JSON.stringify(json2));
+							
+							// console.log(item1.month);
 							
 							let subArr = [];
 							
 							$.each(json2, function(index2, item2){
-								subArr.push([item2.gender + "(" + item2.cnt + " 명)",
+								subArr.push([item2.category_name+"("+item2.percentage+" %)",
 				                        	 Number(item2.percentage)]);
 							}); // end of $.each(json2, function(index2, item2){}) -----
 							
-							genderArr.push({
-										name: item1.department_name,
-					                	id: item1.department_name,
-					                	data: subArr
-									});
+							category_arr.push({
+												name: item1.month,
+					                			id: item1.month,
+					                			data: subArr
+											});
+							
+							ajaxCounter++; // 호출이 완료될 때마다 카운터 증가
+							
+							if (ajaxCounter === totalAjaxCalls) {
+				                
+								Highcharts.chart('chart_container', {
+								    chart: {
+								        type: 'column'
+								    },
+								    title: {
+								        align: 'left',
+								        text: '올 해 챌린지 참여 횟수'
+								    },
+								    subtitle: {
+								        align: 'left',
+								        text: 'Click the columns to view versions. Source: <a href="http://statcounter.com" target="_blank">statcounter.com</a>'
+								    },
+								    accessibility: {
+								        announceNewData: {
+								            enabled: true
+								        }
+								    },
+								    xAxis: {
+								        type: 'category'
+								    },
+								    yAxis: {
+								        title: {
+								            text: '참여했던 챌린지 수(개)'
+								        }
+
+								    },
+								    legend: {
+								        enabled: false
+								    },
+								    plotOptions: {
+								        series: {
+								            borderWidth: 0,
+								            dataLabels: {
+								                enabled: true,
+								                format: '{point.y}'
+								            }
+								        }
+								    },
+
+								    tooltip: {
+								        headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
+								        pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y}</b> of total<br/>'
+								    },
+
+								    series: [
+								        {
+								            name: '챌린지명',
+								            colorByPoint: true,
+								            data:month_challenging_arr
+								        }
+								    ],
+								    drilldown: {
+								        breadcrumbs: {
+								            position: {
+								                align: 'right'
+								            }
+								        },
+								        series: category_arr
+								    }
+								}); // end of chart
+								////////////////////////
+								
+				            }
+							
 						},
 						error: function(request, status, error){
 							alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
 			            }
-					});
-					 */
-				}); // end of $.each(json1, function(index1, item1){}) -----
+					}); // end of ajax json2
+					
+				}); // end of each
+							
+				///////////////////////////////////////////////////////////////
 				
+				
+			},
+			error: function(request, status, error){
+				alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+            }
+		}); // end of ajax
+			
 		<%-- 챌린지 그래프 끝 --%>
 		
 	}); // end of document.ready -----
@@ -689,8 +825,7 @@
 							<h5 class="m-0 font-weight-bold">챌린지 리포트</h5>
 						</div>
 						<div class="card-body">
-							<div class="chart-bar">
-  								<canvas id="myBarChart"></canvas>
+							<div id="chart_container" class="chart-bar">
 							</div>
 							<hr>
 							Styling for the bar chart can be found in the

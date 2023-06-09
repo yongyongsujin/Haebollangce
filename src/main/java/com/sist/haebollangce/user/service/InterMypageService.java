@@ -78,5 +78,6 @@ public interface InterMypageService {
 
 	// 마이페이지 홈 챌린지 그래프-챌린지 참여 횟수
 	String chart_challenging(Map<String, String> paraMap);
+	String chart_category(Map<String, String> paraMap);
 
 }

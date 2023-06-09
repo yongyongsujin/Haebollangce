@@ -260,6 +260,16 @@ public class MypageDAO implements InterMypageDAO {
 		
 		return chart_challenging_list;
 	}
+	@Override
+	public List<Map<String, String>> chart_category(Map<String, String> paraMap) {
+
+		List<Map<String, String>> category_list = mapper.chart_category(paraMap);
+		
+		// System.out.println("dao userid : " + paraMap.get("userid"));
+		// System.out.println("dao userid : " + paraMap.get("month"));
+		
+		return category_list;
+	}
 
 
 }
