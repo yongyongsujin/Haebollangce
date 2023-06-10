@@ -251,17 +251,17 @@
 	
 	<!-- 진행중인 챌린지 페이지 정보 가지고오기 -->
 	<resultMap type="HashMap" id="mypage_challenging_map">
-		<result property="fk_challenge_code" 	    column="fk_challenge_code" 	      javaType="String" />
-		<result property="thumbnail" 	    column="thumbnail" 	      javaType="String" />
-		<result property="challenge_name"   column="challenge_name"   javaType="String" />
-		<result property="set_date" 	    column="set_date" 	      javaType="String" />
-		<result property="fk_userid" 	    column="fk_userid" 	      javaType="String" />
-		<result property="freq_type" 	    column="freq_type" 	      javaType="String" />
-		<result property="frequency" 	    column="frequency" 	      javaType="String" />
-		<result property="startdate" 	    column="startdate" 	      javaType="String" />
-		<result property="hour_start" 	    column="hour_start"       javaType="String" />
-		<result property="hour_end" 	    column="hour_end" 	      javaType="String" />
-		<result property="finish_day" 	    column="finish_day"       javaType="String" />
+		<result property="fk_challenge_code" column="fk_challenge_code" javaType="String" />
+		<result property="thumbnail" 	     column="thumbnail" 	    javaType="String" />
+		<result property="challenge_name"    column="challenge_name"    javaType="String" />
+		<result property="set_date" 	     column="set_date" 	        javaType="String" />
+		<result property="fk_userid" 	     column="fk_userid" 	    javaType="String" />
+		<result property="freq_type" 	     column="freq_type" 	    javaType="String" />
+		<result property="frequency" 	     column="frequency" 	    javaType="String" />
+		<result property="startdate" 	     column="startdate" 	    javaType="String" />
+		<result property="hour_start" 	     column="hour_start"        javaType="String" />
+		<result property="hour_end" 	     column="hour_end" 	        javaType="String" />
+		<result property="finish_day" 	     column="finish_day"        javaType="String" />
 	</resultMap>
 	<select id="mypage_challenging" parameterType="HashMap" resultMap="mypage_challenging_map">
 		select I.fk_challenge_code, C.thumbnail, C.challenge_name, D.set_date, C.fk_userid, F.freq_type ,F.frequency,
@@ -281,6 +281,7 @@
 		<if test="fk_category_code != 0">
 			and C.fk_category_code = #{fk_category_code}
 		</if>
+		order by I.fk_challenge_code desc
 	</select>
 
 	
@@ -300,13 +301,14 @@
 	
 	<!-- 진행중인 챌린지 중 오늘 하루 인증했는지 여부 -->
 	<resultMap type="HashMap" id="mypage_certify_challenge_map">
-		<result property="fk_challenge_code" 	   column="fk_challenge_code" 		javaType="String" />
+		<result property="fk_challenge_code" column="fk_challenge_code" javaType="String" />
 	</resultMap>
 	<select id="mypage_certify_challenge" parameterType="HashMap" resultMap="mypage_certify_challenge_map">
 		select fk_challenge_code
 		from tbl_certify_history 
 		where trunc(certify_time) = trunc(sysdate) and fk_userid = #{userid}
 	</select>
+	
 	
 	<!-- 완료된 챌린지 갯수 불러오기 -->
 	<select id="finish_count" parameterType="HashMap" resultType="int">
@@ -344,7 +346,7 @@
 				select extract(month from C.startdate) as month, count(*) as count
 				from tbl_challenge C join tbl_challenge_info I
                         			on C.challenge_code = I.fk_challenge_code
-				where I.fk_userid = #{userid}
+				where I.fk_userid = #{userid} and to_char(C.startdate, 'yyyy') = to_char(sysdate, 'yyyy')
 				group by extract(month from C.startdate)
 			) T 
 			on V.month = T.month
@@ -361,7 +363,7 @@
                         		on C.challenge_code = I.fk_challenge_code
                     		 join tbl_category G
                        			 on C.fk_category_code = G.category_code
-		where I.fk_userid = #{userid} and to_char(C.startdate, 'mm') = ${month}
+		where I.fk_userid = #{userid} and to_char(C.startdate, 'mm') = ${month} and to_char(C.startdate, 'yyyy') = to_char(sysdate, 'yyyy')
 		group by G.category_name
 		order by percentage desc
 	</select>

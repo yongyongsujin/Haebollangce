@@ -16,11 +16,6 @@
 		width: 100%;
 	}
 	
-	div#plzCha,
-	div#notice {
-		margin-bottom: 50px;
-	}
-	
 	img#promainimg {
 		height: 103px;
 		border-radius: 50%;
@@ -72,6 +67,10 @@
 	
 	td.td_width_30 {
 		width: 30%;
+	}
+	
+	td.td_width_33 {
+		width: 33%;
 	}
 	
 	span#span_userid {
@@ -434,18 +433,18 @@
 						
 							cnt++;
 							
-							if(cnt > 2) {
+							if(cnt > 3) {
 								break;
 							}
 							
 							html += "<tr>"
-								 +	"	<td class='td_width_30'>"
+								 +	"	<td class='td_width_33'>"
 								 +  "		<img class='img-fluid px-3 px-sm-4 mt-3 mb-4 cha_img' src='" + json[i].thumbnail + "' alt='챌린지이미지'>"
 								 +	"	</td>"
 								 +	"	<td>"
 								 +	"		<div class='div_info div_title'>" + json[i].challenge_name + " 챌린지</div>"
-								 +	"		<div class='div_info'>챌린지 시작일자:" + json[i].startdate + "</div>"
-								 +	"		<div class='div_info'>개설자:" + json[i].fk_userid +"</div>"
+								 +	"		<div class='div_info'>챌린지 시작일자 : " + json[i].startdate + "</div>"
+								 +	"		<div class='div_info'>개설자 :" + json[i].fk_userid +"</div>"
 								 +	"	</td>"
 								 +	"	<td>"
 								 +	"		<button type='button' class='go_cite'>상세보기</button>"
@@ -470,8 +469,6 @@
 		
 		
 		<%-- 챌린지 그래프 시작 --%>
-	
-		
 		$.ajax({
 			url: "/mypage/chart_challenging",
 			data:{
@@ -484,41 +481,36 @@
 				
 				let month_challenging_arr = []; // 월별 참여한 챌린지
 				
-				let category_arr = []; // 참여한 챌린지별 태그 비율
-				
-				var ajaxCounter = 0;
-				var totalAjaxCalls = json1.length;
-				
 				$.each(json1, function(index, item){
 					month_challenging_arr.push({
 						 					name: item.month,
-		                 					cnt: item.count,
+						 					y: Number(item.count),
 		                 					drilldown: item.month
 										});
 				}); // end of $.each(json, function(index, item){}) -----
+				
+				let category_arr = []; // 참여한 챌린지별 태그 비율
 				
 				$.each(json1, function(index1, item1){
 					
 					$.ajax({
 						url:"/mypage/chart_category",
-						type:"get",
 						data:{
 							"userid":"jisu",
 							"month":item1.month
 						},
 						dataType:"json",
-						async: false,
 						success: function(json2){
 							// 달 별 참여한 챌린지 태그 비율
 							
-							// console.log(JSON.stringify(json2));
+							//console.log(JSON.stringify(json1));
 							
-							// console.log(item1.month);
+							//console.log(item1.month +"  " + JSON.stringify(json2));
 							
 							let subArr = [];
 							
 							$.each(json2, function(index2, item2){
-								subArr.push([item2.category_name+"("+item2.percentage+" %)",
+								subArr.push([item2.category_name,
 				                        	 Number(item2.percentage)]);
 							}); // end of $.each(json2, function(index2, item2){}) -----
 							
@@ -528,84 +520,78 @@
 					                			data: subArr
 											});
 							
-							ajaxCounter++; // 호출이 완료될 때마다 카운터 증가
-							
-							if (ajaxCounter === totalAjaxCalls) {
-				                
-								Highcharts.chart('chart_container', {
-								    chart: {
-								        type: 'column'
-								    },
-								    title: {
-								        align: 'left',
-								        text: '올 해 챌린지 참여 횟수'
-								    },
-								    subtitle: {
-								        align: 'left',
-								        text: 'Click the columns to view versions. Source: <a href="http://statcounter.com" target="_blank">statcounter.com</a>'
-								    },
-								    accessibility: {
-								        announceNewData: {
-								            enabled: true
-								        }
-								    },
-								    xAxis: {
-								        type: 'category'
-								    },
-								    yAxis: {
-								        title: {
-								            text: '참여했던 챌린지 수(개)'
-								        }
+							Highcharts.chart('chart_container', {
+							    chart: {
+							        type: 'column'
+							    },
+							    title: {
+							        align: 'left',
+							        text: '올 해 챌린지 참여 횟수'
+							    },
+							    subtitle: {
+							        align: 'left',
+							        text: 'Click the columns to view versions. Source: <a href="http://statcounter.com" target="_blank">statcounter.com</a>'
+							    },
+							    accessibility: {
+							        announceNewData: {
+							            enabled: true
+							        }
+							    },
+							    xAxis: {
+							        type: 'category'
+							    },
+							    yAxis: {
+							        title: {
+							            text: '참여했던 챌린지 수(개)'
+							        }
 
-								    },
-								    legend: {
-								        enabled: false
-								    },
-								    plotOptions: {
-								        series: {
-								            borderWidth: 0,
-								            dataLabels: {
-								                enabled: true,
-								                format: '{point.y}'
-								            }
-								        }
-								    },
+							    },
+							    legend: {
+							        enabled: false
+							    },
+							    plotOptions: {
+							        series: {
+							            borderWidth: 0,
+							            dataLabels: {
+							                enabled: true,
+							                format: '{point.y}'
+							            }
+							        }
+							    },
 
-								    tooltip: {
-								        headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
-								        pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y}</b> of total<br/>'
-								    },
+							    tooltip: {
+							        headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
+							        pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y}</b> of total<br/>'
+							    },
 
-								    series: [
-								        {
-								            name: '챌린지명',
-								            colorByPoint: true,
-								            data:month_challenging_arr
-								        }
-								    ],
-								    drilldown: {
-								        breadcrumbs: {
-								            position: {
-								                align: 'right'
-								            }
-								        },
-								        series: category_arr
-								    }
-								}); // end of chart
-								////////////////////////
-								
-				            }
+							    series: [
+							        {
+							            name: '챌린지명',
+							            colorByPoint: true,
+							            data:month_challenging_arr
+							        }
+							    ],
+							    drilldown: {
+							        breadcrumbs: {
+							            position: {
+							                align: 'right'
+							            }
+							        },
+							        series: category_arr
+							    }
+							}); // end of chart
+							////////////////////////
 							
-						},
-						error: function(request, status, error){
-							alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
-			            }
-					}); // end of ajax json2
-					
-				}); // end of each
-							
-				///////////////////////////////////////////////////////////////
+					},
+					error: function(request, status, error){
+						alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+		            }
+				}); // end of ajax json2
 				
+			}); // end of each
+						
+			///////////////////////////////////////////////////////////////
+			
 				
 			},
 			error: function(request, status, error){
@@ -697,16 +683,7 @@
 							<div class="col mr-2">
 								<div class="text-xs font-weight-bold text-info text-uppercase mb-1">100% 인증성공률</div>
    								<div id="certify_percent_position" class="row no-gutters align-items-center">
-   								<!-- 
-									<div class="col-auto">
-										<div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">10%</div>
-									</div>
-									<div class="col">
-										<div class="progress progress-sm mr-2">
- 											<div class="progress-bar bg-info" role="progressbar" style="width: 10%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
-										</div>
-									</div>
-									 -->
+   								
 								</div>
 							</div>
 							<div class="col-auto">
@@ -740,7 +717,7 @@
 			<!-- 인증이 필요한 챌린지 시작 -->
 			<div class="row">
 				<div class="col-lg-6 mb-4">
-					<div id="plzCha" class="card shadow mb-4">
+					<div class="card shadow mb-4">
 						<div class="card-header py-3">
 							<h5 class="m-0 font-weight-bold">인증이 필요한 챌린지</h5>
 						</div>
@@ -813,10 +790,6 @@
 			</div>
 			<!-- 두번째문단 끝 -->
 				
-			
-			
-			
-			
 			<!-- 챌린지 리포트 시작-->
 			<div class="row">
 				<div class="col-lg-12 mb-8">
@@ -828,8 +801,7 @@
 							<div id="chart_container" class="chart-bar">
 							</div>
 							<hr>
-							Styling for the bar chart can be found in the
-							<code>/js/demo/chart-bar-demo.js</code> file.
+							올 해 챌린지 참여 횟수에는 진행중인 챌린지와 완료된 챌린지 모두 포함된 횟수입니다.
 						</div>
 					</div>
 				</div>

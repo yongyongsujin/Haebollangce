@@ -32,7 +32,6 @@
 	
 	
 	img.cha_img {
-		width: 20rem;
 		border-radius: 20%;
 	}
 	
@@ -78,8 +77,8 @@
 		font-size: 13pt;
 	}
 	
-	td.td_width_33 {
-		width: 33%;
+	td.td_width_36 {
+		width: 36%;
 	}
 	
 	div.go_certify,
@@ -88,8 +87,29 @@
 		font-size: 14pt;
 		font-weight: bold;
 		margin: 10px 0;
+		text-align: center;
 		cursor: pointer;
 	}
+	
+	tr.no_challenging {
+		margin: 3% 0 3% 43%;
+	}
+	
+	div.div_info {
+		margin: 8px 0;
+		font-size: 13pt;
+	}
+	
+	div.div_title {
+		font-size: 15pt;
+		font-weight: bold;
+		margin-bottom: 8%;
+	}
+	
+	td.td_width_22 {
+		width: 22%;
+	}
+	
 	
 	
 </style>
@@ -160,11 +180,11 @@
 							
 							html += "<table class='col-lg-6'>"
 								 +	"	<tr>"
-								 +	"		<td class='td_width_33'>"
+								 +	"		<td class='td_width_36'>"
 								 +  "			<img class='img-fluid px-3 px-sm-4 mt-3 mb-4 cha_img' src='" + json[i].thumbnail + "' alt='챌린지이미지'>"
 								 +	"		</td>"
 								 +	"		<td>"
-								 +	"			<div class='div_info'>챌린지이름: " + json[i].challenge_name + "</div>"
+								 +	"			<div class='div_title'>" + json[i].challenge_name + " 챌린지</div>"
 								 +	"			<div class='div_info'>시작일자: " + json[i].startdate + "</div>"
 								 +	"			<div class='div_info'>개설자: " + json[i].fk_userid +"</div>"
 								 +	"		</td>"
@@ -186,7 +206,7 @@
 					
 					html += "<table class='col-lg-6'>"
 						 +	"	<tr>"
-						 +	"		<td>추천챌린지가 없습니다.</td>"
+						 +	"		<td class='td_width_36'>추천챌린지가 없습니다.</td>"
 						 +	"		<td>"
 						 +  "			<div>직접 챌린지를 만들어보는 것은 어떤가요?</div>"
 						 +	"			<button type='button' onclick=''>챌린지 개설하러 가기</button>"
@@ -290,19 +310,18 @@
 						for(var i=0; i<json.length; i++) {
 							
 							if(resultToday < json[i].finish_day) {
+								
 								html += "<table class='col-lg-6 '>"
 									 +  "	<tr>"
-									 +  "		<td class='td_width_33'>"
+									 +  "		<td class='td_width_36'>"
 									 +  "			<img class='img-fluid px-3 px-sm-4 mt-3 mb-4 cha_img' src='" + json[i].thumbnail + "' alt='챌린지이미지'>"
 									 +  "		</td>"
 									 +	"		<td>"
-									 +	"			<div class='div_info'>" + json[i].challenge_name + "</div>"
-									 +	" 			<div class='div_info'>참여기간: " + json[i].startdate + "~" + json[i].finish_day + "</div>"
-									 +	"			<div class='div_info'>인증시간: " + json[i].hour_start + "~" + json[i].hour_end + "</div>"
-									 +	" 			<div class='div_info'>시작일: " + json[i].startdate + "</div>"
-									 +	" 			<div class='div_info'>개설자: " + json[i].fk_userid + "</div>"
+									 +	"			<div class='div_title'>" + json[i].challenge_name + " 챌린지</div>"
+									 +	" 			<div class='div_info'>참여기간 : " + json[i].startdate + "~" + json[i].finish_day + "</div>"
+									 +	"			<div class='div_info'>인증시간 : " + json[i].hour_start + "~" + json[i].hour_end + "</div>"
 									 +  " 		</td>"
-									 +	"		<td>"
+									 +	"		<td class='td_width_22'>"
 									 +	"			<div class='go_certify' onclick='location.href='#''>인증하러가기</div>"
 									 +	"			<div class='go_board' onclick='location.href='#''>게시판가기</div>"
 									 +  "		</td>"
@@ -313,13 +332,13 @@
 								
 								all_cnt++;
 							}
-						} // for(var i=0; i<json.length; i++) -----
+						} // for(var i=0; i<challenge.length; i++) -----
 						
 						$("input#all_cnt").val(all_cnt);
 						
-					} // end of if(json.length > 0) -----
+					} // end of if(challenge.length > 0) -----
 					else {
-						html = "<tr><td class='td_width_33'>참여중인 챌린지가 없습니다.</td></tr>"
+						html = "<tr class='no_challenging'><td>참여중인 챌린지가 없습니다.</td></tr>"
 						
 						$("div#show_table").html(html);
 					}
@@ -329,62 +348,78 @@
 					
 					let html = "";
 					
-					let ratio = (json.length/$("input#all_cnt").val())*100;
-					
-					html = "<div class='auto'>"
-						 + "	<div class='user_level'>참여 비율</div>"
-						 + "</div>"
-						 + "<div class='col'>"
-						 + "	<div class='progress progress-sm mr-2 bar_width'>"
-						 + "		<div class='progress-bar bg-info' role='progressbar' style='width:" + ratio + "%;' aria-valuenow='50' aria-valuemin='0' aria-valuemax='100'></div>"
-						 + "	</div>"
-						 + "</div>"
-						 + "<span>" + ratio + "%</span>";
-						 
-					$("div#show_ratio").html(html); 
+					let ing_cnt = 0;
 					
 					if(json.length > 0){
 						
-						html = "";
-							 
 						for(var i=0; i<json.length; i++) {
 							
 							if(resultToday < json[i].finish_day) {
 							
-								html  += "<table class='col-lg-6 '>"
+								html  += "<table class='col-lg-6'>"
 									  +  "		<tr>"
-									  +  "			<td class='td_width_33'>"
+									  +  "			<td class='td_width_36'>"
 									  +  "				<img class='img-fluid px-3 px-sm-4 mt-3 mb-4 cha_img' src='" + json[i].thumbnail + "' alt='챌린지이미지'>"
 								  	  +  "			</td>"
 									  +	 "			<td>"
-									  +  "				<div class='div_info'>" + json[i].challenge_name + "</div>"
-									  +	 " 				<div class='div_info'>참여기간: " + json[i].startdate + "~" + json[i].finish_day + "</div>"
-									  +	 "				<div class='div_info'>인증시간: " + json[i].hour_start + "~" + json[i].hour_end + "</div>"
-									  +	 " 				<div class='div_info'>시작일: " + json[i].startdate + "</div>"
-									  +	 " 				<div class='div_info'>개설자: " + json[i].fk_userid + "</div>"
+									  +  "				<div class='div_title'>" + json[i].challenge_name + "</div>"
+									  +	 " 				<div class='div_info'>참여기간 : " + json[i].startdate + "~" + json[i].finish_day + "</div>"
+									  +	 "				<div class='div_info'>인증시간 : " + json[i].hour_start + "~" + json[i].hour_end + "</div>"
 									  +  " 			</td>"
-									  +	 "			<td>"
+									  +	 "			<td class='td_width_22'>"
 									  +	 "				<div class='go_certify' onclick='location.href='#''>인증하러가기</div>"
 									  +  "				<div class='go_board' onclick='location.href='#''>게시판가기</div>"
 									  +  "			</td>"
 									  +  "		</tr>"
 									  +	 "</table>";
+									  
+								ing_cnt++; 
 								
 								$("div#show_table").html(html);
-							} 
-							else {
-								html = "<tr><td class='td_width_33'>참여중인 챌린지가 없습니다.</td></tr>"
 								
-								$("div#show_table").html(html);
-							}
-						} // for(var i=0; i<json.length; i++) -----
+							} // if(resultToday < challenge[i].finish_day) -----
+								
+						} // for(var i=0; i<challenge.length; i++) -----
 						
-					} // end of if(json.length > 0) -----
+						html = "";
+						
+						let ratio = (ing_cnt/$("input#all_cnt").val())*100;
+						
+						html = "<div class='auto'>"
+							 + "	<div class='user_level'>참여 비율</div>"
+							 + "</div>"
+							 + "<div class='col'>"
+							 + "	<div class='progress progress-sm mr-2 bar_width'>"
+							 + "		<div class='progress-bar bg-info' role='progressbar' style='width:" + ratio + "%;' aria-valuenow='50' aria-valuemin='0' aria-valuemax='100'></div>"
+							 + "	</div>"
+							 + "</div>"
+							 + "<span>" + ratio + "%</span>";
+							 
+						$("div#show_ratio").html(html);
+						
+					} // end of if(challenge.length > 0) -----
 					else {
-						html = "<tr><td class='td_width_33'>참여중인 챌린지가 없습니다.</td></tr>"
+						
+						html = "<div class='auto'>"
+							 + "	<div class='user_level'>참여 비율</div>"
+							 + "</div>"
+							 + "<div class='col'>"
+							 + "	<div class='progress progress-sm mr-2 bar_width'>"
+							 + "		<div class='progress-bar bg-info' role='progressbar' style='width:0%;' aria-valuenow='50' aria-valuemin='0' aria-valuemax='100'></div>"
+							 + "	</div>"
+							 + "</div>"
+							 + "<span>0%</span>";
+							 
+						$("div#show_ratio").html(html);
+						
+						html = "";
+						
+						html = "<tr class='no_challenging'><td>참여중인 챌린지가 없습니다.</td></tr>"
 						
 						$("div#show_table").html(html);
-					}
+						
+					} // end of else -----
+					
 				} // end of else -----
 				
 			},

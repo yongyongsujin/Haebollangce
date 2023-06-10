@@ -99,4 +99,5 @@ public interface InterMypageMapper {
 	List<Map<String, String>> chart_category(Map<String, String> paraMap);
 
 
+
 }

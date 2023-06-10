@@ -43,6 +43,8 @@
 	
 	<%-- 하이차트 --%>
 	<script src="<%= ctxPath%>/Highcharts-11.0.1/code/highcharts.js"></script>
+	<script src="<%= ctxPath%>/Highcharts-11.0.1/code/modules/data.js"></script>
+	<script src="<%= ctxPath%>/Highcharts-11.0.1/code/modules/drilldown.js"></script>
 	<script src="<%= ctxPath%>/Highcharts-11.0.1/code/modules/exporting.js"></script>
 	<script src="<%= ctxPath%>/Highcharts-11.0.1/code/modules/export-data.js"></script>
 	<script src="<%= ctxPath%>/Highcharts-11.0.1/code/modules/accessibility.js"></script>

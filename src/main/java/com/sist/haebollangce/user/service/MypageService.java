@@ -701,7 +701,7 @@ public class MypageService implements InterMypageService {
 		// System.out.println("servicee userid : " + paraMap.get("month"));
 		
 		// System.out.println("category_list " + category_list.toString());
-		
+	
 		JsonArray jsonArr = new JsonArray();
 		
 		for(Map<String, String> map : category_list) {
