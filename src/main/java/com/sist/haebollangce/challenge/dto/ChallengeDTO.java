@@ -24,6 +24,7 @@ public class ChallengeDTO {
 	private String hourEnd;
 	private String enddate;
 	private String achievementPct;
+	private String todayCheckCertify;
 	// join 용도
 	
 	private String categoryCode;
@@ -265,9 +266,16 @@ public class ChallengeDTO {
 	public void setAchievementPct(String achievementPct) {
 		this.achievementPct = achievementPct;
 	}
-	
-	
-	
+
+
+
+
+	public String getTodayCheckCertify() {
+		return todayCheckCertify;
+	}
+	public void setTodayCheckCertify(String todayCheckCertify) {
+		this.todayCheckCertify = todayCheckCertify;
+	}
 	
 	
 	

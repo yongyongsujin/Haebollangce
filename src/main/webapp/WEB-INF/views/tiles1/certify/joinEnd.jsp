@@ -1,7 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-    
+<%
+	String ctxPath = request.getContextPath();
+%>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"> 
 
@@ -42,18 +44,18 @@
 	<div class="mb-3" style="height: 100px; display: flex;" >
 		<div class="join_body" style="display: flex; box-shadow: 0px 0px 10px 1px gray; justify-content: center; align-items:center; width: 100%; height: 100%; border-radius: 20px; font-size: 12pt;">
 			<div style="height: 100%; width: 30%; display: flex; justify-content: center; align-items:center;">
-	  			<img src="${chaDTO.thumbnail}" style="height:90%; width: 90%; border-radius: 20px;"/>
+	  			<img src="<%= ctxPath%>/images/${chaDTO.thumbnail}" style="height:90%; width: 90%; border-radius: 20px;"/>
   			</div>
   			<div style="text-align: left; width: 70%;">
   				<div class="mb-2" style="display: flex; justify-content: space-between;">
 	  				<div style="width: 120px; background-color: rgb(244, 244, 244); text-align: center; border-radius: 20px;">
-	  					${chaDTO.category_name}
+	  					${chaDTO.categoryName}
 	  				</div>
 	  				<div class="mr-3" style="font-weight: bold;">
-	  					<span class="">${chaDTO.member_count}명 참가 중</span>
+	  					<span class="">${chaDTO.memberCount}명 참가 중</span>
 	  				</div>
   				</div>
-	  			<h5 style="margin: 0; display: flex; font-weight: bold; display:inline-block;">${chaDTO.challenge_name}</h5>
+	  			<h5 style="margin: 0; display: flex; font-weight: bold; display:inline-block;">${chaDTO.challengeName}</h5>
   				<div class="mr-3" style="text-align: right;">
 	  				<span>기간 : </span>
 	  				<h6 style="margin: 0; display: inline-block;">${chaDTO.startDate} ~ ${chaDTO.enddate}</h6>

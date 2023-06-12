@@ -1,6 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%
+	String ctxPath = request.getContextPath();
+%>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.6/dist/sweetalert2.all.min.js"></script>
 <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.6/dist/sweetalert2.min.css" rel="stylesheet">
@@ -135,21 +138,19 @@
 	$(document).ready(function(){
 		
 		const str_startDate = "${chaDTO.startDate}";
-		
 		const startDate = new Date(str_startDate);
 		const today = new Date();
-
+		
 		if (startDate <= today) {
 			// 챌린지가 이미 시작되었을 경우
 			
 			Swal.fire({
 				icon: "error",
-				// title: "주의",
 				html : "<div style='font-weight: bold; font-size: 16pt;'>이미 시작된 챌린지로<br>참여가 불가합니다.</div>",
 				confirmButtonColor: "#EB534C",
 				confirmButtonText: "확인"
 			}).then(function(){
-				location.href="<%= request.getContextPath()%>/challenge/certifyList";
+				// location.href="<%= request.getContextPath()%>/challenge/certifyList";
 			});
 		}
 		
@@ -309,7 +310,7 @@
 	<div id="challenge_join_header" class="mx-5" style="height: 250px;">
 		<div class="join_body" style="box-shadow: 0px 0px 10px 1px gray; display: flex; justify-content: center; align-items:center; width: 100%; height: 100%; border-radius: 20px; font-size: 16pt;">
 			<div style="height: 100%; width: 30%;">
-	  			<img src="${chaDTO.thumbnail}" style="object-fit: cover; height:90%; width: 90%; margin-top:12px; border-radius: 20px;"/>
+	  			<img src="<%= ctxPath%>/images/${chaDTO.thumbnail}" style="object-fit: cover; height:90%; width: 90%; margin-top:12px; border-radius: 20px;"/>
   			</div>
   			<div style="text-align: left; width: 70%;">
   				<div style="display: flex; justify-content: space-between;">
@@ -417,8 +418,8 @@
 </div>
 
 <form name="challenge_info">
-	<input type="text" id="userid" name="fk_userid" value="${userid}">
-	<input type="number" id="price" name="entry_fee" value="">
-	<input type="text" id="challenge_code" name="fk_challenge_code" value="${chaDTO.challengeCode}">
-	<input type="text" id="after_deposit" name="after_deposit" value="">
+	<input type="text" id="userid" name="fk_userid" value="${userid}" <%-- readonly="readonly" --%>>
+	<input type="number" id="price" name="entry_fee" value="" <%-- readonly="readonly" --%>>
+	<input type="text" id="challenge_code" name="fk_challenge_code" value="${chaDTO.challengeCode}" <%-- readonly="readonly" --%>>
+	<input type="text" id="after_deposit" name="after_deposit" value="" <%-- readonly="readonly" --%>>
 </form>

@@ -81,6 +81,22 @@
 			console.log("인증시간 체크완료");
 		}, 60000);
 		
+		
+		// 각 챌린지의 오늘 인증을 완료했는지 체크하여 인증완료 버튼 변환해주기
+		const arr_chall = $("input.checkCertify");
+
+		arr_chall.each(function(index, element) {
+			
+			if ( $(element).val() > 0) {
+				// 오늘 인증을 완료했을 경우
+				$(element).next().css({"background-color":"white", "color":"black"});
+				const html = '인증완료&nbsp;&nbsp;<i class="fa-solid fa-check fa-lg" style="color: #000000;"></i>';				
+				$(element).next().html(html);
+				$(element).next().prop('disabled', true );
+			} 
+		});
+		
+		
 	}); // end $(document).ready
 	
 	
@@ -225,7 +241,7 @@
 					<c:if test="${chaDTO.startDate <= today && today <= chaDTO.enddate}">
 				  		<div class="challengeList my-4" style="width: 100%; height: 250px; display: flex; border-radius: 20px;">
 				  			<div style="height: 100%; width: 30%;">
-					  			<img src="${chaDTO.thumbnail}" style="object-fit: cover; height:90%; width: 90%; margin-top:12px; border-radius: 20px;"/>
+					  			<img src="<%= ctxPath%>/images/${chaDTO.thumbnail}" style="object-fit: cover; height:90%; width: 90%; margin-top:12px; border-radius: 20px;"/>
 				  			</div>
 				  			<div style="text-align: left; width: 70%;">
 				  				<div style="display: flex; justify-content: space-between;">
@@ -247,11 +263,12 @@
 						  				<h5 class="pt-3" style="display: inline-block;">${chaDTO.startDate} ~ ${chaDTO.enddate}</h5>
 					  				</div>
 					  				<%-- 순서 건들면 스크립트 틀어짐 --%>
+					  				<input class="checkCertify" type="hidden" value="${chaDTO.todayCheckCertify}">
 					  				<button id="certify" style="width: 300px; background-color: #EB534C;" type="button" class="btn btn-secondary btn-lg btn_certify">인증하기</button>
-				  					<input class="hour_start" type="hidden" value="${chaDTO.hourStart}">
-				  					<input class="hour_end" type="hidden" value="${chaDTO.hourEnd}">
-				  					<input class="fk_freq_type" type="hidden" value="${chaDTO.fkFreqType}">
-				  					<input id="challenge_code" type="hidden" value="${chaDTO.challengeCode}">
+				  					<input class="hour_start" type="hidden" value="${chaDTO.hourStart}" <%-- readonly="readonly" --%>>
+				  					<input class="hour_end" type="hidden" value="${chaDTO.hourEnd}" <%-- readonly="readonly" --%>>
+				  					<input class="fk_freq_type" type="hidden" value="${chaDTO.fkFreqType}" <%-- readonly="readonly" --%>>
+				  					<input id="challenge_code" type="hidden" value="${chaDTO.challengeCode}" <%-- readonly="readonly" --%>>
 				  					<%-- 챌린지의 참가중인 userid 들어와야함 get방식으로 보낼때 아이디 추가--%>
 				  					<%-- 순서 건들면 스크립트 틀어짐 --%>
 				  				</div>
@@ -282,7 +299,7 @@
 					<c:if test="${chaDTO.startDate > today}">
 				  		<div class="challengeList my-4" style="width: 100%; height: 250px; display: flex; border-radius: 20px;">
 				  			<div style="height: 100%; width: 30%;">
-					  			<img src="${chaDTO.thumbnail}" style="object-fit: cover; height:90%; width: 90%; margin-top:12px; border-radius: 20px;"/>
+					  			<img src="<%= ctxPath%>/images/${chaDTO.thumbnail}" style="object-fit: cover; height:90%; width: 90%; margin-top:12px; border-radius: 20px;"/>
 				  			</div>
 				  			<div style="text-align: left; width: 70%;">
 				  				<div style="display: flex; justify-content: space-between;">

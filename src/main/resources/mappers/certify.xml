@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <!-- ==== #29. 루트 엘리먼트 & 네임스페이스 설정(프로젝트 전체내에서 유일해야 한다.) ==== -->
-<mapper namespace="com.sist.haebollangce.common.mapper.InterMapper">
+<mapper namespace="com.sist.haebollangce.common.mapper.InterCertifyMapper">
 
 	<select id="getJoinedChaList" parameterType="String" resultType="com.sist.haebollangce.challenge.dto.ChallengeDTO">
 		select C.challenge_code, G.category_name, challenge_name, thumbnail, fk_freq_type, frequency, D.set_date
@@ -11,6 +11,11 @@
 		     , to_char(hour_start, 'hh24:mi') as hour_start
 		     , to_char(hour_end, 'hh24:mi') as hour_end
 		     , achievement_pct
+		     , ( 
+		        select count(*)
+		        from tbl_certify_history 
+		        where trunc(certify_time) = trunc(sysdate) and fk_userid = #{fk_userid} and fk_challenge_code = C.challenge_code
+		        ) as todayCheckCertify
 		from tbl_challenge C 
 		join tbl_category G             on G.category_code = C.fk_category_code
 		join tbl_challenge_during D     on D.during_type = C.fk_during_type
@@ -220,5 +225,32 @@
 		from tbl_certify_history 
 		where trunc(certify_time) = trunc(sysdate) and fk_userid = #{fk_userid} and fk_challenge_code = #{challenge_code}
 	</select>
+	
+	<insert id="userReport" parameterType="HashMap">
+		insert into tbl_report (report_no, fk_certify_no, fk_userid, report_content) 
+			values(report_no_seq.nextval, #{certifyNo}, #{fk_userid}, #{report_content})
+	</insert>
+	
+	<select id="getAllChallengeList" resultType="com.sist.haebollangce.challenge.dto.ChallengeDTO">
+		select C.challenge_code, challenge_exp, member_count, fk_during_type
+		     , to_char(startDate, 'yyyy-mm-dd') as startdate
+		     , to_char( startdate + (to_number(fk_during_type) * 7), 'yyyy-mm-dd') as enddate
+		from tbl_challenge C 
+		join tbl_challenge_during D     on D.during_type = C.fk_during_type
+		where to_date( to_char(sysdate - 2 , 'yyyy-mm-dd')) <![CDATA[<]]> startdate + (to_number(fk_during_type) * 7)
+    		and startdate + (to_number(fk_during_type) * 7) <![CDATA[<=]]> to_date( to_char(sysdate - 1 , 'yyyy-mm-dd'))
+	</select>
+	
+	<select id="getParticipantList" parameterType="String" resultType="com.sist.haebollangce.challenge.dto.ChallengeInfoDTO">
+		select fk_userid, fk_challenge_code, entry_fee, achievement_pct
+		from tbl_challenge_info
+		where fk_challenge_code = #{challenge_code}
+	</select>
+	
+	<insert id="userRewardAdd" parameterType="com.sist.haebollangce.challenge.dto.ChallengeInfoDTO">
+		insert into tbl_reward (reward_code, fk_userid, fk_challenge_code, reward_date, reward)
+			values (SEQ_TBL_REWARD_REWARD_CODE.nextval, #{fkUserid}, #{fkChallengeCode}, sysdate, #{userReward})
+	</insert>
+	
 	
 </mapper>
