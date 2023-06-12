@@ -20,12 +20,12 @@
 							    align-items: center;
 							    flex-direction: column;
 							    border: 1px gray solid; 
-							    max-width: 2000px;
+							    max-width: 1200px;
 							    width: 80%;
 							    height: 90%;
 							    margin: 0 auto;}
 	div {
-		border: 1px gray solid; 
+		border: 0px gray solid; 
 		}
 		
 	.detail_challenge_content {
@@ -270,7 +270,6 @@
 		    justify-content: center;
 		    align-items: center;
 		    height: calc(100% - 26px);
-		    border-top: 1px solid #f4f4f4;
 		    
 	}
 	
@@ -278,7 +277,7 @@
 		    display: flex;
 		    justify-content: center;
 		    align-items: center;
-		    width: 100%;
+		    width: 50%;
 		    height: 48px;
 		    background-color: #f43630;
 		    color: #fff;
@@ -292,6 +291,7 @@
 	
 	.Info_certifyTime, .Info_startDate, .Info_challengeTerm {
 		display: flex;
+		border: 1px gray solid;
 	}
 	
 	
@@ -337,14 +337,16 @@
 				
 				<div class="row justify-content-around" style="height: auto; display: flex; width: 100%;">
 
-	                 <div class="col-lg-3">
-	                 <img class="img-fluid" src="<%= ctxPath%>/images/${challengedto.successImg}" style=" width: 100%; height: 200px; object-fit: cover; border-radius: 12px 12px 0 0;" alt="인증성공예시" />
+	                 <div class="col-lg-4">
+	                 <img class="img-fluid" src="<%= ctxPath%>/images/${challengedto.successImg}" style=" width: 100%; height: auto; object-fit: cover; border-radius: 12px 12px 0 0;" alt="인증성공예시" />
 	                 <div style="height: 30px; margin-top: -5px; background-color:green; color:white; text-align:center;  line-height: 30px; font-size:15pt; border-radius: 0 0 12px 12px;">O</div>
+	                 <div style="text-align: center; font-weight: bold;">올바른 인증 사진</div>
 					 </div>
 
-	                 <div class="col-lg-3">
-	                 <img class="img-fluid" src="<%= ctxPath%>/images/${requestScope.challengedto.failImg}" style="width: 100%; height: 200px; object-fit: cover; border-radius: 12px 12px 0 0;" alt="인증실패예시" />
+	                 <div class="col-lg-4">
+	                 <img class="img-fluid" src="<%= ctxPath%>/images/${requestScope.challengedto.failImg}" style="width: 100%; height: auto; object-fit: cover; border-radius: 12px 12px 0 0;" alt="인증실패예시" />
 	                 <div style="height: 30px; margin-top: -5px; background-color:red; color:white; text-align:center;  line-height: 30px; font-size:15pt; border-radius: 0 0 12px 12px;">X</div>
+	                 <div style="text-align: center; font-weight: bold;">잘못된 인증 사진</div>
 	                 </div>
   
 			    </div>
@@ -356,7 +358,7 @@
 				<div class="Info_notification__introduce">자세한 정보를 알려드릴게요</div>
 				
 				<div class="Info_certifyTime">
-				<i class="far fa-clock" style="color: #db4d4d;"></i>
+				<i class="far fa-clock" style="color: #db4d4d; padding-top:5px;"></i>
 				<div class="Info_certifyTime_info">인증가능시간 : ${challengedto.hourStart} ~ ${challengedto.hourEnd}</div>
 				</div>
 				
@@ -367,7 +369,7 @@
 				
 				<div class="Info_challengeTerm">
 				<i class="far fa-clock" style="color: #db4d4d;"></i>
-				<div class="Info_startDate_info">챌린지 기간 : ${challengedto.startDate} ~ ${challengedto.enddate}</div>
+				<div class="Info_startDate_info">챌린지 기간 : ${challengedto.startDate} ~ ${challengedto.enddate} 까지</div>
 				</div>
 		</div>
 		

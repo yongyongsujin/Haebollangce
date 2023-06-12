@@ -45,6 +45,14 @@
    			height: -webkit-fill-available;
    			line-height: 45px;
 	}
+	
+	.btn-challenge {
+		color: white;
+		font-weight: bold;
+		background-color: #F43630;
+    		border-color: #F43630;
+    		border-radius: 10px;
+	}
 	 
 	/* Checked */
 	.certify_freq_form input[type=radio]:checked + label, .challenge_during_form input[type=radio]:checked + label {
@@ -56,11 +64,22 @@
 	.certify_freq_form label:hover, .challenge_during_form label:hover {
 		color: #666;
 	}
+	
+	.btn-challenge:hover {
+		color: white;
+    		font-weight: bold;
+    		border-color: #bd2130;
+    		background-color: #c82333;
+	}
 	 
 	/* Disabled */
 	.certify_freq_form input[type=radio] + label, .challenge_during_form input[type=radio] + label {
 		background: #F9FAFC;
 		color: #666;
+	}
+	
+	#preview {
+  		display: none;
 	}
 
 </style>    
@@ -68,7 +87,7 @@
 <script type="text/javascript">
 
 	$(document).ready(function(){
-		
+
 		$('#startTime').datetimepicker({
 			format: 'HH:mm',
 			stepping: 15,
@@ -107,7 +126,7 @@
 		
         $('#startdate').datetimepicker({
             format: 'YYYY-MM-DD',
-            minDate: new Date()
+            minDate: moment().add(1, 'day').toDate()
         });
        
 	    //전역변수
@@ -124,9 +143,10 @@
 	            // 입력창 크기 조절바 사용 여부 (true:사용/ false:사용하지 않음)
 	            bUseVerticalResizer : true,    
 	            // 모드 탭(Editor | HTML | TEXT) 사용 여부 (true:사용/ false:사용하지 않음)
-	            bUseModeChanger : true,
+	            bUseModeChanger : true
 	        }
 	    });
+	    
 	    
 	    $("#btnWrite").click(function(){
 
@@ -156,7 +176,7 @@
 	     	 }
 	     	<%-- 글내용 유효성 검사(스마트 에디터 사용 할 경우) 끝 --%>  
 	     	
-	     	/*
+	     	
 	     	 // 경험치 유효성 검사
 	         const challenge_exp = $("input#challenge_exp").val().trim();
 	         if(challenge_exp == "") {
@@ -226,13 +246,14 @@
 	            alert("인증가능 종료시간을 설정해주세요!!");
 	            return;
 	         }
-	         */
 	         
-	     	 // 폼(form)을 전송(submit)
-	         const frm = document.addFrm;
-	         frm.method = "POST";
-	         frm.action = "<%= ctxPath%>/challenge/addEnd";
-	         frm.submit();
+	         
+	         if (confirm("챌린지 등록시 인증관련 사진은 수정이 불가합니다. 정말로 등록하시겠습니까?")) {
+	             const frm = document.addFrm;
+	             frm.method = "POST";
+	             frm.action = "<%= ctxPath %>/challenge/addEnd";
+	             frm.submit();
+	         }
 	         
 	         
 		}); // end of $("#btnWrite").click(function()-----------------------
@@ -267,7 +288,7 @@
 	      	<tr>
 	      	   <th>경험치</th>
 	      	   <td>
-	      	      	<input type="text" pattern="\d*" maxlength="3" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" name="challengeExp" id="challenge_exp" size="10" placeholder="최대 999"/>    
+	      	      	<input type="text" pattern="\d*" maxlength="3" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" name="challengeExp" id="challenge_exp" size="10" value="50" readonly/>    
 	      	   </td>
 	      	</tr>
 	      	
@@ -286,7 +307,10 @@
 	      	<tr>
 		         <th>대표사진 등록</th>
 		         <td>
-		             <input type="file" name="attach" id="thumbnail" accept="image/gif, image/jpeg, image/png"/>
+		             <input type="file" name="attach" id="thumbnail" accept="image/gif, image/jpeg, image/png" onchange="previewImage(event, 'preview')"/>
+		             <br>
+		             <br>
+        				<img id="preview" src="#" alt="미리보기" style="max-width: 200px; max-height: 200px; display: none;"/>
 		         </td>
 	      	</tr>
 	      	
@@ -307,14 +331,20 @@
 	      	<tr>
 		         <th>인증성공 예시첨부</th>
 		         <td>
-		             <input type="file" name="successImgAttach" id="success_img" accept="image/gif, image/jpeg, image/png"/>
+		             <input type="file" name="successImgAttach" id="success_img" accept="image/gif, image/jpeg, image/png" onchange="previewImage(event, 'preview1')"/>
+		             <br>
+		             <br>
+		             <img id="preview1" src="#" alt="미리보기" style="max-width: 200px; max-height: 200px; display: none;"/>
 		         </td>
 	      	</tr>
 	      
 	      	<tr>
 		         <th>인증실패 예시첨부</th>
 		         <td>
-		             <input type="file" name="failImgAttach" id="fail_img" accept="image/gif, image/jpeg, image/png"/>
+		             <input type="file" name="failImgAttach" id="fail_img" accept="image/gif, image/jpeg, image/png" onchange="previewImage(event, 'preview2')"/>
+		             <br>
+		             <br>
+		             <img id="preview2" src="#" alt="미리보기" style="max-width: 200px; max-height: 200px; display: none;"/>
 		         </td>
 	      </tr>
 	     
@@ -401,11 +431,33 @@
   	
 		   </table>
 		   
-		   <div style="margin: 20px;">
-		      <button type="button" class="btn btn-secondary btn-sm mr-3" id="btnWrite">글쓰기</button>
-		      <button type="button" class="btn btn-secondary btn-sm" onclick="javascript:history.back()">취소</button>
+		   <div style="margin: 20px; text-align: center;">
+		      <button type="button" class="btn btn-challenge mr-3" id="btnWrite">글쓰기</button>
+		      <button type="button" class="btn btn-challenge" onclick="javascript:history.back()">취소</button>
 		   </div>
 		   
 		</form>   
 	</div>
 </div> 
+
+<script>
+// 첨부한 이미지 미리보기 
+function previewImage(event, previewId) {
+	var input = event.target;
+	if (input.files && input.files[0]) {
+		var reader = new FileReader();
+
+		reader.onload = function(e) {
+			var preview = document.getElementById(previewId);
+			preview.src = e.target.result;
+			preview.style.display = 'block'; // 이미지 표시
+		};
+
+		reader.readAsDataURL(input.files[0]);
+	} else {
+		var preview = document.getElementById(previewId);
+		preview.src = '#';
+		preview.style.display = 'none'; // 이미지 감춤
+	}
+}
+</script>

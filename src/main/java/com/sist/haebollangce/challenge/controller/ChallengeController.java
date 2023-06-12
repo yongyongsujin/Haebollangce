@@ -667,6 +667,11 @@ public class ChallengeController {
     public ModelAndView challengeView_2(ModelAndView mav, HttpServletRequest request) {
     		String challengeCode = request.getParameter("challengeCode");
     		
+    		Integer.parseInt(challengeCode);
+			
+		Map<String, String> paraMap = new HashMap<>();
+		paraMap.put("challengeCode", challengeCode);
+    		
     		mav.setViewName("redirect:/challengeView?challengeCode="+challengeCode);
     		
     		return mav;
