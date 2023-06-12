@@ -8,25 +8,223 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %> 
 
 
+
 <script type="text/javascript">
 
   	$(document).ready(function(){
 	
-
-     
+  		lggoReadComment();  // 문자 시작되자마자 페이징 처리안한 댓글 읽어오기
+  		
+  		// -- 엔터치면 댓글입력됨 --
+		$("input#commentContent").keyup(function(e){
+			if (e.keyCode == 13) { 
+				lgcgoAddWrite()
+			}
+		});
+  		
+		// 페이지 로딩 시 스크롤 위치를 저장
+		/* $(window).addEventListener('beforeunload', function() {
+		  	localStorage.setItem('scrollPosition', window.pageYOffset);
+		}); */
+		
   	});// end of $(document).ready(function(){})-------------------------------
 
+  	
+  	// === Function Declaration === //
+  	
+  	// == 스크롤위치 저장 == 
+  	function restoreScrollPosition() {
+	  	// 이전 스크롤 위치를 로컬 스토리지에서 가져옴
+	  	var scrollPosition = localStorage.getItem('scrollPosition');
+
+	  	// 이전 스크롤 위치가 존재하면 스크롤 이동
+	  	if (scrollPosition) {
+	    	window.scrollTo(0, scrollPosition);
+	  	}
+	}
+
+  	// == 댓글쓰기 ==
+  	function lgcgoAddWrite() {
+  		
+		const commentContent = $("input#commentContent").val().trim();
+  		
+  		if(commentContent == "") {
+  			alert("댓글 내용을 입력하세요.");
+  			return; // 종료
+  		}
+  		
+  		const queryString = $("form[name='addWriteFrm']").serialize();
+  		
+  		$.ajax({
+  			url:"<%= ctxPath%>/lounge/loungeaddComment",
+  			data:queryString,
+		    type:"post",
+    		dataType:"json",
+    		success:function(json){
+    			// console.log("~~~ 확인뇽 : " + JSON.stringify(json));
+    			// ~~~ 확인뇽 : {"name":"망나뇽수진","n":0}
+    			
+    			if(json.n == 0) {
+    				alert("댓글쓰기 실패");
+    			}
+    			else {
+    				lggoReadComment();	// 페이징 처리 안한 댓글 읽어오기
+				}
+    			$("input#commentContent").val(""); // 댓글이 써졌든 아니든 이제 댓글칸 비워주기 
+    			location.href="javascript:history.go(0)";
+    		},
+    		error: function(request, status, error){
+                alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+            }
+  			      
+  		});//end of $.ajax()----------------------------------
+  		
+  	}//end of function lgcgoAddWrite()----------------
+  
+  	
+ 	// === 댓글 페이징 처리안하고 읽어오기  
+  	function lggoReadComment() {
+  		
+  		$.ajax({
+			url:'<%= ctxPath%>/lounge/loungereadComment',
+			data: {"parentSeq":"${requestScope.lgboarddto.seq}"},
+			dataType:"json",
+			success:function(json){
+			//	console.log("~~~ 확인뇽 : " + JSON.stringify(json));
+			//	console.log("~~~ 확인뇽 json.length : " + json.length); //-> 여기서 값은 잘 나오지만 $ 앞에 \ 를 안써줘서 값이 안나왔었다
+				
+				let html = `<form name="CmtFrm">`;
+  				if(json.length > 0) {
+  					$.each(json, function(index, item){
+  						
+  						if (item.depthno == 0) {
+	  						html += ` <div class="d-flex flex-row mb-3"> 
+			                		 	<img style="border: solid 3px #eee; border-radius: 100%; width:45px; height: 45px; vertical-align: top;" src="<%= ctxPath%>/images/\${item.lgcprofile}" /> 
+			  	              		 	<div class="c-details"> 
+			  	                     		<h5 class="mb-1 ml-3 lounge_comment_userid"><span class="lounge_comment_name">(댓글번호 \${item.seq}) \${item.name}</span></h5> 
+			  	                     		<input type="hidden" name="seq" id="seq" value="\${item.seq}" /> 
+			  	                     		<div class="c-details">
+			  		                 			<h6 class="mb-0 ml-3 lounge_comment_content">\${item.content}</h6>
+			  	                	 		</div>
+			  	                	 		<div class="c-details"> 
+			  	                				<small class="mb-0 ml-3" style="color:gray;">\${item.regdate}</small>
+			  	                				<small type="button" class="mb-0 ml-2" style="color:gray;" onclick="javascript:location.href='/lounge/loungeView?seq=\${item.parentSeq}&fk_seq=\${item.seq}&groupno=\${item.groupno}&depthno=\${item.depthno}'">답글달기</small> 
+			  	                				<small type="button" class="mb-0 ml-2 p-1" style="color:gray; background-color:#eee; border-radius:5px;">수정</small>
+			  	                				<small type="button" class="mb-0 ml-1 p-1" style="color:gray; background-color:#eee; border-radius:5px;" onclick="lgcommentDel('\${item.seq}')">삭제</small>
+			  	                			</div>
+			  	                		</div> 
+		  	              		 	  </div></form>`; 
+  						} 
+  						
+  						else if (item.depthno > 0) {
+  							let padding = parseInt(item.depthno)*40;
+  							html += ` <div class="d-flex flex-row mb-3" style="padding-left:\${padding}px"> 
+  										<img style="border: solid 3px #eee; border-radius: 100%; width:45px; height: 45px; vertical-align: top;" src="<%= ctxPath%>/images/\${item.lgcprofile}" /> 
+			  	              		 	<div class="c-details"> 
+			  	                     		<h5 class="mb-1 ml-3 lounge_comment_userid"><span class="lounge_comment_name">(댓글번호 \${item.seq}) \${item.name}</span></h5> 
+			  	                     		<input type="hidden" name="seq" id="seq" value="\${item.seq}" /> 
+			  	                     		<div class="c-details">
+			  		                 			<h6 class="mb-0 ml-3 lounge_comment_content">\${item.content}</h6>
+			  	                	 		</div>
+			  	                	 		<div class="c-details"> 
+			  	                				<small class="mb-0 ml-3" style="color:gray;">\${item.regdate}</small>
+			  	                				<small type="button" class="mb-0 ml-2" style="color:gray;" onclick="javascript:location.href='/lounge/loungeView?seq=\${item.parentSeq}&fk_seq=\${item.seq}&groupno=\${item.groupno}&depthno=\${item.depthno}'">답글달기</small>
+			  	                				<small type="button" class="mb-0 ml-2 p-1" style="color:gray; background-color:#eee; border-radius:5px;">수정</small>
+			  	                				<small type="button" class="mb-0 ml-1 p-1" style="color:gray; background-color:#eee; border-radius:5px;" onclick="lgcommentDel('\${item.seq}')">삭제</small>
+			  	                			</div> 
+			  	                		</div> 
+			              		 	</div></form>`;
+  						}
+  					});
+  				}
+  				else {
+  					html += ` <div>댓글이 존재하지 않습니다.</div>`
+  				}
+  				$("div#lgcommentDisplay").html(html);
+  			},
+  			error: function(request, status, error){
+                alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+            }
+  			
+  		});//end of $.ajax()--------------------------------------
+  		
+  	}//end of function lggoReadComment()----------------
+  	
+  	
+  	// 라운지 특정 글에서 댓글  삭제하기  CmtFrm
+  	function lgcommentDel(seq) {
+  		
+  		if(confirm("댓글을 삭제하면 하위 댓글들도 모두 삭제됩니다. 삭제 하시겠습니까?")) {
+  			
+  			$.ajax({
+  	  			url:"<%= ctxPath%>/lounge/lgcommentDel",
+  	  			data:{"parentSeq":"${requestScope.lgboarddto.seq}",
+  				  	  "seq":seq},
+  			    type:"post",
+  	    		dataType:"json",
+  	    		success:function(json){
+  	    			console.log("~~~ 확인 : " + JSON.stringify(json));
+  	    			// ~~~ 확인뇽 : {"name":"망나뇽수진","n":0}
+  	    			
+  	    			if(json.n == 0) {
+  	    				alert("댓글삭제 실패");
+  	    			}
+  	    			else {
+  	    				lggoReadComment();	// 페이징 처리 안한 댓글 읽어오기
+  					}
+  	    			location.href="javascript:history.go(0)";
+  	    		},
+  	    		error: function(request, status, error){
+  	                alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+  	            }
+  	  			      
+  	  		});//end of $.ajax()----------------------------------
+
+		}
+  		
+  	}//end of function lgcommentDel()-------------------
+  	
+  	
+ 	// 라운지 특정글에 대한 좋아요 등록하기 
+   	function lggoLikeAdd(seq) {
+   
+      	/* if(${empty sessionScope.loginuser}) {
+    	  	alert("좋아요를 누르려면 먼저 로그인 하셔야 합니다.");
+    	  	return;
+      	} */
+      
+      	$.ajax({
+			url:"<%= request.getContextPath()%>/lounge/loungelikeAdd",
+			type:"post",
+			data:{"fk_userid":$("input#fk_userid").val(),
+				  "fk_seq":seq},
+			dataType:"json",
+			success: function(json){
+				// console.log(JSON.stringify(json));
+			
+				alert(json.message);
+				location.href="javascript:history.go(0)";
+
+			},
+			error: function(request, status, error){
+             		alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+          	}
+		});//end of ajax()--------------------------
+      
+   	}// end of golikeAdd(pnum)---------------------------
+  	
 </script>
 
 
 <div class=" container-fluid mt-5 mb-5 mx-auto bg-white">
-	<div class="row col-md-10 mx-auto my-5 justify-content-center" style="width:50%; ">
+	<div class="row col-lg-6 col-md-6 col-sm-6 mx-auto my-5 justify-content-center">
 	
 		<c:if test="${not empty requestScope.lgboarddto}">
+		
 		    <div class="card p-3 mb-5 mt-5" >
 		        <div class="d-flex justify-content-between">
 		            <div class="d-flex flex-row align-items-center">
-		                <div><img style="border-radius:60%; width:60px; height: 60px;" src="http://images.munto.kr/production-user/1684469607083-photo-g1p6z-101851-0?s=48x48" /> </div>
+		                <div><img style="border-radius:60%; width:60px; height: 60px;" src="<%= ctxPath%>/images/${lgboarddto.lgbprofile}" /> </div>
 		                <div class="c-details">
 		                    <h6 class="mb-0 ml-4">${lgboarddto.name}</h6> 
 		                    <span class="ml-4">
@@ -37,246 +235,95 @@
 		            </div>
 		            <div class="badge2"> <span>follow</span> </div>
 		        </div>
-		        <div class="mt-4">
-		            <img style="width:100%;" src="http://images.munto.kr/production-feed/1684289174510-photo-spznw-42282-0?s=1080x1080" />
+		        <div class="mt-4" style="padding:10px;">
+		   			<img style="width:100%;" src="<%= ctxPath%>/images/lgthumFiles/${lgboarddto.thumbnail}" />
 		            <div class="mt-3">
-		            	<h4>${lgboarddto.subject}</h5>
+		            	<h4>${lgboarddto.subject}</h4>
 		                <div>${lgboarddto.content}</div>
+		                <c:if test="${lgboarddto.orgFilename != null}">
+			                <div style="border:solid 1px silver; border-radius:7px; margin:10px; padding:7px;"> 첨부파일 |  
+			                	<a href="<%= request.getContextPath() %>/lounge/lgdownload?seq=${lgboarddto.seq}" style="color:black;">${lgboarddto.orgFilename} ( <fmt:formatNumber value="${lgboarddto.fileSize}" pattern="#,###" /> bytes ) </a>
+			                <%--<c:if test="${sessionScope.loginuser != null}">
+			               			<a href="<%= request.getContextPath() %>/lounge/lgdownload?seq=${lgboarddto.seq}" style="color:black;">${lgboarddto.orgFilename} ( <fmt:formatNumber value="${lgboarddto.fileSize}" pattern="#,###" /> bytes ) </a>
+			               		</c:if>
+			               		<c:if test="${sessionScope.loginuser == null}">
+			               			${lgboarddto.orgFilename}
+			               		</c:if> --%>
+			                </div>
+		                </c:if>
 		                <div class="mt-4"> 
 		                	<span class="text1 ">
-		                		<img src="https://images.munto.kr/munto-web/ic_action_like-empty-black_30px.svg?s=32x32"/>${lgboarddto.likeCount}
+		                	<%--<c:if test="${}"> 로그인한 유저가 좋아요를 누른상태면 빨간하트를 --%>
+		                			<img src="<%= request.getContextPath()%>/images/lounge-redheart.jpg" alt="Lounge Like"  width="29" height="29" style="cursor: pointer;" onclick="lggoLikeAdd('${lgboarddto.seq}')"/>${lgboarddto.likeCount}
+		                		<%-- </c:if>
+		                		<c:if test="${}"> 로그인한 유저가 좋아요를 누르지 않은 상태면 빈 하트를 보이자  --%>
+		                			<img src="<%= request.getContextPath()%>/images/lounge-emptyheart.jpg" alt="Lounge Like"  width="29" height="29" style="cursor: pointer;" onclick="lggoLikeAdd('${lgboarddto.seq}')"/>${lgboarddto.likeCount}
+		                		<%-- </c:if> --%>
 		                		<img src="https://images.munto.kr/munto-web/ic_action_comment_30px.svg?s=32x32"/>${lgboarddto.commentCount}
 		                		<img src="https://images.munto.kr/munto-web/info_group.svg?s=32x32"/>${lgboarddto.readCount}
 		                	</span> 
-		                	<span class="text1 ">
-		                		<i class="fa-regular fa-pen-to-square btn btnEdit" style="color: gray;" onclick="javascript:location.href='<%= ctxPath%>/lounge/loungeEdit?seq=${requestScope.lgboarddto.seq}'">&nbsp;글 수정하기</i>
-		                		<i class="fa-regular fa-trash-can btn btnDelete" style="color:gray;" onclick="javascript:location.href='<%= ctxPath%>/lounge/loungeDel?seq=${requestScope.lgboarddto.seq}'">&nbsp;글 삭제하기</i>
-		                	</span> 
+		                	
+					        <span class="dropup">
+								<a class="nav-link dropdown-toggle headerfont" data-toggle="dropdown"><i class="fa-solid fa-ellipsis" style="color: #0d0d0d;"></i></a>
+								<ul class="dropdown-menu">
+									<li><i class="dropdown-item fa-solid fa-pen btnEdit" style="color: gray;" onclick="javascript:location.href='<%= ctxPath%>/lounge/loungeEdit?seq=${requestScope.lgboarddto.seq}'">&nbsp;글 수정하기</i></li>
+									<li><i class="dropdown-item fa-solid fa-trash btnDelete" style="color:gray;" onclick="javascript:location.href='<%= ctxPath%>/lounge/loungeDel?seq=${requestScope.lgboarddto.seq}'">&nbsp;글 삭제하기</i></li>
+								</ul>
+							</span>
+		                	
 		                </div>
 		            </div>
 		        </div>
 		     
 		    	<!-- 댓글쓰기 폼 추가 (로그인했을때만 가능)-->
 		    <%--<c:if test="${not empty sessionScope.loginuser}">--%>
-		    	<form name="addWriteFrm" id="addWriteFrm" style="margin-top: 20px;">
-			    	<div class="d-flex flex-row align-items-center"">
+		    	<form name="addWriteFrm" id="addWriteFrm" style="margin-top: 20px;" onsubmit="return false;">
+			    	<div class="d-flex flex-row align-items-center">
 		                <div > 
-		                	<img style="border: solid 3px #eee; border-radius: 100%; width:45px; height: 45px; vertical-align: top;" src="https://blogpfthumb-phinf.pstatic.net/MjAyMzAzMjZfMTcg/MDAxNjc5ODA1Nzg5MTA1.q_8Sgd5xxiU_c6miUoEzA8hlH3NQxSN7b0MrRsFUFkwg.Blbzms8HupOJpb4xBiGh9sKEXI7dluwLxcNeyuo6Ry4g.PNG.jin970510/profileImage.png?type=w161" /> 
+		                	<img style="border: solid 3px #eee; border-radius: 100%; width:45px; height: 45px; vertical-align: top;" src="<%= ctxPath%>/images/"/> <!-- *여기는 지금 로그인 한 사람의 profile_pic 정보가 와야함!* -->
 		                </div>
 		                <div style="width:100%;">
-		                	<input type="hidden" name="fk_userid" id="fk_userid" value="${sessionScope.loginuser.userid}" /> 
+		                	<input type="hidden" name="fk_userid" id="fk_userid" value="sudin" />  <!-- *여기는 지금 로그인 한 사람의 userid 정보가 와야함!* -->
+		                	<input type="hidden" name="name" id="name" value="슈딘쓰" />  <!-- *여기는 지금 로그인 한 사람의 name 정보가 와야함!* -->
+		                    
 		                    <div class=" c-details">
 		                    	<h6 class="mb-0 ml-2 lounge_comment_content align-items-center">
-				                    <input type="text" name="content" id="commentContent" style="border-radius:10px; border: solid 3px #eee; height: 35px; width:90%;" placeholder=" 답글입력.." /> 
+		                    		
+		                    		<!-- 댓글쓰기인 경우 -->
+		                    		<c:if test="${requestScope.fk_seq eq ''}">
+				                    	<input type="text" name="content" id="commentContent" style="border-radius:10px; border: solid 3px #eee; height: 35px; width:90%;" placeholder=" 댓글달기.." /> 
+			                    	</c:if>
+			                    	
+			                    	<!-- 대댓글쓰기인 경우 -->
+		                    		<c:if test="${requestScope.fk_seq ne ''}">
+				                    	<input type="text" name="content" id="commentContent" style="border-radius:10px; border: solid 3px #eee; height: 35px; width:90%;" placeholder=" @ ${requestScope.fk_seq} 님에게 댓글달기.." /> 
+			                    	</c:if>
+			                    	
+								   	<%-- === #9-4. 답변글쓰기가 추가된 경우 시작 === --%>
+								   	<input type="hidden" name="fk_seq" value="${requestScope.fk_seq}" /> 
+								   	<input type="hidden" name="groupno" value="${requestScope.groupno}" />   	
+								   	<input type="hidden" name="depthno" value="${requestScope.depthno}" />  
+								   	<%--=== 답변글쓰기가 추가된 경우 끝 === --%>
+   	
 			                    	<%-- 댓글에 달리는 원게시물의 글번호(즉, 부모글 글번호) --%>
-			                    	<input type="hidden" name="parentSeq" id="parentSeq" value="${requestScope.boardvo.seq}"/>&nbsp;
-			                    	<button type="button" class="btn btn-habol btn-sm" style="width:50px;">게시</button>
+			                    	<input type="hidden" name="parentSeq" id="parentSeq" value="${requestScope.lgboarddto.seq}"/>&nbsp;
+			                    	<button type="button" class="btn btn-habol btn-sm" style="width:50px;" onclick="lgcgoAddWrite()">게시</button>
 		                    	</h6>
 		                	</div>
 		                </div>
 		            </div>
 		        </form>
 		    <%--</c:if>--%>
+		    	<!-- 댓글쓰기끝 -->
 		    	
 		    	<hr style="border: solid 1px #eee;">
 		    	
 		    	<!-- 댓글보기 -->
-				<div class="d-flex flex-row">
-	                <div > 
-	                	<img style="border: solid 3px #eee; border-radius: 100%; width:45px; height: 45px; vertical-align: top;" src="http://images.munto.kr/production-user/1684469607083-photo-g1p6z-101851-0?s=48x48" /> 
-	                </div>
-	                <div class=" c-details">
-	                    <h6 class="mb-1 ml-3 lounge_comment_userid" ><span class="lounge_comment_userid">평일민주</span></h6>
-	                    <div class=" c-details">
-		                    <h6 class="mb-0 ml-3 lounge_comment_content">하 드디어 망나뇽 진화해따🐣 추카해여 쭉쭉 승승장구만 합시당🥳 코어는 걱정마시고 만간에 영등포를 또 함락시켜야겠구만유 영등포 활성화 1등공신 민우님,,,</h6>
-	                	</div>
-	                	<div class="c-details">
-	                		<small class="mb-0 ml-3" style="color:gray;">1일전</small>
-	                		<small type="button" class="mb-0 ml-2" style="color:gray;">답글달기</small>
-	                	</div>
-	                </div>  
-	            </div>
+				<div id="lgcommentDisplay"></div>
+	            <!-- 댓글보기 끝-->
+	            
 		    </div>
 	    </c:if>
 	</div>
 </div>
 
-<!-- lounge_content 시작 -->
-<div class="container mt-5 mb-5">
-	<h4 class="d-flex justify-content-center mb-5 pb-1"><span style="border-bottom: solid 3px gray; color:gray;">피드 더보기</span></h4>
-    <div class="row">
-        <div class="col-md-3 col-sm-6">
-            <div class="card p-3 mb-5">
-                <div class="d-flex justify-content-between">
-                    <div class="d-flex flex-row align-items-center">
-                        <div><img style="border-radius:60%; width:35px;" src="https://lh3.googleusercontent.com/ogw/AOLn63F1Ha6NDXd-seLYOJM9EFk7xFis5ODQaOFR0zDz0w=s32-c-mo" /> </div>
-                        <div class=" c-details">
-                            <h6 class="mb-0 ml-2">sujin</h6> <span class="ml-2">1 days ago</span>
-                        </div>
-                    </div>
-                    <div class="badge"> <span>follow</span> </div>
-                </div>
-                <div class="mt-3">
-                    <img style="width:100%;" src="http://images.munto.kr/production-feed/1684333844811-photo-hut52-101851-0?s=384x384" />
-                    <div class="mt-1">
-                        <div>
-	                        🖤Black Party🖤: 
-							Let me teach you how to ‘BLACK'.    7기 
-							다들 첫차 타고 갔다는 소문을 들었어…..
-							‘다들 집에는 갔니?…..’ 라는 재원이의 단톡방메세지🫢
-                        </div>
-                        <div class="mt-3"> <span class="text1"><img src="https://images.munto.kr/munto-web/ic_action_like-empty-black_30px.svg?s=32x32"/>좋아요수<span class="text2"><img src="https://images.munto.kr/munto-web/ic_action_comment_30px.svg?s=32x32"/>댓글수</span></span> </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3 col-sm-6">
-            <div class="card p-3 mb-5">
-                <div class="d-flex justify-content-between">
-                    <div class="d-flex flex-row align-items-center">
-                        <div><img style="border-radius:60%; width:35px;" src="http://images.munto.kr/production-user/1684469607083-photo-g1p6z-101851-0?s=48x48" /> </div>
-                        <div class=" c-details">
-                            <h6 class="mb-0 ml-1">평일민주</h6> <span class="ml-1">1 days ago</span>
-                        </div>
-                    </div>
-                    <div class="badge"> <span>follow</span> </div>
-                </div>
-                <div class="mt-3" onclick="goView()" style="cursor:pointer;">
-                    <img style="width:100%;" src="http://images.munto.kr/production-feed/1684289174510-photo-spznw-42282-0?s=1080x1080" />
-                    <div class="mt-1">
-                        <div>
-	                        🖤Black Party🖤: 
-							Let me teach you how to ‘BLACK'.    7기 
-							다들 첫차 타고 갔다는 소문을 들었어…..
-							‘다들 집에는 갔니?…..’ 라는 재원이의 단톡방메세지🫢
-                        </div>
-                        <div class="mt-3"> <span class="text1"><img src="https://images.munto.kr/munto-web/ic_action_like-empty-black_30px.svg?s=32x32"/>좋아요수<span class="text2"><img src="https://images.munto.kr/munto-web/ic_action_comment_30px.svg?s=32x32"/>댓글수</span></span> </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3 col-sm-6">
-            <div class="card p-3 mb-5">
-                <div class="d-flex justify-content-between">
-                    <div class="d-flex flex-row align-items-center">
-                        <div><img style="border-radius:60%; width:35px;" src="http://images.munto.kr/production-user/1675570371826-photo-5nj9g-129563-0?s=48x48" /> </div>
-                        <div class=" c-details">
-                            <h6 class="mb-0 ml-1">서현이</h6> <span class="ml-1">1 days ago</span>
-                        </div>
-                    </div>
-                    <div class="badge"> <span>follow</span> </div>
-                </div>
-                <div class="mt-3">
-                    <img style="width:100%;" src="http://images.munto.kr/production-feed/1684333844811-photo-hut52-101851-0?s=384x384" />
-                    <div class="mt-1">
-                        <div>
-	                        🖤Black Party🖤: 
-							Let me teach you how to ‘BLACK'.    7기 
-							다들 첫차 타고 갔다는 소문을 들었어…..
-							‘다들 집에는 갔니?…..’ 라는 재원이의 단톡방메세지🫢
-                        </div>
-                        <div class="mt-3"> <span class="text1"><img src="https://images.munto.kr/munto-web/ic_action_like-empty-black_30px.svg?s=32x32"/>좋아요수<span class="text2"><img src="https://images.munto.kr/munto-web/ic_action_comment_30px.svg?s=32x32"/>댓글수</span></span> </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3 col-sm-6">
-            <div class="card p-3 mb-5">
-                <div class="d-flex justify-content-between">
-                    <div class="d-flex flex-row align-items-center">
-                        <div><img style="border-radius:60%; width:35px;" src="https://lh3.googleusercontent.com/ogw/AOLn63F1Ha6NDXd-seLYOJM9EFk7xFis5ODQaOFR0zDz0w=s32-c-mo" /> </div>
-                        <div class=" c-details">
-                            <h6 class="mb-0 ml-1">sujin</h6> <span class="ml-1">1 days ago</span>
-                        </div>
-                    </div>
-                    <div class="badge"> <span>follow</span> </div>
-                </div>
-                <div class="mt-3">
-                    <img style="width:100%;" src="http://images.munto.kr/production-feed/1684333844811-photo-hut52-101851-0?s=384x384" />
-                    <div class="mt-1">
-                        <div>
-	                        🖤Black Party🖤: 
-							Let me teach you how to ‘BLACK'.    7기 
-							다들 첫차 타고 갔다는 소문을 들었어…..
-							‘다들 집에는 갔니?…..’ 라는 재원이의 단톡방메세지🫢
-                        </div>
-                        <div class="mt-3"> <span class="text1"><img src="https://images.munto.kr/munto-web/ic_action_like-empty-black_30px.svg?s=32x32"/>좋아요수<span class="text2"><img src="https://images.munto.kr/munto-web/ic_action_comment_30px.svg?s=32x32"/>댓글수</span></span> </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3 col-sm-6">
-            <div class="card p-3 mb-5">
-                <div class="d-flex justify-content-between">
-                    <div class="d-flex flex-row align-items-center">
-                        <div><img style="border-radius:60%; width:35px;" src="https://lh3.googleusercontent.com/ogw/AOLn63F1Ha6NDXd-seLYOJM9EFk7xFis5ODQaOFR0zDz0w=s32-c-mo" /> </div>
-                        <div class=" c-details">
-                            <h6 class="mb-0 ml-1">sujin</h6> <span class="ml-1">1 days ago</span>
-                        </div>
-                    </div>
-                    <div class="badge"> <span>follow</span> </div>
-                </div>
-                <div class="mt-3">
-                    <img style="width:100%;" src="http://images.munto.kr/production-feed/1684333844811-photo-hut52-101851-0?s=384x384" />
-                    <div class="mt-1">
-                        <div>
-	                        🖤Black Party🖤: 
-							Let me teach you how to ‘BLACK'.    7기 
-							다들 첫차 타고 갔다는 소문을 들었어…..
-							‘다들 집에는 갔니?…..’ 라는 재원이의 단톡방메세지🫢
-                        </div>
-                        <div class="mt-3"> <span class="text1"><img src="https://images.munto.kr/munto-web/ic_action_like-empty-black_30px.svg?s=32x32"/>좋아요수<span class="text2"><img src="https://images.munto.kr/munto-web/ic_action_comment_30px.svg?s=32x32"/>댓글수</span></span> </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3 col-sm-6">
-            <div class="card p-3 mb-5">
-                <div class="d-flex justify-content-between">
-                    <div class="d-flex flex-row align-items-center">
-                        <div><img style="border-radius:60%; width:35px;" src="https://lh3.googleusercontent.com/ogw/AOLn63F1Ha6NDXd-seLYOJM9EFk7xFis5ODQaOFR0zDz0w=s32-c-mo" /> </div>
-                        <div class=" c-details">
-                            <h6 class="mb-0 ml-1">sujin</h6> <span class="ml-1">1 days ago</span>
-                        </div>
-                    </div>
-                    <div class="badge"> <span>follow</span> </div>
-                </div>
-                <div class="mt-3">
-                    <img style="width:100%;" src="http://images.munto.kr/production-feed/1684333844811-photo-hut52-101851-0?s=384x384" />
-                    <div class="mt-1">
-                        <div>
-	                        🖤Black Party🖤: 
-							Let me teach you how to ‘BLACK'.    7기 
-							다들 첫차 타고 갔다는 소문을 들었어…..
-							‘다들 집에는 갔니?…..’ 라는 재원이의 단톡방메세지🫢
-                        </div>
-                        <div class="mt-3"> <span class="text1"><img src="https://images.munto.kr/munto-web/ic_action_like-empty-black_30px.svg?s=32x32"/>좋아요수<span class="text2"><img src="https://images.munto.kr/munto-web/ic_action_comment_30px.svg?s=32x32"/>댓글수</span></span> </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3 col-sm-6">
-            <div class="card p-3 mb-5">
-                <div class="d-flex justify-content-between">
-                    <div class="d-flex flex-row align-items-center">
-                        <div class="icon"> <i class="bx bxl-reddit"></i> </div>
-                        <div class=" c-details">
-                            <h6 class="mb-0">Reddit</h6> <span>2 days ago</span>
-                        </div>
-                    </div>
-                    <div class="badge"> <span>Design</span> </div>
-                </div>
-                <div class="mt-5">
-                    <h3 class="heading">Software Architect <br>Java - USA</h3>
-                    <div class="mt-5">
-                        <div class="progress">
-                            <div class="progress-bar" role="progressbar" style="width: 50%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
-                        </div>
-                        <div class="mt-3"> <span class="text1">52 Applied <span class="text2">of 100 capacity</span></span> </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- lounge_content 끝 -->

@@ -13,9 +13,9 @@
      
     	$("button#btnDelete").click(function(){
     		
-    		console.log("$('input#pw').val() : " + $("input#pw").val());
-    		console.log("${requestScope.pw} : " + "${requestScope.pw}");
-    		console.log("${requestScope.seq} : " + "${requestScope.seq}");
+    		//console.log("$('input#pw').val() : " + $("input#pw").val());
+    		//console.log("${requestScope.pw} : " + "${requestScope.pw}");
+    		//console.log("${requestScope.seq} : " + "${requestScope.seq}");
     		
     		if( $("input#pw").val() != "${requestScope.pw}") {
     			alert("글암호가 일치하지 않습니다.");
@@ -23,11 +23,11 @@
     		}
     		else {
     			
-    			if(confirm("정말로 글삭제를 하시겠습니까?")) {
+    			if(confirm("정말로 게시물을 삭제 하시겠습니까?")) {
     				// 폼(form)을 전송(submit)
 	    			const frm = document.delFrm;
 	    			frm.method = "post";
-	    			frm.action = "<%= ctxPath%>/lounge/loungeDelEnd.action";
+	    			frm.action = "<%= ctxPath%>/lounge/loungeDelEnd";
 	    			frm.submit();
     			}
     		}

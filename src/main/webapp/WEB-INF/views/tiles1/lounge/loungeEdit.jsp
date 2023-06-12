@@ -80,9 +80,31 @@
 			frm.action = "<%= ctxPath%>/lounge/loungeEditEnd";
 			frm.submit();
         
-	  });
+	  	});
      
-  });// end of $(document).ready(function(){})-------------------------------
+  	});// end of $(document).ready(function(){})-------------------------------
+  
+  	<%-- function deletelgOrgFilename() {
+	  
+	  	if(confirm("정말로 첨부파일을 삭제 하시겠습니까?")) {
+	  
+		    // Ajax를 사용하여 서버로 요청을 보내고, orgFilename 정보를 삭제하는 로직을 구현합니다.
+		    // 예를 들어, 서버의 특정 URL로 DELETE 요청을 보내거나, 필요한 처리를 수행합니다.
+		    // 이 예시에서는 AJAX 요청을 보내는 방법을 보여주기 위해 jQuery의 $.ajax() 함수를 사용합니다.
+		    $.ajax({
+		        url: '<%= ctxPath%>/lounge/deletelgOrgFilename', 
+		        type: "DELETE", // HTTP 요청 메서드 설정
+		        success: function(response) {
+		            alert("첨부파일이 삭제되었습니다.");
+		        },
+		        error: function(request, status, error){
+	                alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+	            }
+		    });
+	  
+	  	}//end of if()------------------------------------------------------
+	  
+	}//end of function deletelgOrgFilename()------------------------- 첨부파일 편집 기능 만들다 보류 --%>
 
 </script>
 
@@ -97,7 +119,7 @@
 			
 		        <div class="d-flex justify-content-between">
 		            <div class="d-flex flex-row align-items-center ">
-		                <div><img style="border-radius:60%; width:60px; height: 60px;" src="http://images.munto.kr/production-user/1684469607083-photo-g1p6z-101851-0?s=48x48" /> </div>
+		                <div><img style="border-radius:60%; width:60px; height: 60px;" src="<%= ctxPath%>/images/${requestScope.lgboarddto.lgbprofile}" /> </div>
 		                <div class="c-details">
 		                	<!-- 글 수정을 위해 글번호 seq 가 필요해 hidden 으로 넣어둔다. -->
             				<input type="hidden" name="seq" value="${requestScope.lgboarddto.seq}" readonly />
@@ -112,10 +134,20 @@
 		           	<textarea style="width:100%; height: 500px;" name="content" id="content" placeholder="글내용" >${requestScope.lgboarddto.content}</textarea>
 		            
 		            <div class="mt-2">
-		            	<div class="mt-2">
-		                	<span class="mr-4 align-center" style="width: 15%;">파일첨부</span>
-		                  	<input type="file" name="attach" />
-		                </div>
+		            	<c:if test="${requestScope.lgboarddto.orgFilename == null}">
+			            	<div class="mt-2">
+			                	<span class="mr-4 align-center" style="width: 15%;">파일첨부</span>
+			                  	<input type="file" name="attach" />
+			                </div>
+		                </c:if>
+		                <c:if test="${requestScope.lgboarddto.orgFilename != null}">
+		                	<div class="mt-2">
+		                		<span class="mr-4 align-center" style="width: 15%;">파일첨부</span>
+		                		<span>${requestScope.lgboarddto.orgFilename}&nbsp;&nbsp;
+		                			<!-- <i class="fas fa-trash" style="cursor:pointer" onclick="deletelgOrgFilename()"></i> 첨부파일 편집 기능 만들다 보류 -->
+		                		</span>
+		                	</div>
+		                </c:if>
 		                <div class="mt-2 mb-2">
 		                	<span class="mr-4" style="width: 15%;">작성암호</span>
 		                  	<input type="password" name="pw" id="pw" />

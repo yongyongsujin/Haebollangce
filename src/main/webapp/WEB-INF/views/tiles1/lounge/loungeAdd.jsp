@@ -45,27 +45,33 @@
   	            return;
   	        }
   	        
-
-			<%-- === #166-2. 글내용 유효성 검사(스마트 에디터 사용 할 경우) === --%>
+			// 글내용 유효성 검사
 	  		<%-- --- 스마트에디터는 내부적으로 <p> 태그를 포함하므로 걷어내줘야 한다 --- --%>
 	        let content = $("textarea#content").val();
 	        content = content.replace(/&nbsp;/gi, "");
 	        content = content.substring(content.indexOf("<p>")+3);
  	  	 	content = content.substring(0, content.indexOf("</p>"));
  	  	 	
- 	  	 	let Listcontent = $("textarea#content").val();
- 	  	 	Listcontent = Listcontent.replace(/&nbsp;/gi, "");
+ 	  	 	//let Listcontent = $("textarea#content").val();
+ 	  	 	//Listcontent = Listcontent.replace(/&nbsp;/gi, "");
  	  	 		
  	  	 	
  	  	 	if(content.trim().length == 0) {
  	  	 		alert("글내용을 입력하세요!!");
 	            return;
  	  	 	}
-	        
-			// 글암호 유효성 검사
+ 	  	 	
+ 	  		// 썸네일 유효성 검사
 			const pw = $("input#pw").val();
 			if(pw == "") {
 			    alert("글암호를 입력하세요!!");
+			    return;
+			}
+	        
+			// 글암호 유효성 검사
+			const attach_thum = $("input#attachThumbnail").val();
+			if(attach_thum == "") {
+			    alert("썸네일 사진을 넣어주세요!!");
 			    return;
 			}
 			
@@ -78,14 +84,14 @@
 			frm.method = "POST";
 			frm.action = "<%= ctxPath%>/lounge/loungeAddEnd";
 			frm.submit();
-        
+			
 	  });
      
   });// end of $(document).ready(function(){})-------------------------------
 
 </script>
 
-<div class=" container-fluid mt-5 mb-5 mx-auto bg-white">
+<div class="container-fluid mt-5 mb-5 mx-auto bg-white">
 	<div class=" col-md-10 mx-auto my-5 justify-content-center" style="width:80%; ">
 
 		<h4 class="d-flex justify-content-center mb-1 pb-1" style="padding-top:50px;"><span style="border-bottom: solid 3px;">라운지 글작성하기</span></h4>
@@ -96,10 +102,10 @@
 			
 		        <div class="d-flex justify-content-between">
 		            <div class="d-flex flex-row align-items-center ">
-		                <div><img style="border-radius:60%; width:60px; height: 60px;" src="http://images.munto.kr/production-user/1684469607083-photo-g1p6z-101851-0?s=48x48" /> </div>
+		                <div><img style="border-radius:60%; width:60px; height: 60px;" src="<%= ctxPath%>/images/" /> </div> <!-- *여기는 지금 로그인 한 사람의 profile_pic 정보가 와야함!* -->
 		                <div class="c-details">
-		                    <input type="hidden" name="fk_userid" id="fk_userid" value="sudin" /> <!-- value="${sessionScope.loginuser.userid}" -->
-	                    	<input type="text" name="name" style="border:none; font-size:16pt; margin-left:10px;" value="평일민주"></input> <!-- value="${sessionScope.loginuser.name}" readonly -->
+		                    <input type="hidden" name="fk_userid" id="fk_userid" value="sudin" /> <!-- value="${sessionScope.loginuser.userid}" --> <!-- *여기는 지금 로그인 한 사람의 userid 정보가 와야함!* -->
+	                    	<input type="text" name="name" style="border:none; font-size:16pt; margin-left:10px;" value="슈딘쓰"></input> <!-- value="${sessionScope.loginuser.name}" readonly --> <!-- *여기는 지금 로그인 한 사람의 name 정보가 와야함!* -->
             			</div>
 		            </div>
 		        </div>
@@ -110,12 +116,19 @@
 		            
 		            <div class="mt-2">
 		            	<div class="mt-2">
+		                	<span class="mr-4 align-center" style="width: 15%;">썸네일픽</span>
+		                  	<input type="file" name="attachThumbnail" id="attachThumbnail" />
+		                </div>
+		            	<div class="mt-2">
 		                	<span class="mr-4 align-center" style="width: 15%;">파일첨부</span>
 		                  	<input type="file" name="attach" />
 		                </div>
 		                <div class="mt-2 mb-2">
 		                	<span class="mr-4" style="width: 15%;">작성암호</span>
 		                  	<input type="password" name="pw" id="pw" />
+		                </div>
+		                <div class="mt-2 mb-2">
+		                	<small style="color:gray;">* 썸네일 사진과 첨부파일은 게시물 작성 후 수정이 불가합니다 신중히 골라주세요 :-) *</small>
 		                </div>
 		            </div>
 		        </div>

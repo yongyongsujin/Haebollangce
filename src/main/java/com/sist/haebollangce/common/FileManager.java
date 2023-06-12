@@ -1,12 +1,17 @@
 package com.sist.haebollangce.common;
 
+import java.io.BufferedInputStream;
 
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.Calendar;
 
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
 
 
 import org.springframework.stereotype.Component;
@@ -123,6 +128,163 @@ public class FileManager {
 		is.close();
 		
 		return newFilename;
+	}
+	
+	
+	
+	
+	/*
+	 * // == 파일 삭제 하기 == public void doFileDelete(String saveFilename, String path)
+	 * throws Exception {
+	 * 
+	 * String pathname = path + File.separator + saveFilename;
+	 * 
+	 * File file = new File(pathname);
+	 * 
+	 * if(file.exists()) { file.delete(); } }
+	 */
+  /*	
+	스마트에디터로 texteare 에 글을 쓸 때 사진 첨부 시 해당 사진의 원본 크기로 출력되는 현상이 발생하였다.
+	사진 사이즈 조절이 필요해서 SmartEditor 내에서 사이즈 조절 레이어가 나타나게끔 구현하고자 한다. 
+	https://joorang.tistory.com/10 
+	사이트를 참조 하면 잘 된다.
+  */
+	/*
+	 * // 이미지 폭 public int getImageWidth(String pathname) {
+	 * 
+	 * int width = -1;
+	 * 
+	 * File file = new File(pathname);
+	 * 
+	 * if (! file.exists()) return width;
+	 * 
+	 * ParameterBlock pb=new ParameterBlock(); pb.add(pathname);
+	 * 
+	 * RenderedOp rOp=JAI.create("fileload",pb);
+	 * 
+	 * BufferedImage bi=rOp.getAsBufferedImage();
+	 * 
+	 * width = bi.getWidth();
+	 * 
+	 * return width; }
+	 * 
+	 * // 이미지 높이 public int getImageHeight(String pathname) {
+	 * 
+	 * int height = -1;
+	 * 
+	 * File file = new File(pathname);
+	 * 
+	 * if (! file.exists()) return height;
+	 * 
+	 * ParameterBlock pb=new ParameterBlock(); pb.add(pathname);
+	 * 
+	 * RenderedOp rOp=JAI.create("fileload",pb);
+	 * 
+	 * BufferedImage bi=rOp.getAsBufferedImage();
+	 * 
+	 * height = bi.getHeight();
+	 * 
+	 * return height; }
+	 */
+		
+	// == 파일 다운로드 하기 ==
+	// saveFilename : 서버에 저장된 파일명(현재의 년월일시분초에다가 현재 나노세컨즈nanoseconds 값을 결합하여 확장자를 붙여서 만든것)
+	// originalFilename : 클라이언트가 업로드한 파일명(파일명이 영어로 되어진 경우도 있지만 한글로 되어진 경우가 있다는 것에 유의하자)
+	// path : 서버에 저장된 경로
+	public boolean doFileDownload(String saveFilename, String originalFilename, String path, HttpServletResponse response) {
+		
+		String pathname = path + File.separator + saveFilename;
+        // File.separator 은 운영체제에서 사용하는 파일경로의 구분자 이다.
+        // 운영체제가 Windows 이라면 File.separator 은 "\" 이고,
+        // 운영체제가 UNIX 또는 Linux 이라면 File.separator 은 "/" 이다.
+        // 해당경로에 \ 를 더하고 파일명을 더한 경로까지 나타내어준 파일명(문자열)을 만든다. 
+        // pathname 은 예를 들면, C:\NCS\workspace(spring)\.metadata\.plugins\org.eclipse.wst.server.core\tmp0\wtpwebapps\Board\resources\files\2020120809271535243254235235234.png 이다. 
+		
+		try {
+			if(originalFilename == null || "".equals(originalFilename)) {
+				originalFilename = saveFilename;
+			}
+			
+		//	originalFilename = new String(originalFilename.getBytes("EUC-KR"),"8859_1"); 
+	    //	또는
+			
+	       	originalFilename = new String(originalFilename.getBytes("UTF-8"),"8859_1");
+	       	// originalFilename.getBytes("UTF-8") 은 UTF-8 형태로 되어진 문자열 originalFilename 을 byte 형태로 변경한 후
+	       	// byte 형태로 되어진 것을 표준인 ISO-Latin1(혹은 Latin1 또는 8859_1) 형태로 인코딩한 문자열로 만든다.
+		} catch(UnsupportedEncodingException e) { }
+		
+		
+		try {
+			File file = new File(pathname);
+			// 다운로드 할 파일명(pathname)을 가지고 File 객체를 생성한다.
+		
+			if(file.exists()) { // 실제로 다운로드할 해당 파일이 존재한다라면  
+				
+				response.setContentType("application/octet-stream");
+				// 다운로드할 파일의 종류에 따라 Content-Type 을 지정해주어야 한다.
+	            // 이미지는 "image/jpeg" 같은 형식으로, 비디오는 "video/mpeg" 형식으로
+	            // 기타 인코딩된 모든 파일들은 "application/octet-stream" 으로 지정해주어야 한다.
+	            // 여기서는 모든 파일을 다운로드할 것이므로 기본값인 "application/octet-stream" 으로 지정해준다. 
+				
+				response.setHeader("Content-disposition",
+				           		   "attachment; filename=" + originalFilename);
+				// "Content-Disposition" 속성을 이용하여 해당 패킷이 어떤 형식의 데이터인지 알 수 있게 해주어야 한다.
+				// 즉, 여기서 하는 작업의 내용물은 파일이 첨부된 것이므로 "attachment"로 설정하고 있다. 
+				// 이는 첨부파일을 의미하며, 첨부된 파일명을 알려주어야 한다. 
+		
+				byte[] readByte = new byte[4096];
+				// 다운로드할 파일의 내용을 읽어오는 단위크기를 4096 byte로 하는 byte 배열 readByte 를 생성한다. 
+				
+				BufferedInputStream bfin = new BufferedInputStream(new FileInputStream(file)); 
+			    // 클라이언트가 다운로드 해야 할 파일(file)을 읽어들이기 위해 new FileInputStream(file) 을 생성함. 
+				// 또한 빠르게 읽어들이기 위해서 필터스트림(보조스트림) BufferedInputStream bfin 을 장착함. 
+				
+				ServletOutputStream souts = response.getOutputStream();
+				// ServletOutputStream 은 다운로드 되어질 파일을 클라이언트로 보내어주는 출력 스트림용 클래스이다. 
+				
+				int length = 0;
+				
+				while( (length = bfin.read(readByte, 0, 4096)) != -1  ) {
+				/*
+				    bfin.read(readByte, 0, 4096) 은 
+				        다운로드 해주어야할 file에서 0(처음) 부터 4096 byte 만큼 읽어들인 후 
+				    readByte 라는 변수에 읽어들인 내용을 저장시킨다.
+				       그런데 다운로드 해주어야할 file에서 읽어들인 내용이 없다라면 bfin.read(readByte, 0, 4096) 은 -1 을 리턴시켜준다. 
+				       그러므로  while( (length = bfin.read(readByte, 0, 4096)) != -1  ) 말은 
+				       다운로드 해주어야할 file 을 매번 4096 byte 씩 읽어들인다는 말이다.      	
+				 */
+					
+					souts.write(readByte, 0, length);
+					/*
+					    readByte 에 저장된 내용을 처음부터 읽어온 크기인 length 만큼  
+					    ServletOutputStream souts 에 기록(저장)해둔다.
+					 */
+				}// end of while()----------------------------------
+			
+				souts.flush(); // ServletOutputStream souts 에 기록(저장)해둔 내용을 클라이언트로 내본다. 
+			
+				souts.close(); // ServletOutputStream souts 객체를 소멸시킨다.
+				bfin.close();  // BufferedInputStream bfin 객체를 소멸시킨다.
+				
+				return true; // 다운로드 해줄 파일이 존재하고 Exception 이 발생하지 않으면 true 를 리턴시킨다. 
+				
+			} // end of if ------------------------------------	
+				
+		} catch(Exception e) { }
+		
+		return false;
+	}
+	
+	// == 파일 삭제 하기 ==
+	public static void doFileDelete(String saveFilename, String path) throws Exception {
+		
+		String pathname = path + File.separator + saveFilename;
+		
+		File file = new File(pathname);
+		
+		if(file.exists()) { // -- 파일이 있으면 지워라~ --
+			file.delete();
+		}
 	}
 	
 }

@@ -7,37 +7,79 @@
 
 	<!-- // === #2. 게시판 글쓰기 완료 요청 === -->
 	<insert id="loungeAdd" parameterType="com.sist.haebollangce.lounge.model.LoungeBoardDTO">
-		insert into tbl_lounge_board(seq, fk_userid, name, subject, content, pw, readCount, regDate, status)
-		values(lounge_boardSeq.nextval, #{fk_userid}, #{name}, #{subject}, #{content}, #{pw}, default, default, default)
+		insert into tbl_lounge_board(seq, fk_userid, name, subject, content, pw, readCount, regDate, status, thumbnail)
+		values(lounge_boardSeq.nextval, #{fk_userid}, #{name}, #{subject}, #{content}, #{pw}, default, default, default, #{thumbnail})
 	</insert>
 
-	<!-- // #3-1. 페이징 처리 안한 검색어 없는 전체 글 목록 보기  --> 
-	<select id="lgboardListNoSearch" resultType="com.sist.haebollangce.lounge.model.LoungeBoardDTO">
-		select seq, fk_userid, name, subject, content, readcount, regdate, commentCount, 
-		       TO_DATE(sysdate, 'YYYY-MM-DD') - TO_DATE(regdate, 'YYYY-MM-DD') as regDate_ago, likeCount
+	<!-- // === #2-1. 파일첨부가 있는 게시판 글쓰기 완료 요청 === -->
+	<insert id="loungeAdd_withFile" parameterType="com.sist.haebollangce.lounge.model.LoungeBoardDTO">
+		insert into tbl_lounge_board(seq, fk_userid, name, subject, content, pw, readCount, regDate, status, fileName, orgFilename, fileSize, thumbnail)
+		values(lounge_boardSeq.nextval, #{fk_userid}, #{name}, #{subject}, #{content}, #{pw}, default, default, default, #{fileName}, #{orgFilename}, #{fileSize}, #{thumbnail})
+	</insert>
+
+	<!-- // #3-1. 페이징 처리 한 검색어 있는 전체 글 목록 보기  --> 
+	<select id="lgboardListSearch" parameterType="HashMap" resultType="com.sist.haebollangce.lounge.model.LoungeBoardDTO">
+		select seq, fk_userid, name, subject, content, readCount, regDate, commentCount, regDate_ago, orgFilename, likeCount, thumbnail, lgbprofile
+		from
+		(
+		select row_number() over(order by seq desc) AS rno,
+		       seq, fk_userid, B.name, subject, content, readCount,
+		       to_char(B.regDate, 'yyyy-mm-dd hh24:mi:ss') AS regDate, 
+		       commentCount, TO_DATE(sysdate, 'YYYY-MM-DD') - TO_DATE(B.regdate, 'YYYY-MM-DD') as regDate_ago, orgFilename, likeCount, thumbnail, U.profile_pic as lgbprofile
+		from tbl_lounge_board B
+		join tbl_user U
+		on B.fk_userid = U.userid
+		where B.status = 1
+		<if test="searchType != '' and searchWord != ''">
+		and lower(${searchType}) like '%' || lower(#{searchWord}) || '%'
+		</if>
+		) V
+		where V.rno between #{startRno} and #{endRno}
+	</select>
+	
+	<!-- // #3-2. 페이징 처리를 위해 총 게시물 건수(totalCount) 구하기  --> 
+	<select id="lggetTotalCount" parameterType="HashMap" resultType="int">
+		select count(*)
 		from tbl_lounge_board
-		where status = 1
-		order by seq desc
+		where status = 1 
+		<if test="searchType != '' and searchWord != ''">
+		<!-- 검색조건이 있는 경우에만 검색타입 searchType 과 검색어 searchWord 를 매핑해주도록 한다. -->
+		and lower(${searchType}) like '%'|| lower(#{searchWord}) ||'%'
+		</if>
+	</select>
+	
+	<!-- // === #11. 검색어 입력시 자동글 완성하기 (Ajax 로 처리) === --> 
+	<select id="lgwordSearchShow" parameterType="HashMap" resultType="String">
+		<choose>
+         	<when test="searchType eq 'name'">
+             	select distinct ${searchType}
+         	</when>
+         	<otherwise>
+            	select ${searchType}
+         	</otherwise>
+      	</choose>
+      			from tbl_lounge_board
+             	where status = 1 
+             	and lower(${searchType}) like '%'|| lower(#{searchWord}) ||'%'
+      	<choose>
+         	<when test="searchType neq 'name'">
+         		order by ${searchType} asc
+            </when>
+        	<otherwise>
+             	order by commentcount desc, seq desc
+         	</otherwise>
+      	</choose>
 	</select>
 	
 	<!-- // #4-1.글 조회수 증가와 함께 글 1개를 조회 해주는 것 -->
 	<select id="lggetView" parameterType="HashMap" resultType="com.sist.haebollangce.lounge.model.LoungeBoardDTO">
-		SELECT seq, fk_userid, name, subject, content, readcount, to_char(regdate, 'yyyy-mm-dd hh24:mi:ss') as regdate, pw, commentCount, 
-		       regDate_ago, likeCount
-		FROM 
-		(   
-		    select seq, fk_userid, name, subject, content, readcount, regdate, pw, commentCount, 
-		           TO_DATE(sysdate, 'YYYY-MM-DD') - TO_DATE(regdate, 'YYYY-MM-DD') as regDate_ago
-		    from tbl_lounge_board
-		    where status = 1 and seq = #{seq}
-		) LB
-		CROSS JOIN
-		(
-		    select count(*) as likeCount
-		    from tbl_lounge_like
-		    where fk_seq = #{seq}
-		) LL
-		order by seq desc
+		select seq, fk_userid, B.name, subject, content, readcount, to_char(B.regdate, 'yyyy-mm-dd hh24:mi:ss') as regdate, B.pw, commentCount, 
+       		   TO_DATE(sysdate, 'YYYY-MM-DD') - TO_DATE(B.regdate, 'YYYY-MM-DD') as regDate_ago, fileName, orgFilename, fileSize, likeCount, thumbnail, U.profile_pic as lgbprofile
+		from tbl_lounge_board B
+		join tbl_user U
+		on B.fk_userid = U.userid
+		where B.status = 1 and seq=${seq} 
+		
 	</select>
 	
 	<!-- // #4-1-1. 글 조회수 1 증가 -->
@@ -52,11 +94,113 @@
 		where seq = #{seq} and pw = #{pw}	
 	</update>
 
+	<!-- // === #6-1. 파일첨부가 있는 라운지 글 수정 페이지 요청 완료 === -->
+	<update id="lgedit_withFile" parameterType="com.sist.haebollangce.lounge.model.LoungeBoardDTO">
+		update tbl_lounge_board set subject = #{subject} , content = #{content}, fileName = #{fileName}, orgFilename = #{orgFilename}, fileSize = #{fileSize}
+		where seq = #{seq} and pw = #{pw}
+	</update>	
+
 	<!-- // === #8. 라운지 글 삭제 페이지 요청 완료 === -->
 	<delete id="lgdel" parameterType="HashMap">
 		delete from tbl_lounge_board 
 		where seq = #{seq}	
 	</delete>
 	
+	<!-- // #9-1. tbl_lounge_comment 댓글쓰기(insert) --> 
+	<insert id="loungeaddComment" parameterType="com.sist.haebollangce.lounge.model.LoungeCommentDTO">
+		<if test='fk_seq != null and fk_seq.equals("")'> 
+			insert into tbl_lounge_comment(seq, fk_userid, name, content, regDate, parentSeq, status, groupno, fk_seq, depthno)
+			values(lounge_commentSeq.nextval, #{fk_userid}, #{name}, #{content}, default, #{parentSeq}, default, #{groupno}, default, default)
+		</if>	
+		<if test='fk_seq != null and !fk_seq.equals("")'>
+			insert into tbl_lounge_comment(seq, fk_userid, name, content, regDate, parentSeq, status, groupno, fk_seq, depthno)
+			values(lounge_commentSeq.nextval, #{fk_userid}, #{name}, #{content}, default, #{parentSeq}, default, #{groupno}, #{fk_seq}, #{depthno}+1)
+		</if>	
+	</insert>
+	
+	<!-- // #9-2. tbl_lounge_board 댓글수증가(update) --> 
+	<update id="loungeupdateCount" parameterType="String">
+		update tbl_lounge_board set commentCount = commentCount + 1
+		where seq = #{parentSeq}
+	</update>
+	
+	<!-- // #9-3. tbl_lounge_comment 테이블에서 groupno 컬럼의 최대값 알아오기
+		 // -> 원댓글쓰기 : groupno 컬럼의 최대값(max)+1 로 해서 insert 해야한다  / 최초 글쓰기의 경우 null 이 나오므로 0 으로 바꿔줌~ -->
+	<select id="getGroupno_max" resultType="int">
+		select nvl(max(groupno), 0)
+		from tbl_lounge_comment
+	</select>
+	
+	<!-- //#14-1. tbl_lounge_comment 댓글삭제(delete) -->
+	<delete id="lgcommentDel" parameterType="com.sist.haebollangce.lounge.model.LoungeCommentDTO">
+	<!--delete from tbl_lounge_comment 
+		where seq = #{seq} or fk_seq = #{seq} -->
+		DELETE FROM tbl_lounge_comment
+		WHERE seq IN (
+		  SELECT seq
+		  FROM tbl_lounge_comment
+		  START WITH seq = #{seq}
+		  CONNECT BY PRIOR seq = fk_seq
+		)
+	</delete>
+	
+	
+	<!-- //#14-2. tbl_lounge_board 댓글수증가(update) --> 
+	<update id="lgcommentDelupdateCount" parameterType="String">
+		update tbl_lounge_board set commentCount = commentCount - 1
+		where seq = #{parentSeq}
+	</update>
+	
+	<!-- // === #10. 원 게시물에 딸린 댓글들을 조회 (계층형쿼리) === -->
+	<select id="lggetCommentList" parameterType="String" resultType="com.sist.haebollangce.lounge.model.LoungeCommentDTO">
+		select seq, parentSeq, name, content, regdate, status, groupno, fk_seq, depthno, lgcprofile
+		from 
+		(
+		    select seq, parentSeq, content, name, regDate, status, groupno, fk_seq, depthno, lgcprofile
+		    from (
+		            select seq, parentSeq, content, C.name, to_char(C.regdate, 'yyyy-mm-dd hh24:mi:ss') AS regDate, C.status, groupno, fk_seq, depthno, U.profile_pic as lgcprofile
+		            from tbl_lounge_comment C 
+		            join tbl_user U
+		            on C.fk_userid = U.userid 
+		            start with fk_seq = 0 connect by prior seq = fk_seq
+		            order siblings by seq desc, groupno asc 
+		        ) r
+		    where status = 1 and parentSeq = #{parentSeq}
+		) 
+	</select>
+
+	<!-- // === #13-0. 라운지 특정글에 대한 좋아요가 눌렸는지 확인하기 === --> 
+	<select id="loungelikeCheck" parameterType="com.sist.haebollangce.lounge.model.LoungelikeDTO" resultType="int">
+		select count(*)
+		from tbl_lounge_like
+		where fk_userid=#{fk_userid} and fk_seq = to_number(#{fk_seq})
+	</select>
+
+	<!-- // #13-1.tbl_lounge_like 테이블에 좋아요 추가하기(insert) --> 
+	<insert id="loungelikeAdd" parameterType="com.sist.haebollangce.lounge.model.LoungelikeDTO">
+		insert into tbl_lounge_like(fk_userid, fk_seq)
+		values(#{fk_userid}, to_number(#{fk_seq}))
+	</insert>
+
+	<!-- // #13-2.tbl_lounge_board 테이블에 likeCount 컬럼이 1 증가 (update) --> 
+	<update id="loungeupdatelikeCount" parameterType="String">
+		update tbl_lounge_board set likeCount = likeCount + 1
+		where seq = #{fk_seq}
+	</update>
+
+	<!-- // #13-3.tbl_lounge_like 테이블에 좋아요 취소하기(delete) -->
+	<delete id="loungelikeCancel" parameterType="com.sist.haebollangce.lounge.model.LoungelikeDTO">
+		delete from tbl_lounge_like 
+		where fk_userid=#{fk_userid} and fk_seq = to_number(#{fk_seq})
+	</delete>
+
+	<!-- // #13-4.tbl_lounge_board 테이블에 likeCount 컬럼이 1 감소 (update) --> 
+	<update id="loungecancellikeCount" parameterType="String">
+		update tbl_lounge_board set likeCount = likeCount - 1
+		where seq = #{fk_seq}
+	</update>
+
+
+
 
 </mapper>
