@@ -176,7 +176,7 @@
 <footer class="Footer_footer">
       <div class="Footer_container">
           <div class="Footer_info">
-              <p class="Footer_info__subject">문토 정보</p>
+              <p class="Footer_info__subject">해볼랑스 정보</p>
               <p class="Footer_info__content">
                   <a href="/notice/list.html">공지사항</a>
               </p>
@@ -196,10 +196,10 @@
           <div class="Footer_sns">
               <p class="Footer_sns__subject">소셜 미디어</p>
               <p class="Footer_sns__content">
-                  <a href="https://www.instagram.com/munto_official/" target="_blank" rel="noreferrer">인스타그램</a>
+                  <a href="" target="_blank" rel="noreferrer">인스타그램</a>
               </p>
               <p class="Footer_sns__content">
-                  <a href="https://blog.naver.com/themunto" target="_blank" rel="noreferrer">네이버 블로그</a>
+                  <a href="" target="_blank" rel="noreferrer">네이버 블로그</a>
               </p>
           </div>
           <div class="Footer_company">
