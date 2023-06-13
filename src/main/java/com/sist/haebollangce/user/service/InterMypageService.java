@@ -1,5 +1,6 @@
 package com.sist.haebollangce.user.service;
 
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.web.multipart.MultipartFile;
@@ -25,6 +26,9 @@ public interface InterMypageService {
 	// 결제 더보기 페이징 처리하기
 	String search_paging_data(Map<String, String> paraMap);
 	String get_pagebar(Map<String, String> paraMap);
+	
+	// 예치금 그래프 보여주기
+	String deposit_chart(Map<String, String> paraMap);
 	
 	// 취소 가능 건 알아오기
 	String cancel_data(Map<String, String> paraMap);
@@ -80,6 +84,7 @@ public interface InterMypageService {
 	// 마이페이지 홈 챌린지 그래프-챌린지 참여 횟수
 	String chart_challenging(Map<String, String> paraMap);
 	String chart_category(Map<String, String> paraMap);
+
 
 
 

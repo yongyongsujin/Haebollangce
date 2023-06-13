@@ -59,6 +59,9 @@ public interface InterMypageDAO {
 	List<Map<String, Object>> convert_paging_data(Map<String, String> paraMap);
 	int get_pagebar_convert(Map<String, String> paraMap);
 
+	// 예치금 그래프 보여주기
+	List<Map<String, String>> deposit_chart(Map<String, String> paraMap);
+	
 	// 비밀번호 확인 후 회원 정보수정 페이지 가기
 	UserDTO select_info(Map<String, String> paraMap);
 
@@ -110,19 +113,5 @@ public interface InterMypageDAO {
 	// 마이페이지 홈 챌린지 그래프-챌린지 참여 횟수
 	List<Map<String, String>> chart_challenging(Map<String, String> paraMap);
 	List<Map<String, String>> chart_category(Map<String, String> paraMap);
-
-
-
-
-
-
-
-
-
-
-
-
-
 	
-
 }

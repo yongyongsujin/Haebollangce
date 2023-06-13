@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -285,6 +286,26 @@ public class MypageController {
 	}
 	
 	/* 사용자의 보유 예치금 알아오기 끝 */
+	
+	
+	/* 예치금 그래프 보여주기 시작 */
+	@ResponseBody
+	@RequestMapping(value = "/deposit_chart_ajax", method = { RequestMethod.GET }, produces = "text/plain;charset=UTF-8")
+	public String deposit_chart_ajax(HttpServletRequest request) {
+
+		String userid = request.getParameter("userid");
+		/*
+		System.out.println(userid); 
+		*/
+		Map<String, String> paraMap = new HashMap<>();
+		paraMap.put("userid", userid);
+
+		String json = service.deposit_chart(paraMap);
+
+		return json;
+	}
+	/* 예치금 그래프 보여주기 끝 */
+	
 	
 	/* 취소가능한 결제건 알아오기 시작 */
 	@ResponseBody
