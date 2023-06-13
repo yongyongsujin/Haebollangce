@@ -150,7 +150,7 @@
 				confirmButtonColor: "#EB534C",
 				confirmButtonText: "확인"
 			}).then(function(){
-				// location.href="<%= request.getContextPath()%>/challenge/certifyList";
+				javascript:history.back();
 			});
 		}
 		
@@ -254,7 +254,6 @@
 			
 			// insert 할 form 전송
 			
-			
 			// 팝업창 띄우기
 			const url = "<%= request.getContextPath()%>/challenge/joinEnd";
 			
@@ -276,6 +275,23 @@
 			
 		});
 		
+		
+		// 예치금 충전 클릭시 
+		$("div#point_charge").click(function(){
+			Swal.fire({
+				icon: "info",
+				title: "결제페이지로 이동합니다",
+				confirmButtonColor: "#EB534C",
+				confirmButtonText: "확인",
+				showCancelButton: true,
+				cancelButtonText: '취소',
+				cancelButtonColor: '#999999'
+			}).then(function(result){
+				if(result.isConfirmed){
+					location.href="<%= ctxPath%>/mypage/depositPurchase";
+				}
+			})
+		})
 		
 		
 	}); // end $(document).ready
@@ -303,7 +319,9 @@
 	}
 	
 </script>
-<div class="container" style="background-color: white; width: 70% !important; padding: 0; text-align: center;"> 
+
+<div class="container-fluid" style="background-color: #f4f4f4;">
+<div class="container pb-5" style="border-radius: 20px; background-color: white; width: 70% !important; padding: 0; text-align: center;"> 
 	<br>
 	<h3 style="font-weight: bold;">챌린지 참가하기</h3>
 	<br>
@@ -360,7 +378,7 @@
 		<div id="explain_price" class="join_body">최소 1만원 ~ 최대 20만원 (1만원 단위 가능)</div>
 	</div> 
 	 
-	<div id="challenge_join_guide" class="px-5" style="height: 300px; background-color: #F5F5F5;">
+	<div id="challenge_join_guide" class="px-5" style="height: 300px; background-color: #FBECEA;">
 		<div class="join_body basic px-5" style="height: 20%;"><span>100% 성공</span><span id="success_price"></span></div>
 		<div class="join_body basic px-5" style="height: 20%;"><span>80% 이상 성공</span><span id="join_price"></span></div>
 		<div class="join_body basic px-5" style="height: 20%;"><span>80% 미만 성공</span><span>예치금 일부 환급 (성공률 만큼)</span></div>
@@ -389,7 +407,6 @@
 							<ul style="padding-left: 20px; text-align: left;">
 								<li class="my-1">상금은 80% 미만 성공한 참가자들의 벌금으로 마련돼요.</li>
 								<li class="my-1">최종 상금은 내가 건 돈에 비례해서 정해져요. 그래서 예치금이 많을수록 상금도 높아져요!</li>
-								<li class="my-1">인증을 놓쳤을 때는 인증패스를 사용해서 만회할 수 있어요. 단, 인증패스를 사용해서 100% 성공한 경우 공정성을 위해 상금은 받을 수 없어요.</li>
 							</ul>
 			      		</div>
 			      		<div class="modal-footer">
@@ -415,6 +432,7 @@
 		<div class="mr-3 challenge_join_btn" onclick="javascript:history.back()" style="display: flex; background-color: white !important; color: black;">뒤로가기</div>
 		<div id="join_challenge" class="ml-3 challenge_join_btn" style="display: flex;">참가하기</div>
 	</div>
+</div>
 </div>
 
 <form name="challenge_info">

@@ -39,6 +39,7 @@
 	
 </script>
 
+
 <div class="container">
 	<h3 style="height: 100px; text-align: center; margin: 0; line-height: 90px; font-weight: bold;">참가 완료되었습니다 &#x1F44F </h3>
 	<div class="mb-3" style="height: 100px; display: flex;" >

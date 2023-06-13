@@ -186,6 +186,7 @@
 		<result property="certifyCnt" 		column="certifyCnt"			javaType="String"/>
 		<result property="totalCertify" 	column="totalCertify"		javaType="String"/>
 		<result property="achievement_pct" 	column="achievement_pct"	javaType="String"/>
+		<result property="challenge_exp" 	column="challenge_exp"		javaType="String"/>
 	</resultMap>
 	<select id="getUserAchievePct" parameterType="HashMap" resultMap="getUserAchievePct_Map">
 		select to_char(startdate, 'yyyy-mm-dd') as startdate
@@ -207,6 +208,7 @@
 		            else
 		                to_number(decode(fk_freq_type, '100', 7, '101', '102', 2, 0)) * to_number(fk_during_type)
 		            end * 100 ) as achievement_pct
+			 , C.challenge_exp
 		from tbl_challenge c
 		join tbl_challenge_during d on d.during_type = c.fk_during_type
 		join tbl_certify_freq f     on f.freq_type = c.fk_freq_type
@@ -253,4 +255,24 @@
 	</insert>
 	
 	
+	<insert id="addUserExp" parameterType="HashMap">
+		update tbl_user set exp = exp + to_number(#{challenge_exp}) where userid = #{fk_userid}
+	</insert>
+	
+	
+	
 </mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
