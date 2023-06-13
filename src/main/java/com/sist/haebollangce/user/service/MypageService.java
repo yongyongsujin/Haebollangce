@@ -87,7 +87,7 @@ public class MypageService implements InterMypageService {
 		List<Map<String, Object>> search_list = null;
 		
 		String sort = paraMap.get("sort");
-
+		
 		JsonArray jsonArr = new JsonArray();
 
 		if ("1".equals(sort)) {
@@ -166,6 +166,117 @@ public class MypageService implements InterMypageService {
 	}
 
 	
+	// 결제 더보기 페이징 처리하기
+	@Override
+	public String search_paging_data(Map<String, String> paraMap) {
+		List<Map<String, Object>> search_list = null;
+		
+		String sort = paraMap.get("sort");
+		
+		JsonArray jsonArr = new JsonArray();
+
+		if ("1".equals(sort)) {
+
+			search_list = dao.deposit_paging_data(paraMap);  // 예치금 테이블에서 예치금 충전, 취소내역 알아오기
+			
+			if (search_list != null && search_list.size() > 0) {
+				for (Map<String, Object> map : search_list) {
+
+					JsonObject jsonObj = new JsonObject();
+					
+					jsonObj.addProperty("purchase_code", (int) map.get("purchase_code"));
+					jsonObj.addProperty("purchase_date", (String) map.get("purchase_date"));
+					jsonObj.addProperty("purchase_price", (int) map.get("purchase_price"));
+					jsonObj.addProperty("purchase_status", (int) map.get("purchase_status"));
+					
+					jsonArr.add(jsonObj);
+				}
+			}
+			
+		} // end of if( sort == 1 ) -----
+
+		else if("2".equals(sort)) {
+			
+			search_list = dao.challenge_paging_data(paraMap);  // 챌린지 참여에 사용된 예치금 알아오기
+			
+			if (search_list != null && search_list.size() > 0) {
+				for (Map<String, Object> map : search_list) {
+
+					JsonObject jsonObj = new JsonObject();
+					
+					jsonObj.addProperty("entry_fee", (int) map.get("entry_fee"));
+					jsonObj.addProperty("challenge_name", (String) map.get("challenge_name"));
+					jsonObj.addProperty("startdate", (String) map.get("startdate"));
+					
+					jsonArr.add(jsonObj);
+				}
+			}
+		} // end of else if("2".equals(sort))
+		
+		else if ("3".equals(sort)) {
+			search_list = dao.reward_paging_data(paraMap);
+
+			if (search_list != null && search_list.size() > 0) {
+				for (Map<String, Object> map : search_list) {
+
+					JsonObject jsonObj = new JsonObject();
+
+					jsonObj.addProperty("reward_date", (String) map.get("reward_date"));
+					jsonObj.addProperty("reward", (int) map.get("reward"));
+					jsonObj.addProperty("challenge_name", (String) map.get("challenge_name"));
+
+					jsonArr.add(jsonObj);
+				}
+			}
+		} // end of else if( sort == 3 ) {} -----
+		
+		else if ("4".equals(sort)) {
+			search_list = dao.convert_paging_data(paraMap);
+
+			if (search_list != null && search_list.size() > 0) {
+				for (Map<String, Object> map : search_list) {
+
+					JsonObject jsonObj = new JsonObject();
+
+					jsonObj.addProperty("convert_date", (String) map.get("convert_date"));
+					jsonObj.addProperty("convert_reward", (int) map.get("convert_reward"));
+
+					jsonArr.add(jsonObj);
+				}
+			}
+		} // end of else if( sort == 4 ) {} -----
+
+		return new Gson().toJson(jsonArr);
+	}
+	@Override
+	public String get_pagebar(Map<String, String> paraMap) {
+		
+		String sort = paraMap.get("sort");
+		
+		int total_page = 0;
+		
+		if("1".equals(sort)) {
+			total_page = dao.get_pagebar_purcahse(paraMap);
+		}
+		
+		else if("2".equals(sort)) {
+			total_page = dao.get_pagebar_challenging(paraMap);
+		}
+		
+		else if("3".equals(sort)) {
+			total_page = dao.get_pagebar_reward(paraMap);
+		}
+		
+		else if("4".equals(sort)) {
+			total_page = dao.get_pagebar_convert(paraMap);
+		}
+		
+		JSONObject jsonObj = new JSONObject();
+		jsonObj.put("total_page", total_page);
+		
+		return jsonObj.toString();
+	}
+
 	// 취소 가능 건 알아오기
 	@Override
 	public String cancel_data(Map<String, String> paraMap) {
@@ -205,7 +316,7 @@ public class MypageService implements InterMypageService {
 		
 		return new Gson().toJson(jsonArr);
 	}
-	
+
 	
 	// 결제 취소하기
 	@Override
@@ -232,52 +343,55 @@ public class MypageService implements InterMypageService {
 	
 	// 모든 관심태그 가지고오기
 	@Override
-	public String all_interest() {
+	public String all_interest(String userid) {
 		
-		List<Map<String,Object>> all_interest_list = dao.all_interest(); 
+		List<Map<String,String>> interest_list = dao.user_interest(userid);
+		
+		List<Map<String,String>> all_interest_list = dao.all_interest();
+		
+		// System.out.println("제거 전 : " + all_interest_list.toString());
+		
+		for (int i = all_interest_list.size() - 1; i >= 0; i--) {
+		    Map<String, String> map_all = all_interest_list.get(i);
+		    String all_category_code = map_all.get("category_code");
+
+		    for (int j = 0; j < interest_list.size(); j++) {
+		        Map<String, String> map_inter = interest_list.get(j);
+		        String inter_fk_category_code = map_inter.get("fk_category_code");
+
+		        if (inter_fk_category_code.equals(all_category_code)) {
+		            all_interest_list.remove(i);
+		            break; // 내부 반복문 종료 후 바깥쪽 반복문으로 이동
+		        }
+		    }
+		}
 		
 		JsonArray jsonArr = new JsonArray();
 		
 		if(all_interest_list != null && all_interest_list.size() > 0) {
-			for(Map<String,Object> map : all_interest_list) {
+			for(Map<String,String> map : all_interest_list) {
 				
 				JsonObject jsonObj = new JsonObject();
 				
-				jsonObj.addProperty("category_code", (int) map.get("category_code"));
-				jsonObj.addProperty("category_name", (String) map.get("category_name"));
+				jsonObj.addProperty("category_code", map.get("category_code"));
+				jsonObj.addProperty("category_name", map.get("category_name"));
 				
 				jsonArr.add(jsonObj);
 				
 			}
 		}
 		
-		return new Gson().toJson(jsonArr);
+
+		// System.out.println("제거 후 : " + all_interest_list.toString());
+		
+		JsonObject resultObj = new JsonObject();
+		resultObj.add("all_interest_list", jsonArr);
+		resultObj.add("interest_list", new Gson().toJsonTree(interest_list));
+		
+		
+		return resultObj.toString();
 	}
 	
-	// 관심태그 가지고오기
-	@Override
-	public String interest(String userid) {
-		
-		List<Map<String,String>> interest_list = dao.interest(userid);
-		
-		JsonArray jsonArr = new JsonArray();
-		
-		if(interest_list != null && interest_list.size() > 0) {
-			for(Map<String,String> map : interest_list) {
-				
-				JsonObject jsonObj = new JsonObject();
-				
-				jsonObj.addProperty("category_code", (String) map.get("category_code"));
-				jsonObj.addProperty("category_name", (String) map.get("category_name"));
-				
-				jsonArr.add(jsonObj);
-				
-			}
-		}
-		
-		return new Gson().toJson(jsonArr);
-	}
-
 	// 관심태그 추가하기
 	@Override
 	public String plus_interest(Map<String, String> paraMap) {
@@ -433,6 +547,7 @@ public class MypageService implements InterMypageService {
 				jsonObj.addProperty("set_date", map.get("set_date"));
 				jsonObj.addProperty("startdate", map.get("startdate"));
 				jsonObj.addProperty("fk_userid", map.get("fk_userid"));
+				jsonObj.addProperty("achievement_pct", map.get("achievement_pct"));
 				jsonObj.addProperty("hour_start", map.get("hour_start"));
 				jsonObj.addProperty("hour_end", map.get("hour_end"));
 				jsonObj.addProperty("finish_day", map.get("finish_day"));
@@ -452,22 +567,22 @@ public class MypageService implements InterMypageService {
 	@Override
 	public String recommend(String userid) {
 		
-		List<Map<String, String>> interest_list = dao.interest(userid);
+		List<Map<String, String>> recommend_list = dao.recommend(userid);
 		
 		JsonArray jsonArr = new JsonArray();
 		
 		
-		if(interest_list != null && interest_list.size() > 0) {
-			for(Map<String,String> map : interest_list) {
+		if(recommend_list != null && recommend_list.size() > 0) {
+			for(Map<String,String> map : recommend_list) {
 				
 				JsonObject jsonObj = new JsonObject();
 				
-				jsonObj.addProperty("thumbnail", (String) map.get("thumbnail"));
-				jsonObj.addProperty("challenge_name", (String) map.get("challenge_name"));
-				jsonObj.addProperty("regDate", (String) map.get("regDate"));
-				jsonObj.addProperty("startdate", (String) map.get("startdate"));
-				jsonObj.addProperty("member_count", (String) map.get("member_count"));
-				jsonObj.addProperty("fk_userid", (String) map.get("fk_userid"));
+				jsonObj.addProperty("thumbnail", map.get("thumbnail"));
+				jsonObj.addProperty("challenge_name", map.get("challenge_name"));
+				jsonObj.addProperty("regDate", map.get("regDate"));
+				jsonObj.addProperty("startdate", map.get("startdate"));
+				jsonObj.addProperty("member_count", map.get("member_count"));
+				jsonObj.addProperty("fk_userid", map.get("fk_userid"));
 				
 				jsonArr.add(jsonObj);
 				
@@ -568,10 +683,6 @@ public class MypageService implements InterMypageService {
 			// 진행중인 챌린지 중 오늘 하루 인증했는지 여부, 인증한 챌린지들 번호가 반환된다.
 			List<Map<String, String>> certify_list = dao.mypage_certify_challenge(paraMap);
 			
-			// System.out.println("certify_list: " + certify_list.toString());
-			
-			// System.out.println("제거 전 : " + mypage_challenging_list.toString());
-			
 			// 인증한 챌린지 번호는 mypage_challenging_list에서 삭제해준다.
 			for(int i=0; i<mypage_challenging_list.size(); i++) {
 				
@@ -581,13 +692,9 @@ public class MypageService implements InterMypageService {
 					
 					String cha_challenge_code = map_cha.get("fk_challenge_code");
 					
-					// System.out.println("cha_challenge_code " + cha_challenge_code + "[" + i + "]");
-					
 					Map<String, String> map_cer = certify_list.get(j);
 					
 					String cer_challenge_code = map_cer.get("fk_challenge_code");
-					
-					// System.out.println("cer_challenge_code " + cer_challenge_code + "[" + j + "]");
 					
 					if(cha_challenge_code.equals(cer_challenge_code)) {
 						
@@ -657,7 +764,6 @@ public class MypageService implements InterMypageService {
 		
 		// System.out.println(result);
 	
-		
 		JsonObject jsonObj = new JsonObject();
 		
 		jsonObj.addProperty("result", result);
@@ -716,6 +822,6 @@ public class MypageService implements InterMypageService {
 		
 		return new Gson().toJson(jsonArr);
 	}
-	
+
 
 }

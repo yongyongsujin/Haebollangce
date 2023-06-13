@@ -18,11 +18,14 @@
 		height: 84px;
 	}
 	
+	.font_weight {
+		font-weight: bold;
+	}
 	
 	div#MFE_row {
 		background-color:white; 
-		padding: 55px 70px; 
-		border-radius:30px;
+		padding: 33px 5%; 
+		border-radius: 30px 30px 0 0;
 		max-width: 100%;
 	}
 	
@@ -37,10 +40,10 @@
 		color: white!important;
 	}
 	
-	<%-- 이미지 시작 --%>
+	/* 이미지 시작 */
 	img#second_img_button {
-		height: 68%;
-		width: 100%;
+		height: 61%;
+		width: 94%;
 		border: solid 1px gray;
 		border-radius: 50%; 
 		object-fit: cover;
@@ -55,16 +58,17 @@
 		margin-top: -9%;
 		position: absolute;
 	}
-	<%-- 이미지 끝 --%>
+	/* 이미지 끝 */
 	
 	div#interset {
 		border: solid 1px black;
-		width: 100%;
-		height: 17%;
-		margin: 17px 0;
+		height: 88px;
+		margin: 11px 0;
+		width: 131%;
+		padding: 2% 0;
 	}
 	
-	<%-- 비밀번호, 이메일 버튼 시작 --%>
+	/* 비밀번호, 이메일 버튼 시작 */
 	button#plz_identify {
 		background-color: #e6e1e1;
 		border: none;
@@ -77,13 +81,19 @@
 		width: 51%;
 	}
 	
+	div#timer {
+		font-size: 13pt;
+		color: red;
+	}
+	
 	button#button_identify {
 		background-color: #f43630;
 		border: none;
 		color: white;
 		padding: 6px 0;
 		text-align: center;
-		font-size: 10pt;
+		font-size: 23pt;
+		font-weight: bold;
 		transition: 0.3s;
 		border-radius: 10px;
 		width: 23%;
@@ -100,20 +110,132 @@
 		transition: 0.3s;
 		border-radius: 10px;
 	}
-	<%-- 비밀번호, 이메일 버튼 끝 --%>
+	/* 비밀번호, 이메일 버튼 끝 */
 	
 	button#edit_button {
-		background-color: #e6e1e1;
+ 		background-color: #e6e1e1;
 		border: none;
 		color: black;
-		padding: 7px 39px;
+		padding: 16px 0;
 		text-align: center;
-		font-size: 18pt;
-		margin: 4px 27px;
+		font-size: 24pt;
 		transition: 0.3s;
-		border-radius: 35px;
+		width: 90%;
+		margin-left: 4%;
+		height: 79px;
 	}
 	
+	div#interest_margin {
+		margin-top: 35px;
+		margin-bottom: 12px;
+	}
+	
+	div#all_interest {
+		width: 131%;
+	}
+	
+	span#interest_title {
+		font-size: 15pt;
+		font-weight: bold;
+		margin-right: 5%;
+	}
+	
+	div.user_interest {
+		display: inline-block;
+		margin: 0 1%;
+		padding: 1%;
+		font-weight: bold;
+		border-radius: 25%;
+	}
+	
+	.pink_tag {
+		background-color: #ffe6ff;
+		border: black;
+	}
+	
+	.blue_tag {
+		background-color: #e6f2ff;
+		border: #e6f2ff;
+	}
+	
+	.red_tag {
+		background-color: #ffe6e6;
+		border: #e6f2ff;
+	}
+	
+	.green_tag {
+		background-color: #e6fff2;
+		border: #e6f2ff;
+	}
+	
+	.orange_tag {
+		background-color: #fff2e6;
+		border: #e6f2ff;
+	}
+	 
+    .brown_tag {
+    	background-color: #f7ffe6;
+		border: #f7ffe6;
+    }
+    
+    .yellow_tag {
+    	background-color: #ffffe6;
+		border: #ffffe6;
+    }
+    
+    .khaki_tag {
+    	background-color: #f6f6ee;
+		border: #f6f6ee;
+    }
+    
+	.balloon {
+        position: relative;
+        display: inline-block;
+    }
+   
+    
+    span#interest_add {
+    	display: none;
+    	position: absolute;
+    	z-index: 99;
+    }
+    
+    span#interest_del {
+    	display: none;
+    	position: absolute;
+    	z-index: 99;
+    }
+ 
+	/* 툴팁 시작 */
+    .balloon,
+    .balloon_span {
+        padding: 5px 9px;
+        color: white;
+        background: #555;
+        border-radius: 20px;
+        font-size: 13pt;
+    }
+
+
+    .balloon:after {
+        content: '';
+        position: absolute;
+        width: 0;
+        height: 0;
+        border-style: solid;
+    }
+    
+   .balloon.left:after {
+        border-width: 10px 15px;
+        top: 50%;
+        margin-top: -10px;
+    }
+    
+    .balloon.left:after {
+        border-color: transparent #555 transparent transparent;
+        left: -25px;
+    }
+	/* 툴팁 끝 */
 	
 </style>
 
@@ -155,33 +277,10 @@
 		
 		let randomStr = ""; // 비번 및 모바일 변경시 인증번호
 		
-		<%-- 프로필사진 변경 시작 --%>
-		$("input#profile_pic_file").change(function(event){
-			// alert($("input#profile_pic_file").val());
-			/* 
-			let tmpPath = URL.createObjectURL(event.target.files[0]).substring(5);  // 실제 경로를 가지고 옴
-			
-			console.log(tmpPath);
-			$("#profilePic").val(tmpPath);
-
-			document.getElementById("second_img_button").src = $("#profilepic").val();
-			
-			var fileName = $("input#profile_pic_file").val().split('/').pop().split('\\').pop();  // fakePath만 지워줌
-			
-			document.getElementById('second_img_button').src.substring(0, 22)+fileName
-			
-			$("#profilePic").val(fileName);
-			
-			$("button#edit_button").prop("disabled", false);
-			$("button#edit_button").addClass("sucess_button_change");
-			 */
-		});
-		<%-- 프로필사진 변경 끝 --%>
-		
 		<%-- 관심태그 시작 --%>
 		all_interest();
 		
-		interest();
+		// interest();
 		<%-- 관심태그 끝 --%>
 		
 		<%-- 비밀번호 입력 시작 --%>
@@ -435,6 +534,7 @@
        
 	}); // end of document.ready -----
 
+	<%-- 프로필 사진 변경 시작 --%>
 	function img_change(input){
 		
 		if(input.files && input.files[0]) {
@@ -458,24 +558,60 @@
 		}
 		
 	}
-
+	<%-- 프로필 사진 변경 끝 --%>
 	 
 	<%-- 모든 관심코드 불러오기 시작 --%>
 	function all_interest() {
 		 $.ajax ({
 			url: "/mypage/all_interest_ajax",
 			type: "get",
+			data: {
+				"userid":"jisu"
+			},
 			dataType: "json",
 			success:function(json){
-				//console.log(JSON.stringify(json));
+				console.log(JSON.stringify(json));
 				
 				let html = "";
 				
-				if(json.length > 0) {
+				let all_interest_list = json.all_interest_list;
+				let interest_list = json.interest_list;
+				
+				if(all_interest_list.length > 0) {
 					
-					for(var i=0; i<json.length; i++) {
+					for(var i=0; i<all_interest_list.length; i++) {
 						
-						html += "<span onclick='plus_interest(" + json[i].category_code + ");' value='"+json[i].category_name+"'>" + json[i].category_name + "</span>";
+						if(all_interest_list[i].category_code == 1) {
+							html += "<div class='user_interest pink_tag' onclick='plus_interest(" + all_interest_list[i].category_code + ");'>" + all_interest_list[i].category_name + "</div>";
+						}
+						
+						else if(all_interest_list[i].category_code == 2) {
+							html += "<div class='user_interest blue_tag' onclick='plus_interest(" + all_interest_list[i].category_code + ");'>" + all_interest_list[i].category_name + "</div>";
+						}
+						
+						else if(all_interest_list[i].category_code == 3) {
+							html += "<div class='user_interest green_tag' onclick='plus_interest(" + all_interest_list[i].category_code + ");'>" + all_interest_list[i].category_name + "</div>";
+						}
+						
+						else if(all_interest_list[i].category_code == 4) {
+							html += "<div class='user_interest red_tag' onclick='plus_interest(" + all_interest_list[i].category_code + ");'>" + all_interest_list[i].category_name + "</div>";
+						}
+						
+						else if(all_interest_list[i].category_code == 5) {
+							html += "<div class='user_interest orange_tag' onclick='plus_interest(" + all_interest_list[i].category_code + ");'>" + all_interest_list[i].category_name + "</div>";
+						}
+						
+						else if(all_interest_list[i].category_code == 6) {
+							html += "<div class='user_interest brown_tag' onclick='plus_interest(" + all_interest_list[i].category_code + ");'>" + all_interest_list[i].category_name + "</div>";
+						}
+						
+						else if(all_interest_list[i].category_code == 7) {
+							html += "<div class='user_interest yellow_tag' onclick='plus_interest(" + all_interest_list[i].category_code + ");'>" + all_interest_list[i].category_name + "</div>";
+						}
+						
+						else {
+							html += "<div class='user_interest khaki_tag' onclick='plus_interest(" + all_interest_list[i].category_code + ");'>" + all_interest_list[i].category_name + "</div>";
+						}
 						
 					}
 					
@@ -487,34 +623,43 @@
 				
 				$("div#all_interest").html(html); 
 				
-			},
-			error: function(request, status, error){
-				alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
-	        }
-		});
-	}
-	<%-- 모든 관심코드 불러오기 끝 --%>
-	
-	
-	<%-- 관심코드 알아오기 시작 --%>
-	function interest() {
-		$.ajax ({
-			url: "/mypage/interest_ajax",
-			type: "get",
-			data: {
-				"userid":$("input#userid").val()
-			},
-			dataType: "json",
-			success:function(json){
-				// console.log(JSON.stringify(json));
+				html = "";
 				
-				let html = "";
-				
-				if(json.length > 0) {
+				if(interest_list.length > 0) {
 					
-					for(var i=0; i<json.length; i++) {
+					for(var i=0; i<interest_list.length; i++) {
 						
-						html += "<span onclick='del_interest(" + json[i].category_code + ");' value='"+json[i].category_name+"'>" + json[i].category_name + "</span>";
+						if(interest_list[i].fk_category_code == 1) {
+							html += "<div class='user_interest pink_tag' onclick='del_interest(" + interest_list[i].fk_category_code + ");'>" + interest_list[i].category_name + "</div>";
+						}
+						
+						else if(interest_list[i].fk_category_code == 2) {
+							html += "<div class='user_interest blue_tag' onclick='del_interest(" + interest_list[i].fk_category_code + ");'>" + interest_list[i].category_name + "</div>";
+						}
+						
+						else if(interest_list[i].fk_category_code == 3) {
+							html += "<div class='user_interest green_tag' onclick='del_interest(" + interest_list[i].fk_category_code + ");'>" + interest_list[i].category_name + "</div>";
+						}
+						
+						else if(interest_list[i].fk_category_code == 4) {
+							html += "<div class='user_interest red_tag' onclick='del_interest(" + interest_list[i].fk_category_code + ");'>" + interest_list[i].category_name + "</div>";
+						}
+						
+						else if(interest_list[i].fk_category_code == 5) {
+							html += "<div class='user_interest orange_tag' onclick='del_interest(" + interest_list[i].fk_category_code + ");'>" + interest_list[i].category_name + "</div>";
+						}
+						
+						else if(interest_list[i].fk_category_code == 6) {
+							html += "<div class='user_interest brown_tag' onclick='del_interest(" + interest_list[i].fk_category_code + ");'>" + interest_list[i].category_name + "</div>";
+						}
+						
+						else if(interest_list[i].fk_category_code == 7) {
+							html += "<div class='user_interest yellow_tag' onclick='del_interest(" + interest_list[i].fk_category_code + ");'>" + interest_list[i].category_name + "</div>";
+						}
+						
+						else {
+							html += "<div class='user_interest khaki_tag' onclick='del_interest(" + interest_list[i].fk_category_code + ");'>" + interest_list[i].category_name + "</div>";
+						}
 						
 					}
 					
@@ -532,8 +677,7 @@
 	        }
 		});
 	}
-	<%-- 관심코드 알아오기 끝 --%>
-	
+	<%-- 모든 관심코드 불러오기 끝 --%>
 	
 	<%-- 관심코드 추가하기 시작 --%>
 	function plus_interest(code) {
@@ -550,16 +694,14 @@
 				
 				// console.log("~~~~ 확인용 : " + JSON.stringify(json));
 				
-				if ( json.n == 0) {
-					alert("이미 있는 태그입니다.");
-				}
-				else {
-					interest();
-					
-					$("button#edit_button").prop("disabled", false);
-					$("button#edit_button").addClass("sucess_button_change");
-				}
-								
+    			$("span#interest_add").show();
+    			
+    			setTimeout(function(){
+    				$("span#interest_add").fadeOut();
+    			}, 1000);
+				
+				all_interest();
+						
 			},
 			error: function(request, status, error){
 				alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
@@ -586,18 +728,14 @@
 				
 				// console.log("~~~~ 확인용 : " + JSON.stringify(json));
 				
-				if ( json.n == 0) {
-					alert("이미 있는 삭제된 태그입니다.");
-				}
-				else {
-
-					interest();
-					
-					$("button#edit_button").prop("disabled", false);
-					$("button#edit_button").addClass("sucess_button_change");
-				}
+				$("span#interest_del").show();
+    			
+    			setTimeout(function(){
+    				$("span#interest_del").fadeOut();
+    			}, 1000);
 				
-				// $("div#interest").append(html);
+				all_interest();
+				
 				
 			},
 			error: function(request, status, error){
@@ -648,6 +786,36 @@
 	
 	<%-- 인증하기 버튼 보이기 및 인증번호 보내기 시작 --%> 
 	function show_identify(){
+		
+		$("div#timer_error").hide();
+		
+		var time = 300;
+		var min = "";
+		var sec = "";
+		
+		var x = setInterval(function(){
+				min = parseInt(time/60);
+				sec = time%60;
+				
+				var timer = min + "분" + sec + "초";
+				/*  
+				document.getElementById("timer").innerHTML = min + "분" + sec + "초";
+				  */
+				$("div#timer").html(timer); 
+				time--;
+				
+				if(time < 0) {
+					// 타임아웃 시
+					clearInterval(x);
+					
+					$("div#timer").hide();
+					
+					$("div#timer_error").show();
+					
+					$(".mobile_identify").hide(); // 모바일 인증하기 숨기기
+				}
+				
+		}, 1000);
 		
 		if(b_flag_pwdDuplicate_click || b_flag_hp2_click || b_flag_hp3_click) {
 			// 비밀번호 변경, 휴대폰 번호 변경을 할 경우 인증번호를 입력하도록 한다.
@@ -775,26 +943,42 @@
 	<div id="mainPosition">
 		<!-- index 상단 제목 시작 -->
  		<div class="d-sm-flex align-items-center justify-content-between mb-4">
-			<h1 class="h3 mb-0 text-gray-800">내정보 수정하기</h1>
+			<h1 class="h3 mb-0 text-gray-800 font_weight">내정보 수정하기</h1>
 		</div>
 		<!-- index 상단 제목 끝 -->
 		
 		<!-- index 메인 시작 -->
 		
-		<div class="row" id="MFE_row">
+		<div class="row shadow" id="MFE_row">
 		
 			<div class="col-lg-4" style="padding-top:32px;">
 				
 				<img id="second_img_button" alt="프로필이미지" onclick="document.all.profile_pic_file.click();"
-				src="<%= ctxPath%>/images/${requestScope.udto.profilePic}" alt="Blob URL Image"  />
+				src="<%= ctxPath%>/images/${requestScope.udto.profilePic}"  />
 				
 				<button type="button" id="img_button" onclick="document.all.profile_pic_file.click();">
 					<i class="fas fa-camera fa-lg" style="font-size:21pt;"></i>
 				</button>
-				<div style="height:80%;">
-				    <div style="font-size:15pt;font-weight:bold;margin-top:35px;">관심태그</div>
-				    <div id="all_interest" style="width:154%;"></div>
-				    <div id="interset" style="width:132%;"></div>
+				<div>
+					
+				    <div id="interest_margin">
+				   		<span id="interest_title">관심태그</span>
+				   		
+				    	<span id="interest_add">
+				    		<span class="balloon left">
+				    			<span class="balloon_span">관심태그 추가 완료</span>
+				    		</span>
+				    	</span>
+				    	<span id="interest_del">
+				    		<span class="balloon left">
+				    			<span class="balloon_span">관심태그 삭제 완료</span>
+				    		</span>
+				    	</span>
+				    </div>
+				     
+				   
+				    <div id="all_interest"></div>
+				    <div id="interset"></div>
 			    </div>
 			</div>
 		
@@ -804,6 +988,10 @@
 			      
 			    <input type="hidden" name="userid" id="userid" value="${requestScope.udto.userid}" />
 			    
+			    <h6 class="text-danger">! 주의 !</h6>
+			    <h6 class="text-danger">관심태그는 태그를 누르는 순간 등록과 삭제가 되므로, 수정하기 버튼을 누를 필요 없습니다.</h6>
+			    <h6 class="text-danger">비밀번호와 연락처 변경은 핸드폰 인증번호 확인이 필요합니다.</h6>
+			    <h6 class="text-danger">이메일 변경은 이메일 중복확인이 필요합니다.</h6>
 			      
 			    <table id="tblMemberUpdate">
 			         
@@ -844,8 +1032,10 @@
 				        <td>
 			                <input type="text" id="input_identify" class="mobile_identify" style="margin-right:7%;" />
 			                <button type="button" id="button_identify" class="mobile_identify" onclick="go_identify();">인증하기</button>
+			                <div id="timer"></div>
 			                <div id="identify_success" class="error" style="color:blue;">인증을 성공하였습니다.</div>
 			                <div id="identify_error" class="error">인증번호가 틀렸습니다.</div>
+			                <div id="timer_error" class="error">5분이 지났습니다. 다시 인증번호를 받아주세요.</div>
 			                <div id="plz_identify_error" class="error">인증번호를 입력해주시기 바랍니다.</div>
 			        	</td>
 			         </tr>
@@ -863,8 +1053,6 @@
 			            </td>
 			         </tr>
 			         
-			         
-			         
 			          <tr>
 			            <td style="width: 26%; font-weight: bold;">계좌번호&nbsp;</td>
 			            <td style="width: 74%; text-align: left;">
@@ -873,20 +1061,16 @@
 			            </td>
 			         </tr>
 			         
-			         <tr>
-			            <td colspan="2" class="text-center">
-			                      
-			              <button type="button" id="edit_button" onclick="go_edit();">수  정</button> 
-			            </td>
-			         </tr>
-			      </table>
-				</form>
-           </div>
-           
-
+				</table>
+			</form>
 		</div>
-		<!-- 메인 끝 -->
-
+	</div>
+	<!-- 메인 끝 -->
+	<div class="row" style="padding:0 14px;">
+		<form name="reward_form" style="width:100%;">
+			<button type="button" id="edit_button" class="col-lg-12 font_weight" onclick="go_edit();">수  정</button> 
+		</form>
+	</div>
 
 </body>
 </html> 

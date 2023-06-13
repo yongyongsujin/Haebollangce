@@ -43,14 +43,33 @@ public interface InterMypageDAO {
 	// 결제 현황 페이지에서 환전한 상금 내역 알아오기
 	List<Map<String, Object>> convert_reward_data(Map<String, String> paraMap);
 	
+	// 결제 현황 페이지에서 예치금 내역 알아오기 -- 페이징처리
+	List<Map<String, Object>> deposit_paging_data(Map<String, String> paraMap);
+	int get_pagebar_purcahse(Map<String, String> paraMap);
+	
+	// 결제 현황페이지에서 챌린지 참여에 쓴 내역 알아오기 -- 페이징처리
+	List<Map<String, Object>> challenge_paging_data(Map<String, String> paraMap);
+	int get_pagebar_challenging(Map<String, String> paraMap);
+
+	// 결제 현황페이지에서 얻은 상금 알아오기 -- 페이징처리
+	List<Map<String, Object>> reward_paging_data(Map<String, String> paraMap);
+	int get_pagebar_reward(Map<String, String> paraMap);
+
+	// 결제 현황페이지에서 환전한 상금  알아오기 -- 페이징처리
+	List<Map<String, Object>> convert_paging_data(Map<String, String> paraMap);
+	int get_pagebar_convert(Map<String, String> paraMap);
+
 	// 비밀번호 확인 후 회원 정보수정 페이지 가기
 	UserDTO select_info(Map<String, String> paraMap);
 
 	// 모든 관심태그 가지고오기
-	List<Map<String, Object>> all_interest();
+	List<Map<String, String>> all_interest();
 	
 	// 관심태그 가지고오기
-	List<Map<String, String>> interest(String userid);
+	List<Map<String, String>> user_interest(String userid);
+	
+	// 챌린지 추천하기
+	List<Map<String, String>> recommend(String userid);
 	
 	// 관심태그 추가하기
 	int plus_interest(Map<String, String> paraMap);
@@ -91,6 +110,17 @@ public interface InterMypageDAO {
 	// 마이페이지 홈 챌린지 그래프-챌린지 참여 횟수
 	List<Map<String, String>> chart_challenging(Map<String, String> paraMap);
 	List<Map<String, String>> chart_category(Map<String, String> paraMap);
+
+
+
+
+
+
+
+
+
+
+
 
 
 	

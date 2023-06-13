@@ -5,9 +5,6 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
-
-import com.google.gson.JsonArray;
 import com.sist.haebollangce.common.mapper.InterMypageMapper;
 import com.sist.haebollangce.user.dto.UserDTO;
 
@@ -115,6 +112,70 @@ public class MypageDAO implements InterMypageDAO {
 		
 		return convert_reward_list;
 	}
+	
+	// 결제 현황 페이지에서 예치금 내역 알아오기 -- 페이징처리
+	@Override
+	public List<Map<String, Object>> deposit_paging_data(Map<String, String> paraMap) {
+		
+		List<Map<String, Object>> search_list = mapper.deposit_paging_data(paraMap);
+		
+		return search_list;
+	}
+	@Override
+	public int get_pagebar_purcahse(Map<String, String> paraMap) {
+
+		int total_count = mapper.get_pagebar_purcahse(paraMap);
+		
+		return total_count;
+	}
+	
+	// 결제 현황페이지에서 챌린지 참여에 쓴 내역 알아오기 -- 페이징처리
+	@Override
+	public List<Map<String, Object>> challenge_paging_data(Map<String, String> paraMap) {
+		
+		List<Map<String, Object>> search_list = mapper.challenge_paging_data(paraMap);
+		
+		return search_list;
+	}
+	@Override
+	public int get_pagebar_challenging(Map<String, String> paraMap) {
+
+		int total_count = mapper.get_pagebar_challenging(paraMap);
+		
+		return total_count;
+	}
+	
+	// 결제 현황페이지에서 얻은 상금 알아오기 -- 페이징처리
+	@Override
+	public List<Map<String, Object>> reward_paging_data(Map<String, String> paraMap) {
+
+		List<Map<String, Object>> search_list = mapper.reward_paging_data(paraMap);
+		
+		return search_list;
+	}
+	@Override
+	public int get_pagebar_reward(Map<String, String> paraMap) {
+
+		int total_count = mapper.get_pagebar_reward(paraMap);
+		
+		return total_count;
+	}
+	
+	// 결제 현황페이지에서 환전한 상금  알아오기 -- 페이징처리
+	@Override
+	public List<Map<String, Object>> convert_paging_data(Map<String, String> paraMap) {
+
+		List<Map<String, Object>> search_list = mapper.convert_paging_data(paraMap);
+		
+		return search_list;
+	}
+	@Override
+	public int get_pagebar_convert(Map<String, String> paraMap) {
+
+		int total_count = mapper.get_pagebar_convert(paraMap);
+		
+		return total_count;
+	}
 		
 	// 비밀번호 확인 후 회원 정보수정 페이지 가기
 	@Override
@@ -127,20 +188,27 @@ public class MypageDAO implements InterMypageDAO {
 	
 	// 모든 관심태그 가지고오기
 	@Override
-	public List<Map<String, Object>> all_interest() {
+	public List<Map<String, String>> all_interest() {
 
-		List<Map<String, Object>> all_interest_list = mapper.all_interest();
+		List<Map<String, String>> all_interest_list = mapper.all_interest();
 		
 		return all_interest_list;
-	}
-
-	// 관심태그 알아오기
+	}	
 	@Override
-	public List<Map<String, String>> interest(String userid) {
-
-		List<Map<String, String>> interest_list = mapper.interest(userid);
+	public List<Map<String, String>> user_interest(String userid) {
+		
+		List<Map<String,String>> interest_list = mapper.user_interest(userid);
 		
 		return interest_list;
+	}
+
+	// 챌린지 추천하기
+	@Override
+	public List<Map<String, String>> recommend(String userid) {
+
+		List<Map<String, String>> recommend_list = mapper.recommend(userid);
+		
+		return recommend_list;
 	}
 	
 	// 관심태그 추가하기
@@ -270,6 +338,15 @@ public class MypageDAO implements InterMypageDAO {
 		
 		return category_list;
 	}
+
+
+
+
+
+
+
+
+
 
 
 }

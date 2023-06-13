@@ -2,9 +2,8 @@ package com.sist.haebollangce.user.controller;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -27,8 +26,6 @@ import com.google.gson.JsonObject;
 import com.sist.haebollangce.common.FileManager;
 import com.sist.haebollangce.user.dto.UserDTO;
 import com.sist.haebollangce.user.service.InterMypageService;
-
-import kotlinx.serialization.json.Json;
 
 import com.sist.haebollangce.common.GoogleMail;
 
@@ -169,9 +166,9 @@ public class MypageController {
 		
 		String user_all_deposit = jsonObj.get("user_all_deposit").toString();
 		
-		Date now = new Date();
+		LocalDate now = LocalDate.now();
 		
-		String emailContent = "<div class='container' style='padding:25px;width:35%;border:5px dashed #aaaaaa;'>"
+		String emailContent = "<div style='padding:25px;width:35%;border:5px dashed #aaaaaa;'>"
 					   + "	<h1 style='font-family: 'Pretendard-Regular';'>Haebollangce</h1>"
 					   + "		<div style='margin-top:50px;'>"
 					   + "			모두 함께 도전하는 즐거움! 해볼랑스 입니다."
@@ -180,10 +177,10 @@ public class MypageController {
 					   + "			'" + userid + "' 님의 예치금 결제 내역을 보내드립니다."
 					   + "		</div>"
 					   + "		<div style='border: 1px solid black;'>"
-					   + "			<div style='padding: 20px 30px;'>결제 일시<span>" + now + "</span></div>" 
-					   + "			<div style='padding: 20px 30px;border-top: 1px solid #aaaaaa;border-bottom: 1px solid #aaaaaa;'>주문번호<span>" + merchant + "</span></div>"
-					   + "			<div style='padding: 20px 30px;border-bottom: 1px solid #aaaaaa;'>보유한 예치금<span>" + user_all_deposit + "</span></div>" 
-					   + "			<div style='padding: 20px 30px;'>결제한 금액 및 충전된 예치금<span style='color:red; font-weight:bold;'>" + deposit + "</span></div>"
+					   + "			<div style='padding: 20px 30px;'>결제 일시<span style='float:right;'>" + now + "</span></div>" 
+					   + "			<div style='padding: 20px 30px;border-top: 1px solid #aaaaaa;border-bottom: 1px solid #aaaaaa;'>주문번호<span style='float:right;'>" + merchant + "</span></div>"
+					   + "			<div style='padding: 20px 30px;border-bottom: 1px solid #aaaaaa;'>보유한 예치금<span style='float:right;'>" + user_all_deposit + "</span></div>" 
+					   + "			<div style='padding: 20px 30px;'>결제한 금액 및 충전된 예치금<span style='color:red; font-weight:bold; float:right;'>" + deposit + "</span></div>"
 					   + "		</div>" 
 					   + "		<div style='margin-top: 34px;background-color: #f2f2f2;height: 120px;padding: 38px 30px;'>" 
 					   + "			<div>본 메일은 발신전용 메일 이므로 회신이 불가합니다.</div>" 
@@ -267,10 +264,10 @@ public class MypageController {
 
 	
 	/* 결제 현황 페이지 가기 시작 */
-	@GetMapping(value = "/mypageDepositUsing")
+	@GetMapping(value = "/mypageUsing")
 	public String mypageDepositUsing(HttpServletRequest request) {
-
-		return "mypage/mypageDepositUsing.tiles5";
+		// request.setAttribute("userid", );
+		return "mypage/mypageUsing.tiles5";
 	}
 	/* 결제 현황 페이지 가기 끝 */
 
@@ -342,10 +339,14 @@ public class MypageController {
 		String start = request.getParameter("start");
 		String end = request.getParameter("end");
 		String sort = request.getParameter("sort");
+		
 		/*
-		 * System.out.println(userid); System.out.println(start_date);
-		 * System.out.println(end_date);
-		 */
+	 	System.out.println(userid); 
+	 	System.out.println(start);
+		System.out.println(end);
+		System.out.println(sort);
+		*/
+		
 		Map<String, String> paraMap = new HashMap<>();
 		paraMap.put("userid", userid);
 		paraMap.put("start", start);
@@ -358,6 +359,84 @@ public class MypageController {
 	}
 	/* 결제 현황 페이지에서 내역 알아오기 끝 */
 
+	/* 결제 더보기 가기 시작 */
+	@PostMapping(value="/mypageDetailUsing")
+	public String mypageDetailUsing(HttpServletRequest request) {
+		
+		String sort = request.getParameter("sort");
+		
+		String userid = request.getParameter("userid");
+		
+		request.setAttribute("sort", sort);
+		request.setAttribute("userid", userid);
+		
+		return "mypage/mypageDetailUsing.tiles5";
+	}
+	/* 결제 더보기 가기 끝*/
+	
+	
+	/* 결제 더보기 페이징 처리하기 시작 */
+	@ResponseBody
+	@RequestMapping(value = "/search_paging_ajax", method = { RequestMethod.GET }, produces = "text/plain;charset=UTF-8")
+	public String search_paging_ajax(HttpServletRequest request) {
+
+		String userid = request.getParameter("userid");
+		String start = request.getParameter("start");
+		String end = request.getParameter("end");
+		String sort = request.getParameter("sort");
+		String current_pageno = request.getParameter("current_pageno");
+		
+		if(current_pageno == null) {
+			current_pageno = "1";
+		}
+		
+		/*
+		 * System.out.println("userid " + userid); System.out.println("start " + start);
+		 * System.out.println("end " + end); System.out.println("sort " + sort);
+		 * System.out.println("current_pageno " + current_pageno);
+		 */
+		
+		int page_size = 10;
+		
+		int start_rno = (( Integer.parseInt(current_pageno) - 1) * page_size) + 1;
+	    int end_rno = start_rno + page_size - 1;
+		
+		Map<String, String> paraMap = new HashMap<>();
+		paraMap.put("userid", userid);
+		paraMap.put("start", start);
+		paraMap.put("end", end);
+		paraMap.put("sort", sort);
+		paraMap.put("start_rno", String.valueOf(start_rno) );
+		paraMap.put("end_rno", String.valueOf(end_rno) );
+
+		String json = service.search_paging_data(paraMap);
+
+		return json;
+	}
+	@ResponseBody
+	@RequestMapping(value = "/get_pagebar_ajax", method = { RequestMethod.GET }, produces = "text/plain;charset=UTF-8")
+	public String get_pagebar_ajax(HttpServletRequest request) {
+		
+		String userid = request.getParameter("userid");
+		String page_size = request.getParameter("page_size");
+		String start = request.getParameter("start");
+		String end = request.getParameter("end");
+		String sort = request.getParameter("sort");
+		
+		Map<String, String> paraMap = new HashMap<>();
+		paraMap.put("userid", userid);
+		paraMap.put("page_size", page_size);
+		paraMap.put("start", start);
+		paraMap.put("end", end);
+		paraMap.put("sort", sort);
+		
+		// totalPage 알아오기
+		String total_page = service.get_pagebar(paraMap);
+		
+		return total_page;
+	}
+	/* 결제 더보기 페이징 처리하기 끝 */
+	
 	
 	/* 회원 정보수정 및 회원탈퇴 들어가기 전 비밀번호 확인 가기 시작 */
 	@PostMapping(value = "/mypagePwdIdentify")
@@ -423,26 +502,14 @@ public class MypageController {
 	@RequestMapping(value = "/all_interest_ajax", method = { RequestMethod.GET }, produces = "text/plain;charset=UTF-8")
 	public String all_interest_ajax(HttpServletRequest request) {
 		
-		String json = service.all_interest();
+		String userid = request.getParameter("userid");
+		
+		String json = service.all_interest(userid);
 		
 		return json;
 		
 	}
 	/* 모든 관심태그 가지고오기 끝 */
-	
-	
-	/* 관심태그 가지고오기 시작 */
-	@ResponseBody
-	@RequestMapping(value = "/interest_ajax", method = { RequestMethod.GET }, produces = "text/plain;charset=UTF-8")
-	public String interest_ajax(HttpServletRequest request) {
-
-		String userid = request.getParameter("userid");
-
-		String json = service.interest(userid);
-
-		return json;
-	}
-	/* 관심태그 가지고오기 끝 */
 	
 	
 	/* 관심태그 추가하기 시작 */
@@ -471,6 +538,9 @@ public class MypageController {
 		
 		String userid= request.getParameter("userid");
 		String category_code = request.getParameter("category_code");
+		
+		// System.out.println(userid);
+		// System.out.println(category_code);
 		
 		Map<String,String> paraMap = new HashMap<>();
 		paraMap.put("userid", userid);

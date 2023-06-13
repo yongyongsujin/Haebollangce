@@ -10,7 +10,7 @@
 		background-color:#f4f4f4
 	}
 
-	a#mypage {
+	button#mypage {
 		padding: 36px 8px 73px 16px;
 		text-decoration: none;
 		font-size: 23px;
@@ -110,33 +110,29 @@
 		}
 		
 	});
-	
+
 </script>
 
 </head>
 <body>
 <!-- 마이페이지 메뉴바 시작 -->
 	<div class="sidenav">
-		<a id="mypage" href="<%=ctxPath%>/mypage/mypageHome">마이페이지</a>
+		<form action="mypageHome" method="post">
+			<input type="hidden" name="userid" value="jisu" /> 
+			<button type="submit" id="mypage">마이페이지</button>
+		</form>
 		
-		<button class="dropdown-btn">챌린지 현황 
-			<i class="fa fa-caret-down"></i>
-		</button>
-		<div class="dropdown-container">
-			<a href="<%=ctxPath%>/mypage/mypageChallenging" style="color:black;">진행중</a>
-			<a href="<%=ctxPath%>/mypage/mypageFinish" style="color:black;">완료</a>
-			<a href="<%=ctxPath%>/mypage/mypageCreate" style="color:black;">개설한 챌린지</a>
-		</div>
+		<a href="<%=ctxPath%>/mypage/mypageChallenging">챌린지 현황</a>
 		
-		<button class="dropdown-btn">결제
+		<button class="dropdown-btn">결제·환전
 			<i class="fa fa-caret-down"></i>
 		</button>
 		<div class="dropdown-container">
 			<a href="<%=ctxPath%>/mypage/depositPurchase" style="color:black;">예치금 충전</a>
-			<a href="<%=ctxPath%>/mypage/change_reward" style="color:black;">상금 전환</a>
+			<a href="<%=ctxPath%>/mypage/change_reward" style="color:black;">상금 환전</a>
 		</div>
 		
-		<a href="<%=ctxPath%>/mypage/mypageDepositUsing">결재 현황</a>
+		<a href="<%=ctxPath%>/mypage/mypageUsing">결재 현황</a>
 		
 		<button class="dropdown-btn">찜현황
 			<i class="fa fa-caret-down"></i>

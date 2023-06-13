@@ -38,15 +38,24 @@
 		margin-right: 20px;
 	}
 	
-	button.go_cite {
-		width: 91%;
-		height: 42px;
+	div.card_padding {
+		padding: 1.25rem 3rem;
+	}
+	
+	button.go_detail {
+		background-color: #e6e1e1;
 		border: none;
-		border-radius: 40px;
+		color: black;
+		padding: 7px 12px;
+		text-align: center;
+		font-size: 13pt;
+		transition: 0.3s;
+		border-radius: 35px;
+	}
+	
+	button.go_detail:hover {
 		background-color: #f43630;
 		color: white;
-		font-size: 10pt;
-		font-weight: bold;
 	}
 	
 	button#go_deposit,
@@ -55,10 +64,16 @@
 		height: 35px;
 		border: none;
 		border-radius: 40px;
-		background-color: #f43630;
-		color: white;
+		background-color: #e6e1e1;
+		color: black;
 		font-size: 10pt;
 		font-weight: bold;
+	}
+	
+	button#go_deposit:hover,
+	button#go_reward:hover {
+		background-color: #f43630;
+		color: white;
 	}
 	
 	td.td_width_25 {
@@ -71,6 +86,10 @@
 	
 	td.td_width_33 {
 		width: 33%;
+	}
+	
+	td.no_identify {
+		padding: 30% 31% 30% 36%;
 	}
 	
 	span#span_userid {
@@ -86,6 +105,10 @@
 	div.bar_size {
 		width: 31%;
 		height: 20px;
+	}
+	
+	div.bar_size_2 {
+		width: 80%;
 	}
 	
 	td.td_width_33 {
@@ -105,6 +128,16 @@
 		font-size: 15pt;
 		font-weight: bold;
 		margin-bottom: 8%;
+	}
+	
+	div.height_px_ide {
+		height: 507px;
+		overflow: auto;
+	}
+	
+	div.height_px {
+		height: 534px;
+		overflow: auto;
 	}
 	
 	/* 하이차트 css 시작 */
@@ -326,7 +359,7 @@
                 		 + "	<div class='h5 mb-0 mr-3 font-weight-bold text-gray-800'>" + json.result + "%</div>"
                 		 + "</div>"
                 		 + "<div class='col'>"
-                		 + "	<div class='progress progress-sm mr-2'>"
+                		 + "	<div class='progress progress-sm mr-2 bar_size_2'>"
                 		 + "		<div class='progress-bar bg-info' role='progressbar' style='width:" + json.result + "%;' aria-valuenow='50' aria-valuemin='0' aria-valuemax='100'></div>"
                 		 + "	</div>"
                 		 + "</div>";
@@ -377,17 +410,17 @@
 		               		        	 +	"		<div class='div_info'>인증빈도: " + json[i].frequency + "</div>"
 		               		        	 +	"		<div class='div_info'>인증시간: " + json[i].hour_start + " ~ " + json[i].hour_end + "</div>"
 		               		        	 +	"	</td>"
-		               		        	 +  "	<td><button class='go_cite'>인증하러가기</button></td>"
+		               		        	 +  "	<td><button type='button' class='go_detail' onclick='go_certify();'>인증하러가기</button></td>"
 		               		        	 +  "</tr>";
 								  	 
 							}
-		            		else {
-								// json 은 있으나, 요일, 시간 등등이 안 맞을 경우
-								html = "<tr><td class='td_width_33'>인증이 필요한 챌린지가 없습니다.</td></tr>";
-			                }
+		            		
                		        
             		   } // end of if(resultToday < json[i].finish_day) -----
-            		   
+            		   else {
+							// json 은 있으나, 요일, 시간 등등이 안 맞을 경우
+							html = "<tr><td class='no_identify'>인증이 필요한 챌린지가 없습니다.</td></tr>";
+		                }
             		    
             	   } // end of for(var i=0; i<json.length; i++) -----
             	   
@@ -447,7 +480,7 @@
 								 +	"		<div class='div_info'>개설자 :" + json[i].fk_userid +"</div>"
 								 +	"	</td>"
 								 +	"	<td>"
-								 +	"		<button type='button' class='go_cite'>상세보기</button>"
+								 +	"		<button type='button' class='go_detail' onclick='go_detail();'>상세보기</button>"
 								 +  "	</td>"
 								 + 	"</tr>";
 								
@@ -530,7 +563,7 @@
 							    },
 							    subtitle: {
 							        align: 'left',
-							        text: 'Click the columns to view versions. Source: <a href="http://statcounter.com" target="_blank">statcounter.com</a>'
+							        text: ''
 							    },
 							    accessibility: {
 							        announceNewData: {
@@ -592,7 +625,6 @@
 						
 			///////////////////////////////////////////////////////////////
 			
-				
 			},
 			error: function(request, status, error){
 				alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
@@ -602,6 +634,18 @@
 		<%-- 챌린지 그래프 끝 --%>
 		
 	}); // end of document.ready -----
+	
+	function go_certify() {
+		
+		location.href = "/challenge/certify"
+		
+	} // end of function go_certify() {} -----
+	
+	function go_detail() {
+		
+		location.href = "/challenge/certify"
+		
+	} // end of function go_detail() {} -----
 	
 </script>
 
@@ -623,19 +667,14 @@
 				</div>
 			</div>
 		
-		<!-- index 상단 제목 시작 -->
- 		<div class="d-sm-flex align-items-center justify-content-between mb-4">
-			<h1 class="h3 mb-0 text-gray-800">사용자 코인 현황</h1>
-		</div>
-		<!-- index 상단 제목 끝 -->
 		
 		<!-- index 메인 시작 -->
 		<div class="row">
 		
 			<!-- 코인보유량 시작 -->
-			<div class="col-lg-3 col-md-6 mb-4">
+			<div class="col-lg-4 col-md-6 mb-4">
  				<div class="card border-left-primary shadow h-100 py-2">
-					<div class="card-body">
+					<div class="card-body card_padding">
 						<div class="row no-gutters align-items-center">
 							<div class="col mr-2">
 								<div class="text-xs font-weight-bold text-primary text-uppercase mb-1">보유 예치금</div>
@@ -643,7 +682,7 @@
 							</div>
 							<div class="col-auto">
 								<button type="button" id="go_deposit" onClick="location.href='<%=ctxPath%>/mypage/depositPurchase'">
-									<i class="fas fa-won-sign" style="color: #4b9156;"></i>
+									<i class="fas fa-won-sign" style="color: #4b9156; margin-right: 7%;"></i>
 									충전
 								</button>
 							</div>
@@ -654,9 +693,9 @@
 			<!-- 코인보유량 끝 -->
 
 			<!-- 보유상금 시작 -->
-			<div class="col-lg-3 col-md-6 mb-4">
+			<div class="col-lg-4 col-md-6 mb-4">
 				<div class="card border-left-success shadow h-100 py-2">
-					<div class="card-body">
+					<div class="card-body card_padding">
 						<div class="row no-gutters align-items-center">
 							<div class="col mr-2">
 								<div class="text-xs font-weight-bold text-success text-uppercase mb-1">보유 상금</div>
@@ -664,7 +703,7 @@
 							</div>
 							<div class="col-auto">
 								<button type="button" id="go_reward" onClick="location.href='<%=ctxPath%>/mypage/change_reward'">
-									<i class="fas fa-coins" style="color: #fff700;"></i>
+									<i class="fas fa-coins" style="color: #fff700; margin-right: 7%;"></i>
 									상금전환
 								</button>
 							</div>
@@ -676,9 +715,9 @@
 			
 			<!-- 인증 성공률 시작 -->
 			<!-- 총 인증한 챌린지/총 참여챌린지 최대 인증횟수 -->
-			<div class="col-lg-3 col-md-6 mb-4">
+			<div class="col-lg-4 col-md-6 mb-4">
 				<div class="card border-left-info shadow h-100 py-2">
-					<div class="card-body">
+					<div class="card-body card_padding">
 						<div class="row no-gutters align-items-center">
 							<div class="col mr-2">
 								<div class="text-xs font-weight-bold text-info text-uppercase mb-1">100% 인증성공률</div>
@@ -695,7 +734,7 @@
 			</div>
 			<!-- 인증 성공률 끝 -->
 
-			<!-- 알림 시작 -->
+			<!-- 알림 시작
 			<div class="col-lg-3 col-md-6 mb-4">
 				<div class="card border-left-warning shadow h-100 py-2">
 					<div class="card-body">
@@ -711,13 +750,13 @@
 					</div>
 				</div>
 			</div>
-			<!-- 알림 끝 -->
+			알림 끝 -->
            </div>
            
 			<!-- 인증이 필요한 챌린지 시작 -->
 			<div class="row">
 				<div class="col-lg-6 mb-4">
-					<div class="card shadow mb-4">
+					<div class="card shadow mb-4 height_px_ide">
 						<div class="card-header py-3">
 							<h5 class="m-0 font-weight-bold">인증이 필요한 챌린지</h5>
 						</div>
@@ -733,7 +772,7 @@
 					</div>
 				</div>
 				
-				<div class="col-lg-6 mb-4">
+				<div class="col-lg-6 mb-4 height_px">
 					<div id="notice" class="card shadow mb-4">
 						<div class="card-header py-3">
 							<h5 class="m-0 font-weight-bold">새로운 챌린지 추천</h5>

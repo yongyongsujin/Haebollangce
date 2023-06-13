@@ -12,18 +12,48 @@
 		margin: 99px 5% 0 5%;
 	}
 	
+	.font_weight {
+		font-weight: bold;
+	}
+	
 	div#position {
 		background-color:white; 
-		padding: 54px 1% 54px 4%;
+		padding: 54px 5% 54px 5%;
 	}
 	
 	div.card_position {
 		min-height: 400px;
 	}
 	
-	div.img_style {
+	img.img_style {
 		border-radius:60%; 
 		width:35px;
+		object-fit: cover;
+	}
+	
+	div.card_style {
+		border: solid 1px gray;
+	}
+	
+	div.no_like_style {
+		padding: 14% 39%;
+		font-size: 15pt;
+	}
+	
+	button.button_style {
+		margin: 17% 18% 0 18%;
+		background-color: #e6e1e1;
+		border: none;
+		color: black;
+		padding: 5% 5%;
+		text-align: center;
+		transition: 0.3s;
+		border-radius: 35px;
+	}
+	
+	button.button_style:hover {
+		background-color: #f43630;
+		color: white;
 	}
 	
 </style>
@@ -44,12 +74,14 @@
 			
 				let html = "";
 				
+				let cnt = "";
+				
 				if(json.length > 0) {
 					
 					for(var i=0; i<json.length; i++) {
 						
 						html = "<div class='col-md-3 col-sm-6'>"
-							 + "	<div class='card p-3 mb-5 card_position'>"
+							 + "	<div class='card p-3 mb-5 card_position card_style'>"
 							 + "		<div class='d-flex justify-content-between'>"
 							 + "			<div class='d-flex flex-row align-items-center'>"
 							 + "				<div><img class='img_style' src='<%= ctxPath%>/images/" + json[i].profile_pic + "' /></div>"
@@ -76,16 +108,17 @@
 							 + "</div>"
 							 + "</div>";
 						
-						$("div#position").append(html);
 					}
 					
 				} // end of if(json.length > 0) {} -----
 				
 				else {
-					html += "등록된 관심태그가 없습니다."
+					html += "<div class='no_like_style'>좋아요를 누른 라운지글이 없습니다.<div>"
+						 +  "<button type='button' class='button_style' onclick='go_lounge();'>라운지 글 보러가기</button>"
 					
-					$("div#position").html(html); 
 				}
+				
+				$("div#position").html(html); 
 				 
 			},
 			error: function(request, status, error){
@@ -93,10 +126,13 @@
 	        }
 		});
 		
-		
-			
 	}); // end of $(document).ready(function(){} --------
 
+	function go_lounge() {
+		
+		location.href = "/lounge/loungeAdd";
+		
+	} // end of function go_lounge() {} -----
 
 </script>
 
@@ -104,7 +140,7 @@
 		
 		<!-- index 상단 제목 시작 -->
 		<div class="d-sm-flex align-items-center justify-content-between mb-4">
-			<h1 class="h3 mb-0 text-gray-800">좋아요 누른 라운지글</h1>
+			<h1 class="h3 mb-0 text-gray-800 font_weight">좋아요 누른 라운지글</h1>
 		</div>
 		<!-- index 상단 제목 끝 -->
 		

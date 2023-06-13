@@ -13,6 +13,14 @@
 		margin: 99px 5% 0 5%;
 	}
 	
+	div.body_style {
+		border-radius: 30px 30px 0 0;
+	}
+	
+	.padding_left {
+		padding-left: 11%;
+	}
+	
 	 /* 충전할 예치금 시작  */
 	input#reward_input {
 		font-size: 38px; 
@@ -170,9 +178,15 @@
 					
 				}
 				else {
+					
 					alert("상금은 3000원부터 환전이 가능합니다.\n현재 보유중인 상금: " + json.user_all_reward);
 					
-					location.href = "mypageHome";
+					let frm = document.reward_form;
+				     
+				    frm.action = '/mypage/mypageHome';
+				    frm.method = 'POST';
+				    frm.submit();
+				    
 				}
 			},
 			error: function(request, status, error){
@@ -362,7 +376,7 @@
 			let introduce = "상금: 챌린지를 100% 달성 시, 해볼랑스가 제공하는 금액으로," 
 						  +	"챌린지에 따라 받을 수 있는 상금은 다를 수 있으며, 챌린지 100% 달성자에게만 지급됩니다.";
 			
-			$("div#law_show").show();
+			$("div#law_show").slideDown("fast");
 			
 			$("div#law_introduce_title").html("이용약관");
 			
@@ -374,7 +388,7 @@
 			let introduce = "상금 전환: 상금은 3000원 이상부터 출금할 수 있으며,"
 						  + "출금시 1%의 수수료가 발생합니다.";
 			
-			$("div#law_show").show();
+			$("div#law_show").slideDown("fast");
 			
 			$("div#law_introduce_title").html("상금정책");
 			
@@ -424,27 +438,29 @@
 	
 	function reward_convert(){
 		
-		<%-- 상금 테이블에 데이터 변경(상금 보유량 감소) 시작 --%>
-		const frm = document.reward_form;
+		<%-- 환전 테이블에 데이터 입력 시작 --%>
+		let frm = document.reward_form;
 	     
 	     frm.action = '/mypage/reward_convert';
 	     frm.method = 'POST';
 	     frm.submit();
-	     <%-- 상금 테이블에 데이터 변경(상금 보유량 감소) 끝 --%>
+	     <%-- 환전 테이블에 데이터 입력  끝 --%>
 				
 	};
 	
 </script>
 
 <div id="mainPosition">
+	<!-- index 상단 제목 시작 -->
+	<div class="d-sm-flex align-items-center justify-content-between mb-4">
+		<h3 class="mb-0 text-gray-800 font-weight-bold main_title">상금 환전하기</h3>
+	</div>
+	<!-- index 상단 제목 끝 -->
 
 	<div class="row mb-4">
-		<div class="col-lg-11 mb-4" style="margin-left:5%;">
+		<div class="col-lg-12 mb-4 body_style">
 			<div id="notice" class="card shadow mb-4">
 				<%-- 상금 입력 시작 --%>
-				<div class="card-header py-3">
-					<h4 class="m-0 font-weight-bold text-primary">환전할 상금을 입력해주세요.</h4>
- 				</div>
 				<div class="card-body" style="padding:7rem 12rem;">
 					<input type="text" id="reward_input" class="offset-lg-2 col-lg-8 offset-lg-2" required>
 					<label id="reward_label">환전할 상금(원)</label>
@@ -459,7 +475,7 @@
 				
 				<%-- 상금 입력 후 현황 시작--%>
 				<div class="row" style="padding:0 8rem 2rem 8rem;">
-					<div class="col-lg-6 mb-4" style="padding-left:85px;">
+					<div class="col-lg-6 mb-4 padding_left">
 						<h2 class="second_title">상금 전환</h2>
 						<table style="width:100%;">
 							<tr>	
@@ -479,7 +495,7 @@
 					<%-- 상금 입력 후 현황 끝--%>
 					
 					<%-- 이용 약관 시작 --%>
-					<div class="col-lg-6 mb-4" style="padding-left:75px;">
+					<div class="col-lg-6 mb-4 padding_left">
 						<h2 class="second_title">약관 동의 및 결제</h2>
 						<table style="font-size:14pt;">
 							<tr>
@@ -504,7 +520,7 @@
 				<%-- 환전하기 버튼 시작 --%>
 				<div class="row" style="padding:0 14px;">
 					<form name="reward_form" style="width:100%;">
-						<input type="hidden" name="userid" value="admin4" />
+						<input type="hidden" name="userid" value="jisu" />
 						<input type="hidden" name="reward" id="reward" />
 						<button type="button" class="reward_convert" id="reward_convert">환 전 하 기</button>
 					</form>

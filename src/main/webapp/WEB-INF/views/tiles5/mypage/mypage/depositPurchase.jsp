@@ -13,7 +13,16 @@
 		margin: 99px 0;
 	}
 	
-	<%-- 충전할 예치금 시작  --%>
+	.main_title {
+		margin-left: 6%;
+	}
+	
+	.body_style {
+		margin-left: 5%;
+		border-radius: 30px;
+	}
+	
+	/* 충전할 예치금 시작 */
 	input#deposit_input {
 		font-size: 38px;
 		font-weight: bold;
@@ -65,9 +74,9 @@
 		background-color: #f43630;
 		color: white;
 	}
-	<%-- 충전할 예치금 끝 --%>
+	/* 충전할 예치금 끝 */
 	
-	<%-- 결제현황 시작 --%>
+	/* 결제현황 시작 */
 	h2.second_title {
 		font-weight: bold;
 		margin-bottom: 25px;
@@ -108,7 +117,7 @@
 		padding: 10px 386px 0 481px;
 	}
 	
-	<%-- 이용약관 시작 --%>
+	/* 이용약관 시작 */
 	a.Underline {
 		text-decoration: underline;
 		color: black;
@@ -135,7 +144,7 @@
 		font-weight: bold; 
 		padding: 10px;
 	}  
-	<%-- 이용약관 끝 --%>
+	/* 이용약관 끝 */
 }
 	
 </style>
@@ -143,30 +152,11 @@
 <script type="text/javascript">
 
 	$(document).ready(function(){
-		
-		<%-- 보유 예치금 가지고 오기 시작 --%>
-		$.ajax ({
-			url:"/mypage/user_deposit_ajax",
-			type:"GET",
-			data:{
-				"userid":"jisu"
-			},
-			dataType:"json",
-			success:function(json){
-				// 사용자가 관심태그로 설정한 카테고리로 있는 챌린지들 추천
-				// console.log(JSON.stringify(json));
-				
-				$("td#deposit_after").html(json.user_all_deposit + " 원");
-				
-				$("input#user_deposit").val(json.user_all_deposit);
-				
-			},
-			error: function(request, status, error){
-				alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
-			}
-		});
-		<%-- 보유 예치금 가지고 오기 끝 --%>
 
+		let merchant = Math.random().toString(36).substring(2, 12);
+		
+		$("input#purchase_code").val(merchant);
+		
 		let success_flag = false; 
 		
 		$("td#purchase_deposit").html(0);
@@ -190,7 +180,7 @@
 			
 			const change_user_deposit = Number($("input#user_deposit").val()) + Number($(this).val());
 			
-			$("td#deposit_after").html(change_user_deposit + " 원");
+			$("td#deposit_after").html(change_user_deposit);
 			<%-- 표에 값 넣기 끝 --%>
 			
 			$("input#deposit").val($(this).val());
@@ -226,7 +216,7 @@
 				
 				const change_user_deposit = Number($("input#user_deposit").val()) + Number($(this).val());
 				
-				$("td#deposit_after").html(change_user_deposit + " 원");	
+				$("td#deposit_after").html(change_user_deposit);	
 				<%-- 표에 값 넣기 끝 --%>
 				
 				$("input#deposit").val($(this).val());
@@ -252,7 +242,7 @@
 				
 				$(this).val("");
 				
-				$("td#deposit_after").html($("input#user_deposit").val() + " 원");				
+				$("td#deposit_after").html($("input#user_deposit").val());				
 				
 				$("input#deposit_input").css("border-bottom","solid red 2px");	
 				
@@ -314,86 +304,87 @@
 	<%-- 결제하기 메소드 시작 --%>
 	function payment(){
 		
-		   IMP.init('');  // 아임포트에 가입시 부여받은 "가맹점 식별코드". 
-			
-		   <%-- 결제 요청 시작 --%>
-		   IMP.request_pay({
-		       pg : 'html5_inicis', // 결제방식 PG사 구분
-		       pay_method : 'card',	// 결제 수단
-		       merchant_uid : 'merchant_' + new Date().getTime(), // 가맹점에서 생성/관리하는 고유 주문번호
-		       name : '결제테스트(코인충전|주문명)',	 // 코인충전 또는 order 테이블에 들어갈 주문명 혹은 주문 번호. (선택항목)원활한 결제정보 확인을 위해 입력 권장(PG사 마다 차이가 있지만) 16자 이내로 작성하기를 권장
-		       amount : $("input#deposit").val(),	  // '${coinmoney}'  결제 금액 number 타입. 필수항목. 
-		       buyer_email : '',  // 구매자 email
-		       buyer_name : '',	  // 구매자 이름 
-		       buyer_tel : '',    // 구매자 전화번호 (필수항목)
-		       buyer_addr : '',  
-		       buyer_postcode : ''
-		   }, function(rsp) {
-		       
-				if ( rsp.success ) { 
-					
-					alert("결제가 완료되었습니다.");
-					
-					<%-- 결제 성공시 문자보내기 시작 --%>
-				/* 
-					$.ajax({
-						url:"/mypage/sms_ajax",
-						type:"post",
-						data:{
-							"mobile":"",
-							"smsContent":"[해볼랑스] "
-										 +$("input#deposit").val()+"원 예치금 충전\n에 성공했습니다."
-						},
-						dataType:"json",
-						success:function(json){
-							// console.log("~~~~ 확인용 : " + JSON.stringify(json));
-							
-						},
-						error: function(request, status, error){
-							alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
-				        }
-					});
-					 */
-					<%-- 결제 성공시 문자보내기 끝 --%>
-					
-					<%-- 결제 성공시 메일보내기 시작 --%>
-					$.ajax({
-						url:"/mypage/email_ajax",
-						type:"post",
-						data:{
-							 userid : $("input#userid").val(),
-						     deposit : $("input#deposit").val(),
-						     email : $("input#email").val(),
-						     merchant : "merchant_" + new Date().getTime()
-						},
-						dataType:"json",
-						success:function(json){
-							console.log("~~~~ 확인용 : " + JSON.stringify(json));
-							// ~~~~ 확인용 : {"n":1}
-							
-							
-						},
-						error: function(request, status, error){
-							alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
-				        }
-					});
-					
-					<%-- 결제 성공시 메일보내기 끝 --%>
-					
-					<%-- 예치금 테이블에 데이터 넣어주기 시작 --%>
-					const frm = document.purchase_form;
-				     
-				     frm.action = '/mypage/purchase_success';
-				     frm.method = 'POST';
-				     frm.submit();
-				     <%-- 예치금 테이블에 데이터 넣어주기 끝 --%>
-				     
-		        } else {
-		            alert( "실패 : 코드(" + rsp.error_code + ") / 메세지(" + rsp.error_msg + ")" );
-		       }
-		   
+	   IMP.init('imp85248152');  // 아임포트에 가입시 부여받은 "가맹점 식별코드". 
+		
+	   <%-- 결제 요청 시작 --%>
+	   IMP.request_pay({
+	       pg : 'html5_inicis', // 결제방식 PG사 구분
+	       pay_method : 'card',	// 결제 수단
+	       merchant_uid : 'merchant_' + new Date().getTime(), // 가맹점에서 생성/관리하는 고유 주문번호
+	       name : '결제테스트(코인충전|주문명)',	 // 코인충전 또는 order 테이블에 들어갈 주문명 혹은 주문 번호. (선택항목)원활한 결제정보 확인을 위해 입력 권장(PG사 마다 차이가 있지만) 16자 이내로 작성하기를 권장
+	       amount : $("input#deposit").val(),	  // '${coinmoney}'  결제 금액 number 타입. 필수항목. 
+	       buyer_email : 'yoonjisu81@gmail.com',  // 구매자 email
+	       buyer_name : '윤지수',	  // 구매자 이름 
+	       buyer_tel : '01062314942',    // 구매자 전화번호 (필수항목)
+	       buyer_addr : '',  
+	       buyer_postcode : ''
+	   }, function(rsp) {
+	       
+			if ( rsp.success ) { 
+				
+				alert("결제가 완료되었습니다.");
+				
+				<%-- 결제 성공시 문자보내기 시작 --%>
+			/* 
+				$.ajax({
+					url:"/mypage/sms_ajax",
+					type:"post",
+					data:{
+						"mobile":"01062314942",
+						"smsContent":"[해볼랑스] "
+									 +$("input#deposit").val()+"원 예치금 충전\n에 성공했습니다."
+					},
+					dataType:"json",
+					success:function(json){
+						// console.log("~~~~ 확인용 : " + JSON.stringify(json));
+						
+					},
+					error: function(request, status, error){
+						alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+			        }
+				});
+				 */
+				<%-- 결제 성공시 문자보내기 끝 --%>
+				
+				<%-- 결제 성공시 메일보내기 시작 --%>
+				
+				$.ajax({
+					url:"/mypage/email_ajax",
+					type:"post",
+					data:{
+						 userid : $("input#userid").val(),
+					     deposit : $("input#deposit").val(),
+					     email : $("input#email").val(),
+					     merchant : $("input#purchase_code").val()
+					},
+					dataType:"json",
+					success:function(json){
+						console.log("~~~~ 확인용 : " + JSON.stringify(json));
+						// ~~~~ 확인용 : {"n":1}
+						
+						
+					},
+					error: function(request, status, error){
+						alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+			        }
+				});
+				
+				<%-- 결제 성공시 메일보내기 끝 --%>
+				
+				<%-- 예치금 테이블에 데이터 넣어주기 시작 --%>
+				const frm = document.purchase_form;
+			     
+			     frm.action = '/mypage/purchase_success';
+			     frm.method = 'POST';
+			     frm.submit();
+			     <%-- 예치금 테이블에 데이터 넣어주기 끝 --%>
+			     
+	        } else {
+	            alert( "실패 : 코드(" + rsp.error_code + ") / 메세지(" + rsp.error_msg + ")" );
+	       }
+	   
 
-		   });
+	   });
 	};
 	<%-- 결제하기 메소드 끝 --%>
 	
@@ -401,16 +392,17 @@
 
 	<div id="mainPosition">
 		<!-- index 상단 제목 시작 -->
+		<div class="d-sm-flex align-items-center justify-content-between mb-4">
+			<h3 class="mb-0 text-gray-800 font-weight-bold main_title">예치금 충전하기</h3>
+		</div>
 		<!-- index 상단 제목 끝 -->
 			
 		<!-- 코인 입력 시작 -->
 		<div class="row mb-4">
-			<div class="col-lg-11 mb-4" style="margin-left:5%;">
+			<div class="col-lg-11 mb-4 body_style">
 				<div id="notice" class="card shadow mb-4">
-					<div class="card-header py-3">
-						<h4 class="m-0 font-weight-bold text-primary">충전할 예치금을 입력 또는 선택해주세요</h4>
-	 				</div>
 					<div class="card-body" style="padding:7rem 12rem;">
+						
 						<input type="text" id="deposit_input" class="offset-lg-2 col-lg-8 offset-lg-2" required />
 						<label id="deposit_label">충전할 예치금(원)</label>
 						<div id="error_only_num" class="error ">숫자만 입력하세요</div>
@@ -431,8 +423,8 @@
 							<table style="width:100%;">
 								<tr>
 									<td class="after_title">충전 후 예치금 보유량</td>
-									<td id="deposit_after"> </td>
-									<input type="hidden" name="user_deposit" id="user_deposit" />
+									<td id="deposit_after">0</td>
+									<input type="hidden" name="user_deposit" id="user_deposit" value="1000" />
 								</tr>
 								<tr>
 									<td class="after_title" style="border:none">충천할 예치금</td>
@@ -463,7 +455,8 @@
 						<form name="purchase_form" style="width:100%;">
 							<input type="hidden" name="userid" id="userid" value="jisu" />
 							<input type="hidden" name="deposit" id="deposit"/>
-							<input type="hidden" name="email" id="email" value="" />
+							<input type="hidden" name="email" id="email" value="yoonjisu81@gmail.com" />
+							<input type="hidden" name="purchase_code" id="purchase_code" />
 							<button type="button" class="col-lg-12" id="go_payment">결 제 하 기</button>
 						</form>
 					</div>

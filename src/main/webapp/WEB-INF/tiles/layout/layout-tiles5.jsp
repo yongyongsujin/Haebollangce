@@ -41,6 +41,9 @@
 	<%-- *** ajax로 파일을 업로드할때 가장 널리 사용하는 방법 ==> ajaxForm *** --%>
 	<script type="text/javascript" src="<%= ctxPath%>/js/jquery.form.min.js"></script>
 	
+  	<%-- 아임포트 실행 --%>  
+  	<script type="text/javascript" src="https://cdn.iamport.kr/js/iamport.payment-1.1.5.js"></script>
+	
 	<%-- 하이차트 --%>
 	<script src="<%= ctxPath%>/Highcharts-11.0.1/code/highcharts.js"></script>
 	<script src="<%= ctxPath%>/Highcharts-11.0.1/code/modules/data.js"></script>
