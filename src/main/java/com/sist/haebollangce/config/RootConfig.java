@@ -1,9 +1,7 @@
 package com.sist.haebollangce.config;
 
 import org.apache.commons.dbcp2.BasicDataSource;
-import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
-import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -27,7 +25,6 @@ public class RootConfig implements TransactionManagementConfigurer {
         BasicDataSource dataSource = new BasicDataSource();
         dataSource.setDriverClassName("oracle.jdbc.driver.OracleDriver");
         dataSource.setUrl("jdbc:oracle:thin:@211.238.142.192:1521:xe");
-        // dataSource.setUrl("jdbc:oracle:thin:@127.0.0.1:1521:xe");
         dataSource.setUsername("final_orauser4");
         dataSource.setPassword("gclass");
         return dataSource;
@@ -37,19 +34,15 @@ public class RootConfig implements TransactionManagementConfigurer {
     public SqlSessionFactoryBean sqlSessionFactoryBean(DataSource dataSource) throws Exception {
         SqlSessionFactoryBean sessionFactory = new SqlSessionFactoryBean();
         sessionFactory.setDataSource(dataSource);
-        
+
         org.apache.ibatis.session.Configuration configuration = new org.apache.ibatis.session.Configuration();
         configuration.setMapUnderscoreToCamelCase(true);
         sessionFactory.setConfiguration(configuration);
-        
+
         sessionFactory.setMapperLocations(
                 new PathMatchingResourcePatternResolver().getResources("classpath*:mappers/*.xml"));
-        return sessionFactory;
-    }
 
-    @Bean
-    public SqlSessionTemplate sqlSession(SqlSessionFactory sqlSessionFactory) {
-        return new SqlSessionTemplate(sqlSessionFactory);
+        return sessionFactory;
     }
 
     @Bean

@@ -4,9 +4,11 @@ import com.sist.haebollangce.user.dto.UserDTO;
 
 public interface InterUserDAO {
 
-    int submit(String userid);
+    UserDTO findByUserid(String userid);
 
-    String findById(String id);
+    // form 사용자 회원가입
+    void formSignup(UserDTO signupUser);
 
-    UserDTO getDetail(String userid);
+    // Oauth2 사용자 회원가입
+    void oauthSignup(UserDTO user);
 }
