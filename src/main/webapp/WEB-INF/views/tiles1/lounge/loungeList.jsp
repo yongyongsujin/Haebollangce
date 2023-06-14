@@ -300,8 +300,8 @@
 		                        <div class=" c-details">
 		                            <h6 class="mb-0 ml-2">${lgboarddto.name}</h6> 
 		                            <span class="ml-2">
-		                            	<c:if test="${lgboarddto.regDate_ago == 0}">today new</c:if>
-		                            	<c:if test="${lgboarddto.regDate_ago > 0}">${lgboarddto.regDate_ago} days ago</c:if>
+		                            	<c:if test="${lgboarddto.regDateAgo == 0}">today new</c:if>
+		                            	<c:if test="${lgboarddto.regDateAgo > 0}">${lgboarddto.regDateAgo} days ago</c:if>
 		                            </span>
 		                        </div>
 		                    </div>

@@ -654,7 +654,7 @@ public class LoungeController {
 	@ResponseBody
 	@PostMapping(value = "/loungeaddComment", produces="text/plain;charset=UTF-8")
 	public String loungeaddComment(LoungeCommentDTO lgcommentdto, HttpServletRequest request) {
-		
+		/lounge/loungelikeAdd
 		int n = 0;
 		try {
 			n = service.loungeaddComment(lgcommentdto);

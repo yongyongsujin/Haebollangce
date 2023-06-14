@@ -9,7 +9,7 @@ public class LoungeBoardDTO {
 	
 	// insert 용 필드
 	private String seq;          // 글번호 
-	private String fk_userid;    // 사용자ID
+	private String fk_userid;    // 사용자ID fk_userid
 	private String name;         // 글쓴이 
 	private String subject;      // 글제목
 	private String content;      // 글내용 
@@ -35,7 +35,7 @@ public class LoungeBoardDTO {
 	private MultipartFile attachThumbnail; 	// === 썸네일 첨부파일
 	
 	private String thumbnail;	// 게시물 썸네일
-	private String regDate_ago;	// 게시물 작성일로부터 경과한 일 수를 구하는데 사용
+	private String regDateAgo;	// 게시물 작성일로부터 경과한 일 수를 구하는데 사용 regDate_ago
 	private String likeCount;	// 게시물의 좋아요 갯수
 	private String lgbprofile; 	// 라운지 1개글 볼때 필요한 프로필이미지
 	
@@ -175,12 +175,12 @@ public class LoungeBoardDTO {
 	this.thumbnail = thumbnail;
 	}
 	
-	public String getRegDate_ago() {
-		return regDate_ago;
+	public String getRegDateAgo() {
+		return regDateAgo;
 	}
 
-	public void setRegDate_ago(String regDate_ago) {
-		this.regDate_ago = regDate_ago;
+	public void setRegDateAgo(String regDateAgo) {
+		this.regDateAgo = regDateAgo;
 	}
 	
 	public String getLikeCount() {
@@ -198,6 +198,7 @@ public class LoungeBoardDTO {
 	public void setLgbprofile(String lgbprofile) {
 		this.lgbprofile = lgbprofile;
 	}
+
 	
 }
 
