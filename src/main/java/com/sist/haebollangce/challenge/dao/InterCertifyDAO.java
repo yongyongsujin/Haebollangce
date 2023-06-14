@@ -63,6 +63,10 @@ public interface InterCertifyDAO {
 	void userRewardAdd(ChallengeInfoDTO chaInfoDTO);
 	// 분배된 상금 insert 하기
 
+	int addUserExp(Map<String, String> paraMap);
+	// 인증할때마다 유저 경험치 증가시키기
+
+
 
 
 

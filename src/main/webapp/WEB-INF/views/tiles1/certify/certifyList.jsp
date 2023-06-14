@@ -213,8 +213,8 @@
                          
 	  탭을 클릭할 때 탭이 페이드 인 및 페이드 아웃되도록 하려면 .fade 클래스를 .tab-pane에 추가하세요. 
 -->
-
-<div class="container" style="width: 70% !important; background-color: white; text-align: center;">
+<div class="container-fluid" style="background-color: #f4f4f4;">
+<div class="container pb-5" style="border-radius: 20px; width: 70% !important; background-color: white; text-align: center;">
 	<br>
 	<h3 style="font-weight: bold;">참여중인 챌린지</h3>
 	<br>
@@ -351,4 +351,5 @@
 		<button type="button" class="btn btn-success" onclick="location.href='<%= request.getContextPath()%>/challenge/join'">참가하기</button>
 	</div>
     
+</div>
 </div>

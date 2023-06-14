@@ -1,59 +1,80 @@
 package com.sist.haebollangce.config;
 
-import org.springframework.web.WebApplicationInitializer;
-import org.springframework.web.context.ContextLoaderListener;
-import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
-import org.springframework.web.filter.CharacterEncodingFilter;
-import org.springframework.web.servlet.DispatcherServlet;
+import com.sist.haebollangce.user.util.AES256;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.web.multipart.commons.CommonsMultipartResolver;
+import org.springframework.web.servlet.ViewResolver;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.view.InternalResourceViewResolver;
+import org.springframework.web.servlet.view.tiles3.TilesConfigurer;
+import org.springframework.web.servlet.view.tiles3.TilesView;
+import org.springframework.web.servlet.view.tiles3.TilesViewResolver;
+import java.io.UnsupportedEncodingException;
 
-import javax.servlet.*;
+@Configuration
+@EnableWebMvc
+@ComponentScan(basePackages = "com.sist")
+@EnableScheduling // 스케줄러 사용 어노테이션 추가 - jaesik
+public class WebConfig implements WebMvcConfigurer { // 230528 ServletConfig 에서 WebConfig 으로 파일명 변경
+    
+    private static final String[] CLASSPATH_RESOURCE_LOCATIONS = {"classpath:/resources/", "classpath:/static/" };
 
-// public class WebConfig extends AbstractAnnotationConfigDispatcherServletInitializer {
-//
-//
-//    @Override
-//    protected Class<?>[] getRootConfigClasses() {
-//        return new Class[] {RootConfig.class};
-//    }
-//
-//    @Override
-//    protected Class<?>[] getServletConfigClasses() {
-//        return new Class[] {ServletConfig.class};
-//    }
-//
-//    @Override
-//    protected String[] getServletMappings() {
-//        return new String[] {"/"};
-//    }
-//}
+    @Bean
+    public ViewResolver viewResolver() {
+        InternalResourceViewResolver internalResourceViewResolver = new InternalResourceViewResolver();
+        internalResourceViewResolver.setPrefix("/WEB-INF/views/");
+        internalResourceViewResolver.setSuffix(".jsp");
+        internalResourceViewResolver.setOrder(2);
 
-public class WebConfig implements WebApplicationInitializer {
-
-    @Override
-    public void onStartup(ServletContext servletContext) throws ServletException {
-
-        AnnotationConfigWebApplicationContext rootContext = new AnnotationConfigWebApplicationContext();
-        rootContext.register(RootConfig.class);
-        // root-context.xml 대체
-        servletContext.addListener(new ContextLoaderListener(rootContext));
-
-        // servlet-context 대체
-        AnnotationConfigWebApplicationContext sc = new AnnotationConfigWebApplicationContext();
-        sc.register(ServletConfig.class);
-
-        ServletRegistration.Dynamic dispatcher = servletContext.addServlet("appServlet", new DispatcherServlet(sc));
-        dispatcher.setLoadOnStartup(1);
-        dispatcher.addMapping("/");
-
-        this.registerCharacterEncodingFilter(servletContext);
+        return internalResourceViewResolver;
     }
 
-    private void registerCharacterEncodingFilter(ServletContext servletContext) {
-        FilterRegistration.Dynamic characterEncodingFilter = servletContext.addFilter("encodingFilter", new CharacterEncodingFilter());
-        characterEncodingFilter.setInitParameter("encoding", "UTF-8");
-        characterEncodingFilter.setInitParameter("forceEncoding", "true");
-        characterEncodingFilter.addMappingForUrlPatterns(null, true, "/*");
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/**").addResourceLocations(CLASSPATH_RESOURCE_LOCATIONS);
+    }
+
+    @Bean
+    public TilesConfigurer tilesConfigurer() {
+        TilesConfigurer tilesConfigurer = new TilesConfigurer();
+        tilesConfigurer.setDefinitions("/WEB-INF/tiles/tiles-layout.xml");
+        tilesConfigurer.setCheckRefresh(true);
+        return tilesConfigurer;
+    }
+    @Bean
+    public TilesViewResolver tilesViewResolver() {
+        final TilesViewResolver tilesViewResolver = new TilesViewResolver();
+        tilesViewResolver.setViewClass(TilesView.class);
+        tilesViewResolver.setOrder(1);
+        return tilesViewResolver;
+    }
+
+    @Bean
+    public CommonsMultipartResolver multipartResolver() {
+        CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver();
+        multipartResolver.setDefaultEncoding("UTF-8");
+        multipartResolver.setMaxUploadSize(10485760);
+        return multipartResolver;
+    }
+
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**")
+                .allowedOriginPatterns("*")
+                .allowedHeaders("*")
+                .allowedMethods("GET","POST","PATCH","PUT","OPTIONS","DELETE", "HEAD")
+                .allowCredentials(true);
+    }
+
+    @Bean
+    public AES256 aes() throws UnsupportedEncodingException {
+        return new AES256("abcd0070#gclass$");
     }
 
 }
-

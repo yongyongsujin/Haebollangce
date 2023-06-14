@@ -145,4 +145,11 @@ public class CertifyDAO implements InterCertifyDAO {
 		mapper.userRewardAdd(chaInfoDTO);		
 	}
 
+	// 인증할때마다 유저 경험치 증가시키기
+	@Override
+	public int addUserExp(Map<String, String> paraMap) {
+		int n = mapper.addUserExp(paraMap);
+		return n;
+	}
+
 }

@@ -2,39 +2,86 @@ package com.sist.haebollangce.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
+import com.sist.haebollangce.config.auth.PrincipalOauth2UserService;
+import com.sist.haebollangce.config.token.AuthenticationManagerConfig;
+import com.sist.haebollangce.config.token.exception.CustomAuthenticationEntryPoint;
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.CorsUtils;
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
+@EnableWebSecurity
+@EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true) // each @Secured, @PreAuthorize 활성화
+@RequiredArgsConstructor
 public class SecurityConfig {
 
+    private final AuthenticationManagerConfig authenticationManagerConfig;
+    private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
+    private final PrincipalOauth2UserService principalOauth2UserService;
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http
-                .csrf().disable() // csrf: POST 방식으로 전송할 때, token을 사용해야 하는 보안 설정; 개발 초기엔 불편하므로 끔
-                .authorizeRequests()
-                .antMatchers("/**", "/main").permitAll()  // 요 경로에 대해 누구나 접근 가능하다
-                .anyRequest().authenticated();              // 그 외의 경로 요청은 모두 인증/인가 필요
 
-        return http.build();
+        return http
+                .csrf().disable()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                .formLogin().disable()
+                .httpBasic().disable()
+                .cors()
+                    .configurationSource(corsConfigurationSource())
+                .and()
+                .apply(authenticationManagerConfig)
+                .and()
+                .authorizeRequests()
+                    .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
+//                    .mvcMatchers("/api/v1/user/**").access("hasAnyRole('ADMIN', 'MANAGER', 'USER')")
+                    .mvcMatchers("/manager/**").access("hasAnyRole('ADMIN', 'MANAGER')")
+                    .mvcMatchers("/admin/**").access("hasRole('ADMIN')")
+                    .mvcMatchers("/mypage/**", "/challenge/add_challenge").authenticated()
+                    .anyRequest().permitAll()
+                .and()
+                .exceptionHandling()
+                    .authenticationEntryPoint(customAuthenticationEntryPoint)
+                .and()
+                .oauth2Login()
+                    .loginPage("/user/form-login")
+                    .userInfoEndpoint()
+                    .userService(principalOauth2UserService)
+                    .and()
+                    .defaultSuccessUrl("/user/tiles-test")
+                .and()
+                .build();
     }
+
+    public CorsConfigurationSource corsConfigurationSource() {
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowCredentials(true);
+        config.addAllowedOriginPattern("*");
+        config.addAllowedHeader("*");
+        config.addAllowedMethod("*");
+        source.registerCorsConfiguration("/**", config);
+
+        return source;
+    }
+
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
-        // 인증 및 인가 예외 Path URL
-        return (web) -> web.ignoring().antMatchers( "/**",
-                "/login/**",
-                "/bootstrap-4.6.0-dist/**",
-                "/css/**",
-                "/images/**",
-                "/jquery-ui-1.13.1.custom/**",
-                "/js/**",
-                "/smarteditor/**");
+        return (web) -> web.ignoring().requestMatchers(PathRequest.toStaticResources().atCommonLocations());
     }
-
     @Bean
-    public BCryptPasswordEncoder passwordEncoder() {
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 }
