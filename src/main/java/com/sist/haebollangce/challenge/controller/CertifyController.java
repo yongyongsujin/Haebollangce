@@ -30,7 +30,7 @@ public class CertifyController {
     
     // 참가하기 완료버튼 클릭시 팝업창 연결
     @RequestMapping(value="/challenge/joinEnd")
-    public String joinEnd(HttpServletRequest request) {
+    public String challenge_joinEnd(HttpServletRequest request) {
     	
     	try {
 			service.joinChallenge(request);
@@ -44,9 +44,9 @@ public class CertifyController {
     
     // 헤더의 챌린지 인증 페이지 클릭시 (참여중인 챌린지 목록)
     @RequestMapping(value="/challenge/certifyList")
-    public ModelAndView challenge_certify(ModelAndView mav) {
+    public ModelAndView certifyList(ModelAndView mav, HttpServletRequest request) {
     	
-    	mav = service.getJoinedChaList(mav);
+    	mav = service.getJoinedChaList(mav, request);
     	
     	mav.setViewName("certify/certifyList.tiles1");
     	// /WEB-INF/views/tiles1/certify/certifyList.jsp

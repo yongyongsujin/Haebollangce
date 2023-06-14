@@ -97,12 +97,12 @@
 		    (
 		    select nvl(sum(purchase_price), 0)
 		    from tbl_deposit
-		    where fk_userid = #{fk_userid} and purchase_status = 0
+		    where fk_userid = #{userid} and purchase_status = 0
 		    ) -
 		    (
 		    select nvl(sum(entry_fee), 0)
 		    from tbl_challenge_info
-		    where fk_userid = #{fk_userid}
+		    where fk_userid = #{userid}
 		    ) as user_deposit
 		from dual
 	</select>
@@ -229,8 +229,8 @@
 	</select>
 	
 	<insert id="userReport" parameterType="HashMap">
-		insert into tbl_report (report_no, fk_certify_no, fk_userid, report_content) 
-			values(report_no_seq.nextval, #{certifyNo}, #{fk_userid}, #{report_content})
+		insert into tbl_report (report_no, fk_certify_no, report_content) 
+			values(report_no_seq.nextval, #{certifyNo}, #{report_content})
 	</insert>
 	
 	<select id="getAllChallengeList" resultType="com.sist.haebollangce.challenge.dto.ChallengeDTO">
@@ -259,6 +259,18 @@
 		update tbl_user set exp = exp + to_number(#{challenge_exp}) where userid = #{fk_userid}
 	</insert>
 	
+	
+	<resultMap type="HashMap" id="checkReport_Map">
+		<result property="report_no" 		column="report_no"			javaType="String"/>
+		<result property="fk_certify_no" 	column="fk_certify_no"		javaType="String"/>
+		<result property="report_content" 	column="report_content"		javaType="String"/>
+	</resultMap>
+	<select id="checkReport" parameterType="HashMap" resultMap="checkReport_Map">
+	select report_no, fk_certify_no, report_content
+	from tbl_report R
+	right join tbl_certify_history H on H.certify_no = R.fk_certify_no
+	where H.fk_userid = #{fk_userid} and H.fk_challenge_code = #{challenge_code} and H.certify_no = #{certifyNo}
+	</select>
 	
 	
 </mapper>

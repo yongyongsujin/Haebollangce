@@ -12,7 +12,7 @@ public class MySMTPAuthenticator extends Authenticator {
 	public PasswordAuthentication getPasswordAuthentication() {
 		
 		// Gmail 의 경우 @gmail.com 을 제외한 아이디만 입력한다.
-		return new PasswordAuthentication("이메일","앱비번");
+		return new PasswordAuthentication("sjsig23672367","ktctgavfyquufodg");
 		// "" 은 Google에 로그인 하기위한 앱비밀번호 이다.
 		
    }

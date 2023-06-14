@@ -275,9 +275,9 @@
 			
 		});
 		
-		
 		// 예치금 충전 클릭시 
 		$("div#point_charge").click(function(){
+			
 			Swal.fire({
 				icon: "info",
 				title: "결제페이지로 이동합니다",
@@ -288,6 +288,8 @@
 				cancelButtonColor: '#999999'
 			}).then(function(result){
 				if(result.isConfirmed){
+					const url = window.location.href;
+					sessionStorage.setItem("URL", url);
 					location.href="<%= ctxPath%>/mypage/depositPurchase";
 				}
 			})

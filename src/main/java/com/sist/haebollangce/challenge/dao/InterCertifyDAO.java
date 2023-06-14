@@ -24,7 +24,7 @@ public interface InterCertifyDAO {
 	Map<String, String> getCertifyInfo(Map<String, String> paraMap);
 	// 인증하려는 챌린지의 인증예시 데이터 가져오기
 
-	String getUserDeposit(String fk_userid);
+	String getUserDeposit(String userid);
 	// 로그인한 유저의 보유 예치금 알아오기
 
 	int doCertify(Map<String, String> paraMap);
@@ -65,6 +65,10 @@ public interface InterCertifyDAO {
 
 	int addUserExp(Map<String, String> paraMap);
 	// 인증할때마다 유저 경험치 증가시키기
+
+	Map<String, String> checkReport(Map<String, String> paraMap);
+	// 로그인한 유저가 신고했던 인증인지 체크하는 메소드
+
 
 
 

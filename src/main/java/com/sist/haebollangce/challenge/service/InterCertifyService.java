@@ -10,7 +10,7 @@ public interface InterCertifyService {
 	String checkJoinedChall(HttpServletRequest request);
 	// 이미 참가한 챌린지인지 확인
 	
-	ModelAndView getJoinedChaList(ModelAndView mav);
+	ModelAndView getJoinedChaList(ModelAndView mav, HttpServletRequest request);
 	// 참가중인 챌린지 리스트 가져오기
 
 	int joinChallenge(HttpServletRequest request) throws Throwable;

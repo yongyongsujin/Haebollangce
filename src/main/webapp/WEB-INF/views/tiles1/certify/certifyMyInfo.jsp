@@ -257,7 +257,7 @@ const imgInfo = document.querySelector('.img_info');
 	 
 	// 상세 페이지로 이동하는 함수
 	function goDetail() {
-		location.href='<%= ctxPath%>/challenge/challengeView?challenge_code='+'${joinedChallInfo.challenge_code}';
+		location.href='<%= ctxPath%>/challenge/challengeView?challengeCode='+'${joinedChallInfo.challenge_code}';
 	}
 	
 	// 유저가 신고했을 때
@@ -628,9 +628,10 @@ const imgInfo = document.querySelector('.img_info');
 			<!-- Modal body -->
 			<div class="modal-body">
 				<form name="userReportFrm">
-					<textarea id="report_content" name="report_content" rows="5" cols="54" placeholder="정확한 처리를 위해 신고하시는 구체적인 사유를 적어주세요. (최소 10자 이상) 신고내용 - ex)적합하지 않은 인증사진" style="outline-color: #FE6B8B;"></textarea>
+					<textarea id="report_content" name="report_content" rows="5" cols="54" placeholder="정확한 처리를 위해 신고하시는 구체적인 사유를 적어주세요. (최소 10자 이상)" style="outline-color: #FE6B8B;"></textarea>
 					<input id="certifyNo" type="hidden" name="certifyNo" value="" readonly="readonly">
 					<input name="challenge_code" type="hidden" value="${joinedChallInfo.challenge_code}">
+					<input name="userid" type="hidden" value="${joinedChallInfo.fk_userid}">
 				</form>
 			</div>
      

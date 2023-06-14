@@ -63,14 +63,14 @@
 		// 인증하기 버튼 클릭시
 		$("button#certify").click(function(e){
 			e.stopPropagation();
-			location.href='<%= ctxPath%>/challenge/certify';
+			let challenge_code = $(this).parent().find("input#challenge_code").val();
+			location.href='<%= ctxPath%>/challenge/certify?challenge_code='+challenge_code;
 		});
 		
 		// 목록중 챌린지 하나를 선택했을시
 		$("div.challengeList").click(function(e){
 			
 			let challenge_code = $(this).find("input#challenge_code").val();
-			
 			location.href='<%= ctxPath%>/challenge/certifyMyInfo?challenge_code='+challenge_code;
 		});
 		
@@ -341,15 +341,5 @@
 		</div>
 		
 	</div>
-
-
-	<br><br>
-	
-	<div class="container">
-		테스트용도 ->
-		<button type="button" class="btn btn-success" onclick="location.href='<%= request.getContextPath()%>/challenge/certify'">인증하기</button>
-		<button type="button" class="btn btn-success" onclick="location.href='<%= request.getContextPath()%>/challenge/join'">참가하기</button>
-	</div>
-    
 </div>
 </div>
