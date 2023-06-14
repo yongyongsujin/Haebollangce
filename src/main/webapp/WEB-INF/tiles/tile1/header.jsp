@@ -5,7 +5,30 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <%-- === #2. tile1 중 header 페이지 만들기 === --%>
-<% String ctxPath = request.getContextPath(); %>
+<% 
+
+String ctxPath = request.getContextPath(); 
+
+	//=== 웹채팅 === 
+	InetAddress inet = InetAddress.getLocalHost(); 
+	String serverIP = inet.getHostAddress();
+	
+	// System.out.println("serverIP~ : " + serverIP);
+	// serverIP : 192.168.0.57 -> 현재 내가 쓰고 있는 IP 주소를 알려준다!
+
+ // String serverIP = "211.238.142.72"; -> ~만약에 사용중인 IP주소가 고정IP 이라면 IP주소를 직접입력해주면 된다.
+	
+	// === 서버 포트번호 알아오기   ===
+	int portnumber = request.getServerPort();
+ 	// System.out.println("portnumber~ : " + portnumber);
+	// portnumber : 7070 -> 내가 사용하고 있는 포트번호를 알려준다!
+	
+	String serverName = "http://" + serverIP + ":" + portnumber; 
+	// System.out.println("serverName~ : " + serverName);
+	// serverName : http://192.168.0.57:7070 -> 나의 서버이름을 알려준다! (이 IP 192.168.0.55 로 9090 을 열겠다)
+
+%>
+
 
 <style type="text/css">
 
@@ -237,8 +260,24 @@
 
 	$(document).ready(function(){
 		
-		Notification.requestPermission();
-		new Notification("[해볼랑스 푸시알림]", {body:'게시글에 댓글과 좋아요가 달리면 알림이 울리게 하시겠습니까? :-)'});
+		//Notification.requestPermission();
+		//new Notification("[해볼랑스 푸시알림]", {body:'게시글에 댓글과 좋아요가 달리면 알림이 울리게 하시겠습니까? :-)'});
+	
+		
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 
 	});
 
@@ -282,11 +321,9 @@
 			      	</li>
 		    <%--</c:if> --%>
 			    </ul>
-			    <form class="form-inline my-2 my-lg-0">
-			    	<i type="button" class="fa-solid fa-paper-plane mx-2" onclick="javascript:location.href='<%= ctxPath%>/messenger/messengerView'"></i>
-			    	<button type="button" class="btn btn-sm btn-habol mx-2 my-2" style="color:white; font-weight:bold;" href="<%= ctxPath %>/login">회원가입</a>
-			    	<button type="button" class="btn btn-sm btn-habol mx-2 my-2 " style="color:white; font-weight:bold;" href="<%= ctxPath %>/register">로그인</a>
-			    </form>
+			    <div class="form-inline my-2 my-lg-0" id="islogin">
+			    	
+			    </div>
 			</div>
 			
 		</nav>

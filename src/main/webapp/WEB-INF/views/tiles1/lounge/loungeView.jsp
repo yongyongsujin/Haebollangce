@@ -101,14 +101,14 @@
 	  						html += ` <div class="d-flex flex-row mb-3"> 
 			                		 	<img style="border: solid 3px #eee; border-radius: 100%; width:45px; height: 45px; vertical-align: top;" src="<%= ctxPath%>/images/\${item.lgcprofile}" /> 
 			  	              		 	<div class="c-details"> 
-			  	                     		<h5 class="mb-1 ml-3 lounge_comment_userid"><span class="lounge_comment_name">(댓글번호 \${item.seq}) \${item.name}</span></h5> 
+			  	                     		<h5 class="mb-1 ml-3 lounge_comment_userid"><span class="lounge_comment_name">\${item.name}</span></h5> 
 			  	                     		<input type="hidden" name="seq" id="seq" value="\${item.seq}" /> 
 			  	                     		<div class="c-details">
 			  		                 			<h6 class="mb-0 ml-3 lounge_comment_content">\${item.content}</h6>
 			  	                	 		</div>
 			  	                	 		<div class="c-details"> 
 			  	                				<small class="mb-0 ml-3" style="color:gray;">\${item.regdate}</small>
-			  	                				<small type="button" class="mb-0 ml-2" style="color:gray;" onclick="javascript:location.href='/lounge/loungeView?seq=\${item.parentSeq}&fk_seq=\${item.seq}&groupno=\${item.groupno}&depthno=\${item.depthno}'">답글달기</small> 
+			  	                				<small type="button" class="mb-0 ml-2" style="color:gray;" onclick="javascript:location.href='/lounge/loungeView?seq=\${item.parentSeq}&fk_seq=\${item.seq}&groupno=\${item.groupno}&depthno=\${item.depthno}&name=\${item.name}'">답글달기</small> 
 			  	                				<small type="button" class="mb-0 ml-2 p-1" style="color:gray; background-color:#eee; border-radius:5px;">수정</small>
 			  	                				<small type="button" class="mb-0 ml-1 p-1" style="color:gray; background-color:#eee; border-radius:5px;" onclick="lgcommentDel('\${item.seq}')">삭제</small>
 			  	                			</div>
@@ -121,14 +121,14 @@
   							html += ` <div class="d-flex flex-row mb-3" style="padding-left:\${padding}px"> 
   										<img style="border: solid 3px #eee; border-radius: 100%; width:45px; height: 45px; vertical-align: top;" src="<%= ctxPath%>/images/\${item.lgcprofile}" /> 
 			  	              		 	<div class="c-details"> 
-			  	                     		<h5 class="mb-1 ml-3 lounge_comment_userid"><span class="lounge_comment_name">(댓글번호 \${item.seq}) \${item.name}</span></h5> 
+			  	                     		<h5 class="mb-1 ml-3 lounge_comment_userid"><span class="lounge_comment_name">\${item.name}</span></h5> 
 			  	                     		<input type="hidden" name="seq" id="seq" value="\${item.seq}" /> 
 			  	                     		<div class="c-details">
 			  		                 			<h6 class="mb-0 ml-3 lounge_comment_content">\${item.content}</h6>
 			  	                	 		</div>
 			  	                	 		<div class="c-details"> 
 			  	                				<small class="mb-0 ml-3" style="color:gray;">\${item.regdate}</small>
-			  	                				<small type="button" class="mb-0 ml-2" style="color:gray;" onclick="javascript:location.href='/lounge/loungeView?seq=\${item.parentSeq}&fk_seq=\${item.seq}&groupno=\${item.groupno}&depthno=\${item.depthno}'">답글달기</small>
+			  	                				<small type="button" class="mb-0 ml-2" style="color:gray;" onclick="javascript:location.href='/lounge/loungeView?seq=\${item.parentSeq}&fk_seq=\${item.seq}&groupno=\${item.groupno}&depthno=\${item.depthno}&name=\${item.name}'">답글달기</small>
 			  	                				<small type="button" class="mb-0 ml-2 p-1" style="color:gray; background-color:#eee; border-radius:5px;">수정</small>
 			  	                				<small type="button" class="mb-0 ml-1 p-1" style="color:gray; background-color:#eee; border-radius:5px;" onclick="lgcommentDel('\${item.seq}')">삭제</small>
 			  	                			</div> 
@@ -213,6 +213,12 @@
       
    	}// end of golikeAdd(pnum)---------------------------
   	
+	function goView(seq) {
+		const searchType = $("select#searchType").val();
+  		const searchWord = $("input#searchWord").val();
+		location.href = "<%= ctxPath%>/lounge/loungeView?seq="+seq+"&searchType="+searchType+"&searchWord="+searchWord; 
+	}
+   	
 </script>
 
 
@@ -228,12 +234,12 @@
 		                <div class="c-details">
 		                    <h6 class="mb-0 ml-4">${lgboarddto.name}</h6> 
 		                    <span class="ml-4">
-		                    	<c:if test="${lgboarddto.regDate_ago == 0}">today new</c:if>
-		                        <c:if test="${lgboarddto.regDate_ago > 0}">${lgboarddto.regDate_ago} days ago</c:if>
+		                    	<c:if test="${lgboarddto.regDateAgo == 0}">today new</c:if>
+		                        <c:if test="${lgboarddto.regDateAgo > 0}">${lgboarddto.regDateAgo} days ago</c:if>
 		                    </span>
 		                </div>
 		            </div>
-		            <div class="badge2"> <span>follow</span> </div>
+		            <div class="badge2"> <span>chat me</span> </div>
 		        </div>
 		        <div class="mt-4" style="padding:10px;">
 		   			<img style="width:100%;" src="<%= ctxPath%>/images/lgthumFiles/${lgboarddto.thumbnail}" />
@@ -259,7 +265,7 @@
 		                		<c:if test="${}"> 로그인한 유저가 좋아요를 누르지 않은 상태면 빈 하트를 보이자  --%>
 		                			<img src="<%= request.getContextPath()%>/images/lounge-emptyheart.jpg" alt="Lounge Like"  width="29" height="29" style="cursor: pointer;" onclick="lggoLikeAdd('${lgboarddto.seq}')"/>${lgboarddto.likeCount}
 		                		<%-- </c:if> --%>
-		                		<img src="https://images.munto.kr/munto-web/ic_action_comment_30px.svg?s=32x32"/>${lgboarddto.commentCount}
+		                		<img src="https://images.munto.kr/munto-web/ic_action_comment_30px.svg?s=32x32" style="cursor: pointer;" onclick="goView(${lgboarddto.seq})"/>${lgboarddto.commentCount}
 		                		<img src="https://images.munto.kr/munto-web/info_group.svg?s=32x32"/>${lgboarddto.readCount}
 		                	</span> 
 		                	
@@ -296,7 +302,7 @@
 			                    	
 			                    	<!-- 대댓글쓰기인 경우 -->
 		                    		<c:if test="${requestScope.fk_seq ne ''}">
-				                    	<input type="text" name="content" id="commentContent" style="border-radius:10px; border: solid 3px #eee; height: 35px; width:90%;" placeholder=" @ ${requestScope.fk_seq} 님에게 댓글달기.." /> 
+				                    	<input type="text" name="content" id="commentContent" style="border-radius:10px; border: solid 3px #eee; height: 35px; width:90%;" placeholder=" @ ${requestScope.name} 님에게 댓글달기.." /> 
 			                    	</c:if>
 			                    	
 								   	<%-- === #9-4. 답변글쓰기가 추가된 경우 시작 === --%>

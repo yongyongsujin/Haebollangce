@@ -19,13 +19,13 @@
 
 	<!-- // #3-1. 페이징 처리 한 검색어 있는 전체 글 목록 보기  --> 
 	<select id="lgboardListSearch" parameterType="HashMap" resultType="com.sist.haebollangce.lounge.model.LoungeBoardDTO">
-		select seq, fk_userid, name, subject, content, readCount, regDate, commentCount, regDate_ago, orgFilename, likeCount, thumbnail, lgbprofile
+		select seq, fk_userid, name, subject, content, readCount, regDate, commentCount, regDateAgo, orgFilename, likeCount, thumbnail, lgbprofile
 		from
 		(
 		select row_number() over(order by seq desc) AS rno,
 		       seq, fk_userid, B.name, subject, content, readCount,
 		       to_char(B.regDate, 'yyyy-mm-dd hh24:mi:ss') AS regDate, 
-		       commentCount, TO_DATE(sysdate, 'YYYY-MM-DD') - TO_DATE(B.regdate, 'YYYY-MM-DD') as regDate_ago, orgFilename, likeCount, thumbnail, U.profile_pic as lgbprofile
+		       commentCount, TO_DATE(sysdate, 'YYYY-MM-DD') - TO_DATE(B.regdate, 'YYYY-MM-DD') as regDateAgo, orgFilename, likeCount, thumbnail, U.profile_pic as lgbprofile
 		from tbl_lounge_board B
 		join tbl_user U
 		on B.fk_userid = U.userid
@@ -74,7 +74,7 @@
 	<!-- // #4-1.글 조회수 증가와 함께 글 1개를 조회 해주는 것 -->
 	<select id="lggetView" parameterType="HashMap" resultType="com.sist.haebollangce.lounge.model.LoungeBoardDTO">
 		select seq, fk_userid, B.name, subject, content, readcount, to_char(B.regdate, 'yyyy-mm-dd hh24:mi:ss') as regdate, B.pw, commentCount, 
-       		   TO_DATE(sysdate, 'YYYY-MM-DD') - TO_DATE(B.regdate, 'YYYY-MM-DD') as regDate_ago, fileName, orgFilename, fileSize, likeCount, thumbnail, U.profile_pic as lgbprofile
+       		   TO_DATE(sysdate, 'YYYY-MM-DD') - TO_DATE(B.regdate, 'YYYY-MM-DD') as regDateAgo, fileName, orgFilename, fileSize, likeCount, thumbnail, U.profile_pic as lgbprofile
 		from tbl_lounge_board B
 		join tbl_user U
 		on B.fk_userid = U.userid

@@ -44,7 +44,7 @@ public class LoungeController {
 	@Autowired  
 	private FileManager fileManager;
 	
-	
+	 
 	// === #1. 라운지 글 작성하는 form 페이지 요청 === (#51. aop 사용으로 수정 필요)
 	@GetMapping(value = "/loungeAdd")
 	public ModelAndView loungeAdd(ModelAndView mav) {
