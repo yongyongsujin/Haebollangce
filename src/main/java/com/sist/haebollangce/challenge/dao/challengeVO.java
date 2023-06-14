@@ -42,6 +42,7 @@ public class challengeVO {
 	
 	private String profilePic;
 	
+	private String pw;
 
 	
 	public String getChallengeCode() {
@@ -247,6 +248,13 @@ public class challengeVO {
 	public void setProfilePic(String profilePic) {
 		this.profilePic = profilePic;
 	}
+	public String getPw() {
+		return pw;
+	}
+	public void setPw(String pw) {
+		this.pw = pw;
+	}
+	
 	
 	
 	

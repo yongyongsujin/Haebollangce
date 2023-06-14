@@ -5,9 +5,26 @@
 <mapper namespace="com.sist.haebollangce.common.mapper.InterMapper">
 
 	<select id="challengeList" resultType="com.sist.haebollangce.challenge.dao.challengeVO">
-		SELECT c.challenge_name AS challenge_name
-		FROM tbl_challenge c
-		JOIN TBL_CATEGORY cat ON c.fk_category_code = cat.category_code
+	  SELECT
+	  b.fk_userid AS fkuserid,
+	  a.category_name AS category_name,
+	  b.challenge_name AS challengeName,
+	  b.thumbnail as thumbnail,
+	  b.content,
+	  b.startDate,
+	  b.fk_during_type,
+	  c.set_date,
+	  b.member_count,
+	  b.fk_category_code,
+	  a.category_code AS category_code,
+	  b.challenge_code AS challengeCode
+	  FROM
+	  tbl_challenge b
+	  JOIN tbl_category a ON b.fk_category_code = a.category_code
+	  JOIN tbl_challenge_during c ON b.fk_during_type = c.during_type
+	  
+	  
+	  
 	</select>
 
 	<select id="categoryList" resultType="com.sist.haebollangce.challenge.dao.challengeVO">
@@ -18,8 +35,9 @@
 
 	<select id="challengelist" resultType="com.sist.haebollangce.challenge.dao.challengeVO">
 	  SELECT
+	  b.fk_userid AS fkuserid,
 	  a.category_name AS category_name,
-	  b.challenge_name,
+	  b.challenge_name AS challengeName,
 	  b.thumbnail as thumbnail,
 	  b.content,
 	  b.startDate,
@@ -27,8 +45,9 @@
 	  c.set_date,
 	  b.member_count,
 	  b.fk_category_code,
-	  a.category_code AS category_code
-	FROM
+	  a.category_code AS category_code,
+	  b.challenge_code AS challenge_code
+	  FROM
 	  tbl_challenge b
 	  JOIN tbl_category a ON b.fk_category_code = a.category_code
 	  JOIN tbl_challenge_during c ON b.fk_during_type = c.during_type
@@ -40,5 +59,42 @@
 	</select>
 
 
+	<select id="challViewWithNoAddCount" parameterType="HashMap" resultType="com.sist.haebollangce.challenge.dao.challengeVO">
+	  SELECT
+	  m.pw AS pw,
+	  a.category_name AS category_name,
+	  b.challenge_name AS challengeName,
+	  b.thumbnail AS thumbnail,
+	  b.content,
+	  b.startDate,
+	  b.fk_during_type,
+	  c.set_date,
+	  b.member_count,
+	  b.fk_category_code,
+	  a.category_code AS category_code,
+	  b.challenge_code AS challengeCode
+		FROM
+			  tbl_user m
+		JOIN
+			  tbl_challenge b ON m.userid = b.fk_userid
+		JOIN
+			  tbl_category a ON b.fk_category_code = a.category_code
+		JOIN
+			  tbl_challenge_during c ON b.fk_during_type = c.during_type
+		WHERE
+	    b.challenge_code = #{challengeCode}
+	</select>
 
+ 
+	<delete id="challengedel" parameterType="HashMap">
+	    DELETE FROM TBL_CHALLENGE
+	    WHERE challenge_code = #{challengeCode}
+	</delete>
+	
+	<select id="index_loungeList" resultType="com.sist.haebollangce.lounge.model.LoungeBoardDTO">
+		select fk_userid, content, subject, name, readcount, likeCount, commentCount, readCount, thumbnail
+		from TBL_LOUNGE_BOARD
+	</select>
+	
+	
 </mapper>
