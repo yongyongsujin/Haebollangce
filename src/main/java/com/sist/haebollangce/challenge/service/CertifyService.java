@@ -25,7 +25,10 @@ import com.sist.haebollangce.challenge.dto.CertifyDTO;
 import com.sist.haebollangce.challenge.dto.ChallengeDTO;
 import com.sist.haebollangce.challenge.dto.ChallengeInfoDTO;
 import com.sist.haebollangce.common.FileManager;
+import com.sist.haebollangce.common.GoogleMail;
 import com.sist.haebollangce.common.MyUtil;
+import com.sist.haebollangce.config.token.CookieUtil;
+import com.sist.haebollangce.config.token.JwtTokenizer;
 
 @Service
 public class CertifyService implements InterCertifyService {
@@ -36,16 +39,32 @@ public class CertifyService implements InterCertifyService {
     @Autowired // 파일 업로드
 	private FileManager fileManager;
 
+    @Autowired
+    private GoogleMail mail;
+    
+    @Autowired
+    private JwtTokenizer jwtTokenizer;
     
 	// 이미 참가한 챌린지인지 확인
  	@Override
  	public String checkJoinedChall(HttpServletRequest request) {
  		
- 		String fk_userid = "qwer1234"; // request.getParameter("fk_userid"); 로그인한 회원의 아이디
-     	String challenge_code = request.getParameter("challenge_code") ;
+ 		// 쿠키에서 accessToken (jWT 형식)을 가져옵니다. 
+ 		String accessToken = CookieUtil.getToken(request,"accessToken");
+
+ 		// 로그인 되어있다면 정상적으로 토큰에 접근 가능하며 아래와 같이 userid를 얻을  수 있습니다.
+ 		// (로그아웃을 한 경우 null)
+ 		
+ 		String userid = "";
+ 		
+ 		if(accessToken != null) {
+ 		   userid = jwtTokenizer.getUseridFromToken(accessToken);
+ 		}
+ 		
+     	String challenge_code = request.getParameter("challenge_code");
      	
      	Map<String, String> paraMap = new HashMap<>();
-     	paraMap.put("fk_userid", fk_userid);
+     	paraMap.put("fk_userid", userid);
      	paraMap.put("fk_challenge_code", challenge_code);
  		
  		Map<String, String> resultMap = dao.checkJoinedChall(paraMap);
@@ -67,11 +86,12 @@ public class CertifyService implements InterCertifyService {
      	else {
      		// 참가한 챌린지가 아닐 경우
 
-     		String userDeposit = dao.getUserDeposit(fk_userid);
+     		String userDeposit = dao.getUserDeposit(userid);
      		// 로그인한 유저의 보유 예치금 알아오기
      		ChallengeDTO chaDTO = dao.getOneChallengeInfo(challenge_code);
      		// 챌린지 코드를 받아  그 챌린지의 정보 가져오기
      		
+     		request.setAttribute("userid", userid);
      		request.setAttribute("userDeposit", userDeposit);
      		request.setAttribute("chaDTO", chaDTO);
      		
@@ -81,14 +101,64 @@ public class CertifyService implements InterCertifyService {
  		
  	}
     
+ 	
+ // 유저가 챌린지 참가했을 때 - tbl_challenge_info 에 insert
+ 	@Override
+ 	@Transactional(propagation=Propagation.REQUIRED, isolation=Isolation.READ_COMMITTED, rollbackFor= {Throwable.class})
+ 	public int joinChallenge(HttpServletRequest request) throws Throwable{
+
+ 		String fk_userid = request.getParameter("fk_userid");
+     	String entry_fee = request.getParameter("entry_fee");
+     	String fk_challenge_code = request.getParameter("fk_challenge_code");
+     	String after_deposit = request.getParameter("after_deposit");
+     	// form에서 받아오는 것들
+     	
+     	Map<String, String> paraMap = new HashMap<>();
+     	paraMap.put("fk_userid", fk_userid);
+     	paraMap.put("entry_fee", entry_fee);
+     	paraMap.put("fk_challenge_code", fk_challenge_code);
+     	paraMap.put("after_deposit", after_deposit);
+ 		
+ 		int n = 0, m = 0, k = 0; 
+ 		
+ 		m = dao.joinChallenge(paraMap);
+ 		// 유저가 챌린지 참가했을 때 - tbl_challenge_info 에 insert (참가인원수 update 트랜잭션 처리)
+ 		// 맵퍼 userid 변경해야함
+ 		
+ 		if (m == 1) {
+ 			n = dao.updateMemberCount(paraMap);
+ 			// 챌린지 테이블에 참가인원수 update
+ 		
+ 			if (n==1) {
+ 				ChallengeDTO chaDTO = dao.getOneChallengeInfo(fk_challenge_code);
+ 		    	// 챌린지 코드를 받아  그 챌린지의 정보 가져오기
+ 		    	
+ 		    	request.setAttribute("chaDTO", chaDTO);
+ 		    	request.setAttribute("paraMap", paraMap);
+ 		    	k = 1;
+ 			}
+ 		}
+ 		
+ 		return k;
+ 	}
+ 	
     
 	// 참가중인 챌린지 리스트 가져오기
 	@Override
-	public ModelAndView getJoinedChaList(ModelAndView mav) {
+	public ModelAndView getJoinedChaList(ModelAndView mav, HttpServletRequest request) {
 		
-		// 로그인 확인
-    	
-		String fk_userid = "qwer1234"; // 아이디 받아오기
+		// 쿠키에서 accessToken (jWT 형식)을 가져옵니다. 
+ 		String accessToken = CookieUtil.getToken(request,"accessToken");
+
+ 		// 로그인 되어있다면 정상적으로 토큰에 접근 가능하며 아래와 같이 userid를 얻을  수 있습니다.
+ 		// (로그아웃을 한 경우 null)
+ 		
+ 		String fk_userid = "";
+ 		
+ 		if(accessToken != null) {
+ 			fk_userid = jwtTokenizer.getUseridFromToken(accessToken);
+ 			// 아이디 받아오기
+ 		}
 		
 		List<ChallengeDTO> chaList = dao.getJoinedChaList(fk_userid);
 		// 참가중인 챌린지 리스트 가져오기
@@ -132,58 +202,16 @@ public class CertifyService implements InterCertifyService {
 	}
 
 	
-	// 유저가 챌린지 참가했을 때 - tbl_challenge_info 에 insert
-	@Override
-	@Transactional(propagation=Propagation.REQUIRED, isolation=Isolation.READ_COMMITTED, rollbackFor= {Throwable.class})
-	public int joinChallenge(HttpServletRequest request) throws Throwable{
-		
-		// 로그인 확인
-    	
-    	String fk_userid = request.getParameter("fk_userid");
-    	String entry_fee = request.getParameter("entry_fee");
-    	String fk_challenge_code = request.getParameter("fk_challenge_code");
-    	String after_deposit = request.getParameter("after_deposit");
-    	
-    	Map<String, String> paraMap = new HashMap<>();
-    	paraMap.put("fk_userid", fk_userid);
-    	paraMap.put("entry_fee", entry_fee);
-    	paraMap.put("fk_challenge_code", fk_challenge_code);
-    	paraMap.put("after_deposit", after_deposit);
-		
-		int n = 0, m = 0, k = 0; 
-		
-		m = dao.joinChallenge(paraMap);
-		// 유저가 챌린지 참가했을 때 - tbl_challenge_info 에 insert (참가인원수 update 트랜잭션 처리)
-		// 맵퍼 userid 변경해야함
-		
-		if (m == 1) {
-			n = dao.updateMemberCount(paraMap);
-			// 챌린지 테이블에 참가인원수 update
-		
-			if (n==1) {
-				ChallengeDTO chaDTO = dao.getOneChallengeInfo(fk_challenge_code);
-		    	// 챌린지 코드를 받아  그 챌린지의 정보 가져오기
-		    	
-		    	request.setAttribute("chaDTO", chaDTO);
-		    	request.setAttribute("paraMap", paraMap);
-		    	k = 1;
-			}
-		}
-		
-		return k;
-	}
-
 
 	// 인증 기록 테이블에 insert
 	@Override
 	@Transactional(propagation=Propagation.REQUIRED, isolation=Isolation.READ_COMMITTED, rollbackFor= {Throwable.class})
 	public int doCertify(ModelAndView mav, MultipartHttpServletRequest mrequest) throws Throwable {
-		
-		// 로그인 확인
-    	
-    	String fk_userid = mrequest.getParameter("fk_userid");
+
+		String fk_userid = mrequest.getParameter("fk_userid");
     	String fk_challenge_code = mrequest.getParameter("fk_challenge_code");
     	MultipartFile certify_img = mrequest.getFile("certify_img");
+    	// form에서 받아오는 것들
     	
     	Map<String, String> paraMap = new HashMap<>();
     	paraMap.put("fk_userid", fk_userid);
@@ -267,10 +295,14 @@ public class CertifyService implements InterCertifyService {
 	@Override
 	public ModelAndView checkTodayCertify(ModelAndView mav, HttpServletRequest request) {
 		
-		// 로그인 확인
-    	
-    	String fk_userid = "qwer1234";
-    	String challenge_code = "27";
+		String accessToken = CookieUtil.getToken(request,"accessToken");
+ 		String fk_userid = "";
+ 		
+ 		if(accessToken != null) {
+ 			fk_userid = jwtTokenizer.getUseridFromToken(accessToken);
+ 			// 아이디 받아오기
+ 		}
+    	String challenge_code = request.getParameter("challenge_code");
     	
     	Map<String, String> paraMap = new HashMap<>();
     	paraMap.put("fk_userid", fk_userid);
@@ -310,27 +342,27 @@ public class CertifyService implements InterCertifyService {
 	@Override
 	public void userReport(HttpServletRequest request) {
 		
-		String fk_userid = "qwer1234";
-    	// 신고한 사람은 로그인한 유저이기 때문에  로그인한 유저의 아이디 알아오기
-    	
+		String fk_userid = request.getParameter("userid");
     	String challenge_code = request.getParameter("challenge_code");
     	String certifyNo = request.getParameter("certifyNo");
     	String report_content = request.getParameter("report_content");
+    	// form 태그 받아오기
     	
     	Map <String, String> paraMap = new HashMap<>();
     	paraMap.put("fk_userid", fk_userid);
+    	paraMap.put("challenge_code", challenge_code);
     	paraMap.put("certifyNo", certifyNo);
     	paraMap.put("report_content", report_content);
+    	
+    	Map <String, String> resultMap = dao.checkReport(paraMap);
+    	// 로그인한 유저가 신고했던 인증사진인지 체크하는 메소드
 		
-		int n = dao.userReport(paraMap);
-		// 유저를 신고했을때 신고테이블에 insert
-		
-		if (n==1) {
-    		// 신고가 완료되었을시
+    	if (resultMap != null) {
+    		// 이미 신고했던 인증사진일 경우
     		
-    		String message = "해당유저의 신고가<br>접수되었습니다.";
+    		String message = "이미 신고한 유저입니다.";
     		String loc = request.getContextPath()+"/challenge/certifyMyInfo?challenge_code="+challenge_code;
-    		String icon = "success";
+    		String icon = "info";
     		
     		request.setAttribute("message", message);
     		request.setAttribute("loc", loc);
@@ -338,20 +370,39 @@ public class CertifyService implements InterCertifyService {
     	}
     	else {
     		
-    		String message = "알 수없는 에러가 발생하였습니다. 관리자에게 문의하세요";
-    		String loc = request.getContextPath()+"/challenge/certifyMyInfo?challenge_code="+challenge_code;
-    		String icon = "error";
+    		int n = dao.userReport(paraMap);
+    		// 유저를 신고했을때 신고테이블에 insert
     		
-    		request.setAttribute("message", message);
-    		request.setAttribute("loc", loc);
-    		request.setAttribute("icon", icon);
+    		if (n==1) {
+    			// 신고가 완료되었을시
+    			
+    			String message = "해당유저의 신고가<br>접수되었습니다.";
+    			String loc = request.getContextPath()+"/challenge/certifyMyInfo?challenge_code="+challenge_code;
+    			String icon = "success";
+    			
+    			request.setAttribute("message", message);
+    			request.setAttribute("loc", loc);
+    			request.setAttribute("icon", icon);
+    		}
+    		else {
+    			
+    			String message = "알 수없는 에러가 발생하였습니다. 관리자에게 문의하세요";
+    			String loc = request.getContextPath()+"/challenge/certifyMyInfo?challenge_code="+challenge_code;
+    			String icon = "error";
+    			
+    			request.setAttribute("message", message);
+    			request.setAttribute("loc", loc);
+    			request.setAttribute("icon", icon);
+    		}
+    		
     	}
+    	
 
 	}
 
 	
 	// 매일 챌린지 정산하는 스케줄러
-	@Scheduled(cron="0 30 00 * * *") // 매일 00시 30분에 정산시작 cron="0 30 00 * * *"
+	@Scheduled(cron="0 30 12 * * *") // 매일 00시 30분에 정산시작 cron="0 30 00 * * *"
 	public void rewardCalculate() {
 		// 스케줄러로 사용되어지는 메소드는 반드시 파라미터는 없어야 한다.
 	      
@@ -364,6 +415,8 @@ public class CertifyService implements InterCertifyService {
 		if (endChallengeList.size() > 0) {
 			// 종료된 챌린지가 있을 때
 			
+			StringBuilder sb = new StringBuilder ();
+			
 			for (ChallengeDTO chaDTO : endChallengeList) {
 				// 한 챌린지 마다의 정산 (상금을 계산한다)
 				
@@ -372,11 +425,14 @@ public class CertifyService implements InterCertifyService {
 				// 챌린지 코드를 받아 해당 챌린지의 참가하고 있는 참가자의 정보 리스트를 가져온다.
 				
 				System.out.println(challenge_code+"번 챌린지 정산 결과");
+				sb.append("["+challenge_code+"번 챌린지 정산 결과]<br>");
+				
 				if (chaInfoList.size() > 0) {
 					// 참가자가 있을 경우 - 참가자들의 정보를 가져와 정산
 					
 					int perfectUserTotalDeposit = 0;
 					int totalPenalty = 0;
+					int totalEntryFee = 0;
 					
 					for (ChallengeInfoDTO chaInfoDTO : chaInfoList) {
 						// 총 벌금 계산과 100% 달성한 유저들의 예치금 알아오기 
@@ -397,11 +453,15 @@ public class CertifyService implements InterCertifyService {
 							perfectUserTotalDeposit += userEntryFee;
 						}
 						
+						totalEntryFee += userEntryFee;
 					} // end chaInfoList - 총 벌금 구하기
 					
 					System.out.println("이 챌린지의 벌금 합계 : "+totalPenalty);
 					System.out.println("이 챌린지의 100% 달성률 유저들의 총 합계 예치금 : "+perfectUserTotalDeposit);
-
+					sb.append("<h3>이 챌린지의 유저들의 예치금 합계 : "+totalEntryFee+" 원<br>");
+					sb.append("이 챌린지의 벌금 합계 : "+totalPenalty+" 원<br>");
+					sb.append("이 챌린지의 100% 달성률 유저들의 총 합계 예치금 : "+perfectUserTotalDeposit+"<br>");
+					
 					
 					// 상금 분배 시작
 					for (ChallengeInfoDTO chaInfoDTO : chaInfoList) {
@@ -442,13 +502,27 @@ public class CertifyService implements InterCertifyService {
 							e.printStackTrace();
 						}
 						
+						System.out.println("'"+chaInfoDTO.getFkUserid()+"' 유저의 상금 : "+userReward+" 원");
+						sb.append("'"+chaInfoDTO.getFkUserid()+"' 유저의 예치금 : "+userEntryFee+" 원, 유저의 달성률 : "+userAchievePct+"%, 유저의 총 상금 : "+userReward+" 원<br>");
+						 
 					} // 상금 분배 끝
 					
 					System.out.println("이 챌린지의 회사가 가지는 수수료 (벌금 정산 후 남는 돈) : "+totalPenalty);
+					sb.append("이 챌린지의 회사가 가지는 수수료 (벌금 정산 후 남는 돈) : "+totalPenalty+" 원</h3><br>");
+					sb.append("<hr style='border: solid 2px black;'>");
 					
 				} // end if 참가자가 존재할경우
 				
-			} // end endChallengeList 한 챌린지의 정산
+			} // end for endChallengeList 한 챌린지의 정산
+			
+			try {
+				String content ="<h1>[HAEBOLLANGCE] 금일의 종료된 챌린지 결과</h1>"+ 
+								"<h2>"+sb.toString()+"</h2>";
+				// mail.sendmail_challengeResult("sdvilzty@naver.com", content);
+				// 챌린지 결과 이메일로 전송
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 			
 		} // end if 종료된 챌린지가 있을 경우
 		
@@ -460,9 +534,13 @@ public class CertifyService implements InterCertifyService {
 	@Override
 	public void certifyMyInfo(HttpServletRequest request) {
 
-		// 참가중인 유저가 아닐시 잘못된 경로
-    	
-    	String fk_userid = "qwer1234";
+		String accessToken = CookieUtil.getToken(request,"accessToken");
+ 		String fk_userid = "";
+ 		
+ 		if(accessToken != null) {
+ 			fk_userid = jwtTokenizer.getUseridFromToken(accessToken);
+ 			// 아이디 받아오기
+ 		}
     	String challenge_code = request.getParameter("challenge_code");
 
     	Map<String, String> paraMap = new HashMap<>();
@@ -505,6 +583,6 @@ public class CertifyService implements InterCertifyService {
     	
     	request.setAttribute("joinedChallInfo", joinedChallInfo);
     	request.setAttribute("oneExample", oneExample);
-
+    	
 	}
 }

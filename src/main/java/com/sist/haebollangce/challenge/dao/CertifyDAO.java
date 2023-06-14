@@ -54,8 +54,8 @@ public class CertifyDAO implements InterCertifyDAO {
 
 	// 로그인한 유저의 보유 예치금 알아오기
 	@Override
-	public String getUserDeposit(String fk_userid) {
-		String userDeposit = mapper.getUserDeposit(fk_userid);
+	public String getUserDeposit(String userid) {
+		String userDeposit = mapper.getUserDeposit(userid);
 		return userDeposit;
 	}
 
@@ -150,6 +150,13 @@ public class CertifyDAO implements InterCertifyDAO {
 	public int addUserExp(Map<String, String> paraMap) {
 		int n = mapper.addUserExp(paraMap);
 		return n;
+	}
+
+	// 로그인한 유저가 신고했던 인증인지 체크하는 메소드
+	@Override
+	public Map<String, String> checkReport(Map<String, String> paraMap) {
+		Map <String, String> resultMap = mapper.checkReport(paraMap);
+		return resultMap;
 	}
 
 }
