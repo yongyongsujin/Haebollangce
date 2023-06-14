@@ -4,9 +4,7 @@ import com.sist.haebollangce.user.dto.UserDTO;
 
 public interface InterUserService {
 
-    int submit(String userid);
+    UserDTO findByUserid(String userid);
 
-    String findById(String id);
-
-    UserDTO getDetail(String userid);
+    void formSignup(UserDTO signupUser);
 }

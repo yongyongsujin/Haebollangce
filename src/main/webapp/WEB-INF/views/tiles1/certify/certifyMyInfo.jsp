@@ -129,7 +129,7 @@
 		opacity: 0;
 		position: absolute;
 		top: 50%;
-		left: 50%;
+		left: 47%;
 		transform: translate(-50%, -50%);
 		-ms-transform: translate(-50%, -50%);
 		text-align: center;
@@ -157,7 +157,7 @@
 		opacity: 0;
 		position: absolute;
 		top: 50%;
-		left: 50%;
+		left: 47%;
 		transform: translate(-50%, -50%);
 		-ms-transform: translate(-50%, -50%);
 		text-align: center;
@@ -208,7 +208,11 @@ const imgInfo = document.querySelector('.img_info');
 		$("div.current_per").text(successPer+"%");
 		$("span#current_per").html("&nbsp;"+successPer+"%");
 		
-		if ( successPer >= 80) {
+		if ( successPer != 0 && successPer < 80 ){
+			const currentReward = Math.floor(Number("${joinedChallInfo.entry_fee}") * successPer / 100);
+			$("span#currentDeposit").html("&nbsp;"+currentReward.toLocaleString('en')+"원"); 
+		}
+		else if ( successPer >= 80) {
 			// 달성률이 80% 이상인 경우 현재 확보예치금은 걸어둔 예치금
 			// 100%인 경우 계산 가능하면 추가하기
 			$("span#currentDeposit").html("&nbsp;"+Number("${joinedChallInfo.entry_fee}").toLocaleString('en')+"원"); 
@@ -253,9 +257,7 @@ const imgInfo = document.querySelector('.img_info');
 	 
 	// 상세 페이지로 이동하는 함수
 	function goDetail() {
-			
-		alert("챌린지 "+${joinedChallInfo.challenge_code}+"번 상세페이지로 이동");
-		// location.href='<%= ctxPath%>/challenge/certifyMyInfo?challenge_code='+challenge_code;
+		location.href='<%= ctxPath%>/challenge/challengeView?challenge_code='+'${joinedChallInfo.challenge_code}';
 	}
 	
 	// 유저가 신고했을 때
@@ -264,10 +266,11 @@ const imgInfo = document.querySelector('.img_info');
 		if ( $("textarea#report_content").val().trim() == "") {
 			Swal.fire({
 				icon: "warning",
-				title: "신고내용을 입력하세요",
+				title: "신고내용을 입력하세요 !",
 				confirmButtonColor: "#EB534C",
 				confirmButtonText: "확인"
 			});
+			$("textarea#report_content").focus();
 			return;
 		}
 		
@@ -281,8 +284,8 @@ const imgInfo = document.querySelector('.img_info');
 </script>
 
 
-
-<div class="container" style="width: 70% !important; background-color: white; text-align: center; font-size: 18pt;">
+<div class="container-fluid" style="background-color: #f4f4f4;">
+<div class="container pb-5" style="border-radius: 20px; width: 70% !important; background-color: white; text-align: center; font-size: 18pt;">
 	<br>
 	<h3 style="font-weight: bold;">참가중인 챌린지 인증정보</h3>
 	<br>
@@ -328,7 +331,7 @@ const imgInfo = document.querySelector('.img_info');
 			  	</div>
 			</div>
 			<div class="pt-2" style="display: flex; justify-content: space-between;">
-	  			<span>현재 확보한 예치금</span>
+	  			<span>현재 확보한 상금</span>
 	  			<span>걸어둔 예치금</span>
 	  		</div>
 	  		<div class="pb-5" style="display: flex; justify-content: space-between; font-weight: bold;">
@@ -421,7 +424,7 @@ const imgInfo = document.querySelector('.img_info');
   						<c:if test="${length == 2}"><td></td></c:if>
   				</c:if>
   				<c:if test="${empty myCertifyHistory}">
-  					<tr style="border: solid 1px black; height:250px;">
+  					<tr style="border: solid 1px black; height:250px; border-collapse: collapse; border-radius:20px; box-shadow: 0 0 0 1px #000; border-style: hidden;">
 		  				<td style="font-weight: bold; font-size: 20pt;">나의 인증기록이 없어요.&nbsp;&nbsp;<i class="fa-regular fa-face-sad-tear fa-lg" style="color: #000000;"></i></td>
 		  			</tr>
   				</c:if>
@@ -548,7 +551,7 @@ const imgInfo = document.querySelector('.img_info');
   						<c:if test="${length == 2}"><td></td></c:if>
   				</c:if>
   				<c:if test="${empty allCertifyHistory}">
-  					<tr style="border: solid 1px black; height:250px;">
+  					<tr style="border: solid 1px black; height:250px; border-collapse: collapse; border-radius:20px; box-shadow: 0 0 0 1px #000; border-style: hidden;">
 		  				<td style="font-weight: bold; font-size: 20pt;">참가자 인증기록이 없어요.&nbsp;&nbsp;<i class="fa-regular fa-face-sad-tear fa-lg" style="color: #000000;"></i></td>
 		  			</tr>
   				</c:if>
@@ -557,6 +560,7 @@ const imgInfo = document.querySelector('.img_info');
 		</div>
 	</div>
 	
+</div>
 </div>
 
 
@@ -584,7 +588,7 @@ const imgInfo = document.querySelector('.img_info');
 							<p class="img_OX" style="background-color:#AF2317;">✕</p>
 						</div>
 					</div>
-					<div class="my-3" style="font-size: 18pt; font-weight: bold;">${oneExample.example}</div>
+					<div class="my-3" style="font-size: 18pt; font-weight: bold;">인증 예시) - ${oneExample.example}</div>
 					<div class="my-3" style="font-size: 18pt; font-weight: bold;">꼭 알아주세요 !</div>
 					<div>
 						<div class="examInfo my-2">
@@ -624,7 +628,7 @@ const imgInfo = document.querySelector('.img_info');
 			<!-- Modal body -->
 			<div class="modal-body">
 				<form name="userReportFrm">
-					<textarea id="report_content" name="report_content" rows="5" cols="54" placeholder="정확한 처리를 위해 신고하시는 구체적인 사유를 적어주세요. (최소 10자 이상) 신고내용 - ex)적합하지 않은 인증사진"></textarea>
+					<textarea id="report_content" name="report_content" rows="5" cols="54" placeholder="정확한 처리를 위해 신고하시는 구체적인 사유를 적어주세요. (최소 10자 이상) 신고내용 - ex)적합하지 않은 인증사진" style="outline-color: #FE6B8B;"></textarea>
 					<input id="certifyNo" type="hidden" name="certifyNo" value="" readonly="readonly">
 					<input name="challenge_code" type="hidden" value="${joinedChallInfo.challenge_code}">
 				</form>

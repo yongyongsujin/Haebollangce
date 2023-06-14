@@ -141,7 +141,8 @@
 	
 </script>
 
-<div class="container" style="width: 70% !important; background-color: white; text-align: center;">
+<div class="container-fluid" style="background-color: #f4f4f4;">
+<div class="container" style="border-radius: 20px; width: 70% !important; background-color: white; text-align: center;">
 	<br>
 	<h3 style="font-weight: bold;">인증하기</h3>
 	<br>
@@ -188,4 +189,5 @@
 	    <button type="button" class="btn btn-secondary btn-md mb-3" id="btn_certify">인증하기</button>
 	</div>
         
+</div>
 </div>

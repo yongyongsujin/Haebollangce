@@ -1,33 +1,23 @@
 package com.sist.haebollangce.user.service;
 
+import org.springframework.stereotype.Service;
 import com.sist.haebollangce.user.dao.InterUserDAO;
 import com.sist.haebollangce.user.dto.UserDTO;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
+import lombok.RequiredArgsConstructor;
 @Service
+@RequiredArgsConstructor
 public class UserService implements InterUserService{
 
-    @Autowired
-    private InterUserDAO dao;
+    private final InterUserDAO dao;
 
     @Override
-    public int submit(String userid) {
-        System.out.println("Service : "+userid);
-
-        int n = dao.submit(userid);
-        return n;
+    public UserDTO findByUserid(String userid) {
+        return dao.findByUserid(userid);
     }
 
     @Override
-    public String findById(String id) {
-        String pw = dao.findById(id);
-        return pw;
+    public void formSignup(UserDTO signupUser) {
+        dao.formSignup(signupUser);
     }
 
-    @Override
-    public UserDTO getDetail(String userid) {
-        UserDTO user = dao.getDetail(userid);
-        return user;
-    }
 }
