@@ -262,6 +262,22 @@ String ctxPath = request.getContextPath();
 		
 		//Notification.requestPermission();
 		//new Notification("[해볼랑스 푸시알림]", {body:'게시글에 댓글과 좋아요가 달리면 알림이 울리게 하시겠습니까? :-)'});
+	
+		
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 
 	});
 
@@ -305,11 +321,9 @@ String ctxPath = request.getContextPath();
 			      	</li>
 		    <%--</c:if> --%>
 			    </ul>
-			    <form class="form-inline my-2 my-lg-0">
-			    	<i type="button" class="fa-solid fa-paper-plane mx-2" onclick="javascript:location.href='<%= ctxPath%>/messenger/messengerView'"></i>
-			    	<button type="button" class="btn btn-sm btn-habol mx-2 my-2" style="color:white; font-weight:bold;" href="<%= ctxPath %>/login">회원가입</a>
-			    	<button type="button" class="btn btn-sm btn-habol mx-2 my-2 " style="color:white; font-weight:bold;" href="<%= ctxPath %>/register">로그인</a>
-			    </form>
+			    <div class="form-inline my-2 my-lg-0" id="islogin">
+			    	
+			    </div>
 			</div>
 			
 		</nav>
