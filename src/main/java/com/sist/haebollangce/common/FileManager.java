@@ -16,6 +16,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.stereotype.Component;
 
+import net.coobird.thumbnailator.Thumbnails;
+import net.coobird.thumbnailator.name.Rename;
+
 // === #154. FileManager 클래스 생성하기 === 
 @Component 
 public class FileManager {
@@ -73,6 +76,7 @@ public class FileManager {
         // 해당경로에 \ 를 더하고 파일명을 더한 경로까지 나타내어준 파일명(문자열)을 만든다. 
 		// pathname 은 예를 들면, C:\NCS\workspace(spring)\.metadata\.plugins\org.eclipse.wst.server.core\tmp0\wtpwebapps\Board\resources\files\2023051909271535243254235235234.png 이다.      
 		
+		
 		FileOutputStream fos = new FileOutputStream(pathname);
 		// FileOutputStream 는 해당 경로 파일명(pathname)에 실제로 데이터 내용(byte[] bytes)을 기록해주는 클래스 이다.
 		// 이러한 일을 하는 FileOutputStream 객체 fos 를 생성한다.
@@ -82,6 +86,13 @@ public class FileManager {
 		
 		fos.close();
 		// 생성된 FileOutputStream 객체 fos 가 더이상 사용되지 않도록 소멸 시킨다.
+		
+		// Thumbnailator를 사용하여 썸네일 생성
+	    Thumbnails.of(new File(pathname))
+	    		.size(750, Integer.MAX_VALUE)
+	        .outputFormat("JPEG")
+	        .outputQuality(0.80)
+	        .toFiles(dir, Rename.NO_CHANGE);
 		
 		return newFilename;
 		// 파일을 업로드 한 이후에 

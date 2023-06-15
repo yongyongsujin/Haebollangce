@@ -124,4 +124,30 @@ public class ChallengeDAO implements InterChallengeDAO {
 		
 		return mapper.index_loungeList();
 	}
+	
+	// 좋아요 되어 있는지 안 되어 있는지 확인 
+	@Override
+	public int checkLike(Map<String, String> paraMap) {
+		int n = mapper.checkLike(paraMap);
+			
+		return n;
+	}
+
+	// 챌린지 북마크(관심)등록
+	@Override
+	public int challengelikeadd(ChallengeDTO challengedto) {
+		int n = mapper.challengelikeadd(challengedto);
+			
+	//	System.out.println("dao 확인용 : "+ n);
+		return n;
+	}
+
+	// 챌린지 북마크(관심) 해제
+	@Override
+	public int likedelete(ChallengeDTO challengedto) {
+		int n = mapper.likedelete(challengedto);
+			
+	//	System.out.println("dao 확인용 : "+ n);
+		return n;
+	}
 }
