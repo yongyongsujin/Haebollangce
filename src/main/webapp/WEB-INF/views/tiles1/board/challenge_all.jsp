@@ -306,17 +306,10 @@ a:hover { text-decoration: none;}
 }
 
 .ChallengeCard_info__describe {
-
   font-size: 15px;
     line-height: 24px;
     letter-spacing: -.4px;
     font-weight: 600;
-
-  font-size: 20px;
-    line-height: 24px;
-    letter-spacing: -.4px;
-    font-weight: 400;
-
     color: #999696;
     display: flex;
     margin-bottom: 20px;
@@ -366,18 +359,10 @@ a:hover { text-decoration: none;}
 
 .ChallengeCard_participant_image {
   font-size: 16px;
-
     font-family: Pretendard;
     font-weight: 600;
     letter-spacing: -.4px;
     color: black;
-
-    line-height: 19px;
-    font-family: Pretendard;
-    font-weight: 400;
-    letter-spacing: -.4px;
-    color: #999696;
-
   
   
 }
@@ -521,182 +506,168 @@ a:hover { text-decoration: none;}
 
 
   $(document).ready(function() {
-	  
+     
+       window.onload = function() {
+        fetchCategories(); // 전체 카테고리를 가져오기 위해 categoryCode를 null로 설정합니다.
+      };
 
+      function fetchCategories(categoryCode) {
+           
+            window.scrollTo({top:0, behavior:'smooth'});
+            
+            $.ajax({
+              url: '<%=ctxPath%>/challenge/challengelist',
+              method: 'GET',
+              data: {
+                 categoryCode: categoryCode,
+              },
+              success: function(data) {
+                              
+                 var container = $('#All_content__card__d');
+                 container.empty(); // 기존 데이터 비우기
+                 // 데이터를 반복하여 HTML 요소를 생성하고 쌓습니다.
+                 for (var key in data) {
+                   if (data.hasOwnProperty(key)) {
+                     var items = data[key];
+                     items.forEach(function(item) {
+                       var cardDiv = $('<div class="sa sa-up"></div>');
+                       cardDiv.attr('onclick', 'goView(' + item.challengeCode + ')');
+                       var cardLink = $('<a class="ChallengeCard_card"></a>');
+                       var startDate = new Date(item.startDate);
+                        var month = startDate.getMonth() + 1; // 월은 0부터 시작하므로 1을 더해줍니다.
+                        var day = startDate.getDate();
+                        var dayOfWeek = startDate.getDay(); // 요일을 가져옵니다.
+                        var daysOfWeek = ['일', '월', '화', '수', '목', '금', '토'];
+                        var dayString = daysOfWeek[dayOfWeek];
+                       // HTML 컨텐츠를 생성하고 요소에 추가합니다.
+                         cardLink.append('<span><img src="/images/'+item.thumbnail+'" class="ChallengeCard_card_image"/></span>');
+                      cardLink.append('<div class="ChallengeCard_info">' +
+                                      '<div class="ChallengeCard_info__subject">' +
+                                      '<div class="ChallengeCard_tag">' + item.categoryName + '</div>' +
+                                      '</div>' +
+                                      '<div class="ChallengeCard_info__title">' + item.challengeName + '</div>' +
+                                      '<div class="ChallengeCard_info__describe">' +
+                                      '챌린지 ·&nbsp;<img alt="info-calender" class="ChallengeCard_info_calender" src="/images/캘린더.png"/>' +
+                                      '<div style="font-size:18px;">' + month + '.' + day + '('+dayString+')</div> '+ '&nbsp;· '+ item.setDate +   // 월과 일을 화면에 표시합니다.
+                                      '<img alt="info-check" src="https://images.munto.kr/munto-web/ic_action_check_off_24px.svg?s=48x48" class="ChallengeCard_info_check"/>' +
+                                      '<div>' + item.frequency + '</div>' +
+                                     
+                                      '</div>' +
+                                      '<div class="ChallengeCard_info_participants">' +
+                                      '<div class="ChallengeCard_participant_image">'+'개설자ID&nbsp; : ' + item.fkUserid + '</div>' +                                    
+                                      '<div class="ChallengeCard_member">' +
+                                      '&nbsp;&nbsp;<img src="https://images.munto.kr/munto-web/ic_info_person_14px.svg?s=32x32"/>' +
+                                      '<div class="ChallengeCard_member_count">' + item.memberCount + '명</div>' +
+                                      '</div>' +
+                                      '</div>');
+                       
+                       // 컨테이너에 생성된 요소를 추가합니다.
+                       cardDiv.append(cardLink);
+                       container.append(cardDiv);
+                     });
+                   }
+                 }
 
-	  
-	  
-	    
-		
-	  
+                 if(items == null) {
+                     html = '<div class="challenge_none" id="challenge_none" style="font-size: 30px; color: black; font-weight: bold; margin-top: 70px; margin-bottom: 30px">개설된 챌린지가 없습니다.</div>';
+                     html += '<div class="start_challeng" type="button" style="font-weight: bold; font-size: 20px; margin-bottom: 30px; margin-left: 60px ">';
+                     html += '<style>'
+                    html += '.All_content__card__a { background-color: white; }';
+                    html += '.All_content__card__c { background-color: white; }';
+                    html += '.All_content__card__b { background-color: white; }';
+                    html += '.All_content__card__d { background-color: white; padding-top: 0;}';
+                    
+                       html += '</style>'
 
-	    window.onload = function() {
-		  fetchCategories(); // 전체 카테고리를 가져오기 위해 categoryCode를 null로 설정합니다.
-		};
+                     html += '</div>';
+                    
+                 
+                   $('#chal_none').append(html);
+                   
+                   }
+                  
+                 var categoryElement = document.querySelector('.challenge_title_c');
 
-		function fetchCategories(categoryCode) {
-			  
-		      window.scrollTo({top:0, behavior:'smooth'});
-		      
-		      $.ajax({
-		        url: '<%=ctxPath%>/challenge/challengelist',
-		        method: 'GET',
-		        data: {
-		        	categoryCode: categoryCode,
-		        },
-		        success: function(data) {
-		        				    
-		        	var container = $('#All_content__card__d');
-		        	container.empty(); // 기존 데이터 비우기
-		        	// 데이터를 반복하여 HTML 요소를 생성하고 쌓습니다.
-		        	for (var key in data) {
-		        	  if (data.hasOwnProperty(key)) {
-		        	    var items = data[key];
-		        	    items.forEach(function(item) {
-		        	      var cardDiv = $('<div class="sa sa-up"></div>');
-		        	      cardDiv.attr('onclick', 'goView(' + item.challengeCode + ')');
-		        	      var cardLink = $('<a class="ChallengeCard_card"></a>');
-		        	      var startDate = new Date(item.startDate);
-		                  var month = startDate.getMonth() + 1; // 월은 0부터 시작하므로 1을 더해줍니다.
-		                  var day = startDate.getDate();
-		                  var dayOfWeek = startDate.getDay(); // 요일을 가져옵니다.
-		                  var daysOfWeek = ['일', '월', '화', '수', '목', '금', '토'];
-		                  var dayString = daysOfWeek[dayOfWeek];
-		        	      // HTML 컨텐츠를 생성하고 요소에 추가합니다.
-	                  	 cardLink.append('<span><img src="/images/'+item.thumbnail+'" class="ChallengeCard_card_image"/></span>');
-		        	     cardLink.append('<div class="ChallengeCard_info">' +
-		        	                     '<div class="ChallengeCard_info__subject">' +
-		        	                     '<div class="ChallengeCard_tag">' + item.categoryName + '</div>' +
-		        	                     '</div>' +
-		        	                     '<div class="ChallengeCard_info__title">' + item.challengeName + '</div>' +
-		        	                     '<div class="ChallengeCard_info__describe">' +
-		        	                     '챌린지 ·&nbsp;<img alt="info-calender" class="ChallengeCard_info_calender" src="/images/캘린더.png"/>' +
-		        	                     '<div style="font-size:18px;">' + month + '.' + day + '('+dayString+')</div> '+ '&nbsp;· '+ item.setDate +   // 월과 일을 화면에 표시합니다.
+                 // 카테고리 클래스 바로 위의 요소를 찾기 위해 previousElementSibling을 사용합니다.
+                 var targetElement = categoryElement.previousElementSibling;
 
-		        	                     '<img alt="info-check" src="https://images.munto.kr/munto-web/ic_action_check_off_24px.svg?s=48x48" class="ChallengeCard_info_check"/>' +
-		        	                     '<div>' + item.frequency + '</div>' +
-		        	                    
+                 // targetElement가 존재하면 스크롤을 수행합니다.
+                 if (targetElement) {
+                   targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                 }
+                 
+                
+                
+                const saDefaultMargin = 500;
+                let saTriggerMargin = 0;
+                let saTriggerHeight = 0;
+                const saElementList = document.querySelectorAll('.sa');
 
-		        	                     '<img alt="info-check" src="https://images.munto.kr/munto-web/ic_action_check_off_24px.svg?s=48x48" class="ChallengeCard_info_check"/>주' +
-		        	                     '<div>' + item.fkDuringType + '</div>' +
-		        	                     '회' +
+                const saFunc = function() {
+                  for (const element of saElementList) {
+                    if (!element.classList.contains('show')) {
+                      if (element.dataset.saMargin) {
+                        saTriggerMargin = parseInt(element.dataset.saMargin);
+                      } else {
+                        saTriggerMargin = saDefaultMargin;
+                      }
 
-		        	                     '</div>' +
-		        	                     '<div class="ChallengeCard_info_participants">' +
-		        	                     '<div class="ChallengeCard_participant_image">'+'개설자ID&nbsp; : ' + item.fkUserid + '</div>' +	        	                      
-		        	                     '<div class="ChallengeCard_member">' +
-		        	                     '&nbsp;&nbsp;<img src="https://images.munto.kr/munto-web/ic_info_person_14px.svg?s=32x32"/>' +
-		        	                     '<div class="ChallengeCard_member_count">' + item.memberCount + '명</div>' +
-		        	                     '</div>' +
-		        	                     '</div>');
-		        	      
-		        	      // 컨테이너에 생성된 요소를 추가합니다.
-		        	      cardDiv.append(cardLink);
-		        	      container.append(cardDiv);
-		        	    });
-		        	  }
-		        	}
+                      if (element.dataset.saTrigger) {
+                        saTriggerHeight = document.querySelector(element.dataset.saTrigger).getBoundingClientRect().top + saTriggerMargin;
+                      } else {
+                        saTriggerHeight = element.getBoundingClientRect().top + saTriggerMargin;
+                      }
 
-		        	if(items == null) {
-	        		    html = '<div class="challenge_none" id="challenge_none" style="font-size: 30px; color: black; font-weight: bold; margin-top: 70px; margin-bottom: 30px">개설된 챌린지가 없습니다.</div>';
-		        	    html += '<div class="start_challeng" type="button" style="font-weight: bold; font-size: 20px; margin-bottom: 30px; margin-left: 60px ">';
-		        	    html += '<style>'
-		        		html += '.All_content__card__a { background-color: white; }';
-		        		html += '.All_content__card__c { background-color: white; }';
-		        		html += '.All_content__card__b { background-color: white; }';
-		        		html += '.All_content__card__d { background-color: white; padding-top: 0;}';
-		        		
-		                 html += '</style>'
+                      if (window.innerHeight > saTriggerHeight) {
+                        let delay = (element.dataset.saDelay) ? element.dataset.saDelay : 0;
+                        setTimeout(function() {
+                          element.classList.add('show');
+                        }, delay);
+                      }
+                    }
+                  }
+                }
+                
+                
+                const fadeInElements = document.querySelectorAll('.sa-up');
 
-		        	    html += '</div>';
-		        	   
-	        	   
-	        	     $('#chal_none').append(html);
-	        		  
-	        	     }
-		      		
-		        	var categoryElement = document.querySelector('.challenge_title_c');
+                const fadeInOptions = {
+                  threshold: 0.5,
+                  rootMargin: '0px 0px -100px 0px' // 스크롤 이벤트 발생 시점을 조절하기 위한 여유값
+                };
 
-		        	// 카테고리 클래스 바로 위의 요소를 찾기 위해 previousElementSibling을 사용합니다.
-		        	var targetElement = categoryElement.previousElementSibling;
+                const fadeInObserver = new IntersectionObserver((entries, observer) => {
+                  entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                      entry.target.classList.add('show');
+                      fadeInObserver.unobserve(entry.target);
+                    }
+                  });
+                }, fadeInOptions);
 
-		        	// targetElement가 존재하면 스크롤을 수행합니다.
-		        	if (targetElement) {
-		        	  targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
-		        	}
-		        	
-		          
-		          
-		          const saDefaultMargin = 500;
-		          let saTriggerMargin = 0;
-		          let saTriggerHeight = 0;
-		          const saElementList = document.querySelectorAll('.sa');
-
-		          const saFunc = function() {
-		            for (const element of saElementList) {
-		              if (!element.classList.contains('show')) {
-		                if (element.dataset.saMargin) {
-		                  saTriggerMargin = parseInt(element.dataset.saMargin);
-		                } else {
-		                  saTriggerMargin = saDefaultMargin;
-		                }
-
-		                if (element.dataset.saTrigger) {
-		                  saTriggerHeight = document.querySelector(element.dataset.saTrigger).getBoundingClientRect().top + saTriggerMargin;
-		                } else {
-		                  saTriggerHeight = element.getBoundingClientRect().top + saTriggerMargin;
-		                }
-
-		                if (window.innerHeight > saTriggerHeight) {
-		                  let delay = (element.dataset.saDelay) ? element.dataset.saDelay : 0;
-		                  setTimeout(function() {
-		                    element.classList.add('show');
-		                  }, delay);
-		                }
-		              }
-		            }
-		          }
-		          
-		          
-		          const fadeInElements = document.querySelectorAll('.sa-up');
-
-		          const fadeInOptions = {
-		            threshold: 0.5,
-		            rootMargin: '0px 0px -100px 0px' // 스크롤 이벤트 발생 시점을 조절하기 위한 여유값
-		          };
-
-		          const fadeInObserver = new IntersectionObserver((entries, observer) => {
-		            entries.forEach(entry => {
-		              if (entry.isIntersecting) {
-		                entry.target.classList.add('show');
-		                fadeInObserver.unobserve(entry.target);
-		              }
-		            });
-		          }, fadeInOptions);
-
-		          fadeInElements.forEach(element => {
-		            fadeInObserver.observe(element);
-		          });
-		          
-		          
-		          window.addEventListener('load', saFunc);
-		          window.addEventListener('scroll', saFunc);
-		          
-		          
-		        },
-		    error: function() {
-		      // 에러 처리
-		    }
-		  });
-		}
-		
-		
-		
-		
-		
-		
-		
-	  
+                fadeInElements.forEach(element => {
+                  fadeInObserver.observe(element);
+                });
+                
+                
+                window.addEventListener('load', saFunc);
+                window.addEventListener('scroll', saFunc);
+                
+                
+              },
+          error: function() {
+            // 에러 처리
+          }
+        });
+      }
+      
+      
+      
+      
+      
+      
+      
+     
     const saDefaultMargin = 300;
     let saTriggerMargin = 0;
     let saTriggerHeight = 0;
@@ -752,183 +723,183 @@ a:hover { text-decoration: none;}
     
     window.addEventListener('load', saFunc);
     window.addEventListener('scroll', saFunc); 
-    	
-	
+       
+   
     
     $(".challenge_category_item").click(function() {
-	      var categoryCode = $(this).data("category_code");
-	      
-	      window.scrollTo({middle:0, behavior:'smooth'});
-	      
-	      $.ajax({
-	        url: '<%=ctxPath%>/challenge/challengelist',
-	        method: 'GET',
-	        data: {
-	        	categoryCode: categoryCode,
-	            
-	        },
-	        success: function(data) {
-	        	var container = $('#All_content__card__d');
-	        	
-	        	container.empty();
-	        	var html = "";
-	        	$('#chal_none').html("");
+         var categoryCode = $(this).data("category_code");
+         
+         window.scrollTo({middle:0, behavior:'smooth'});
+         
+         $.ajax({
+           url: '<%=ctxPath%>/challenge/challengelist',
+           method: 'GET',
+           data: {
+              categoryCode: categoryCode,
+               
+           },
+           success: function(data) {
+              var container = $('#All_content__card__d');
+              
+              container.empty();
+              var html = "";
+              $('#chal_none').html("");
 
-	        	for (var key in data) {
-	        	  if (data.hasOwnProperty(key)) {
-	        		 var items = data[key];
-	        	    console.log(items);
-	        	    
-	        	    
-	        	    items.forEach(function(item) {
-	        	      var cardDiv = $('<div class="sa sa-up" data-></div>');
-	        	      cardDiv.attr('onclick', 'goView(' + item.challengeCode + ')');
-	        	      var cardLink = $('<a class="ChallengeCard_card"></a>');
-	        	      
+              for (var key in data) {
+                if (data.hasOwnProperty(key)) {
+                  var items = data[key];
+                  console.log(items);
+                  
+                  
+                  items.forEach(function(item) {
+                    var cardDiv = $('<div class="sa sa-up" data-></div>');
+                    cardDiv.attr('onclick', 'goView(' + item.challengeCode + ')');
+                    var cardLink = $('<a class="ChallengeCard_card"></a>');
+                    
 
-	        	      var startDate = new Date(item.startDate);
-	                  var month = startDate.getMonth() + 1; 
-	                  var day = startDate.getDate();
-	                  var dayOfWeek = startDate.getDay(); 
-	                  var daysOfWeek = ['일', '월', '화', '수', '목', '금', '토'];
-	                  var dayString = daysOfWeek[dayOfWeek];
+                    var startDate = new Date(item.startDate);
+                     var month = startDate.getMonth() + 1; 
+                     var day = startDate.getDate();
+                     var dayOfWeek = startDate.getDay(); 
+                     var daysOfWeek = ['일', '월', '화', '수', '목', '금', '토'];
+                     var dayString = daysOfWeek[dayOfWeek];
 
-	                  cardLink.append('<span><img src="/images/'+item.thumbnail+'" class="ChallengeCard_card_image"/></span>');
-	        	      cardLink.append('<div class="ChallengeCard_info">' +
-	        	                      '<div class="ChallengeCard_info__subject">' +
-	        	                      '<div class="ChallengeCard_tag">' + item.categoryName + '</div>' +
-	        	                      '</div>' +
-	        	                      '<div class="ChallengeCard_info__title">' + item.challengeName + '</div>' +
-	        	                      '<div class="ChallengeCard_info__describe">' +
-	        	                      '챌린지 ·&nbsp;<img alt="info-calender" class="ChallengeCard_info_calender" src="/images/캘린더.png"/>' +
-	        	                      '<div style="font-size:18px;">' + month + '.' + day + '('+dayString+')</div> '+ '&nbsp;· '+ item.setDate +   // 월과 일을 화면에 표시합니다.
-	        	                      '<img alt="info-check" src="https://images.munto.kr/munto-web/ic_action_check_off_24px.svg?s=48x48" class="ChallengeCard_info_check"/>' +
-	        	                      '<div>' + item.frequency + '</div>' +
-	        	                      
-	        	                      '</div>' +
-	        	                      '<div class="ChallengeCard_info_participants">' +
-	        	                      '<div class="ChallengeCard_participant_image">'+'개설자ID&nbsp; : ' + item.fkUserid + '</div>' +	        	                      
-	        	                      '<div class="ChallengeCard_member">' +
-	        	                      '&nbsp;&nbsp;<img src="https://images.munto.kr/munto-web/ic_info_person_14px.svg?s=32x32"/>' +
-	        	                      '<div class="ChallengeCard_member_count">' + item.memberCount + '명</div>' +
-	        	                      '</div>' +
-	        	                      '</div>');
-	        	      
-	        	      // 컨테이너에 생성된 요소를 추가합니다.
-	        	      cardDiv.append(cardLink);
-	        	      container.append(cardDiv);
-					
-	        	      
-	        	      
-	        	    });
-	        	  }
+                     cardLink.append('<span><img src="/images/'+item.thumbnail+'" class="ChallengeCard_card_image"/></span>');
+                    cardLink.append('<div class="ChallengeCard_info">' +
+                                    '<div class="ChallengeCard_info__subject">' +
+                                    '<div class="ChallengeCard_tag">' + item.categoryName + '</div>' +
+                                    '</div>' +
+                                    '<div class="ChallengeCard_info__title">' + item.challengeName + '</div>' +
+                                    '<div class="ChallengeCard_info__describe">' +
+                                    '챌린지 ·&nbsp;<img alt="info-calender" class="ChallengeCard_info_calender" src="/images/캘린더.png"/>' +
+                                    '<div style="font-size:18px;">' + month + '.' + day + '('+dayString+')</div> '+ '&nbsp;· '+ item.setDate +   // 월과 일을 화면에 표시합니다.
+                                    '<img alt="info-check" src="https://images.munto.kr/munto-web/ic_action_check_off_24px.svg?s=48x48" class="ChallengeCard_info_check"/>' +
+                                    '<div>' + item.frequency + '</div>' +
+                                    
+                                    '</div>' +
+                                    '<div class="ChallengeCard_info_participants">' +
+                                    '<div class="ChallengeCard_participant_image">'+'개설자ID&nbsp; : ' + item.fkUserid + '</div>' +                                    
+                                    '<div class="ChallengeCard_member">' +
+                                    '&nbsp;&nbsp;<img src="https://images.munto.kr/munto-web/ic_info_person_14px.svg?s=32x32"/>' +
+                                    '<div class="ChallengeCard_member_count">' + item.memberCount + '명</div>' +
+                                    '</div>' +
+                                    '</div>');
+                    
+                    // 컨테이너에 생성된 요소를 추가합니다.
+                    cardDiv.append(cardLink);
+                    container.append(cardDiv);
+               
+                    
+                    
+                  });
+                }
   
-	        	}
-	        	
-	        	
-				
-				if(items == null) {
-	        		    html = '<div class="challenge_none" id="challenge_none" style="font-size: 30px; color: black; font-weight: bold; margin-top: 70px; margin-bottom: 30px">개설된 챌린지가 없습니다.</div>';
-		        	    html += '<div class="start_challeng" type="button" style="font-weight: bold; font-size: 20px; margin-bottom: 30px; margin-left: 60px ">';
-		        	    html += '<style>'
-		        		html += '.All_content__card__a { background-color: white; }';
-		        		html += '.All_content__card__c { background-color: white; }';
-		        		html += '.All_content__card__b { background-color: white; }';
-		        		html += '.All_content__card__d { background-color: white; padding-top: 0;}';
-		        		
-		                 html += '</style>'
+              }
+              
+              
+            
+            if(items == null) {
+                     html = '<div class="challenge_none" id="challenge_none" style="font-size: 30px; color: black; font-weight: bold; margin-top: 70px; margin-bottom: 30px">개설된 챌린지가 없습니다.</div>';
+                     html += '<div class="start_challeng" type="button" style="font-weight: bold; font-size: 20px; margin-bottom: 30px; margin-left: 60px ">';
+                     html += '<style>'
+                    html += '.All_content__card__a { background-color: white; }';
+                    html += '.All_content__card__c { background-color: white; }';
+                    html += '.All_content__card__b { background-color: white; }';
+                    html += '.All_content__card__d { background-color: white; padding-top: 0;}';
+                    
+                       html += '</style>'
 
-		        	    html += '</div>';
-		        	   
-	        	   
-	        	    $('#chal_none').append(html);
-	        		  
-	        	  }
-	        		
-	        	
-	        	var categoryElement = document.querySelector('.challenge_title_d');
+                     html += '</div>';
+                    
+                 
+                  $('#chal_none').append(html);
+                   
+                }
+                 
+              
+              var categoryElement = document.querySelector('.challenge_title_d');
 
-	        	// 카테고리 클래스 바로 위의 요소를 찾기 위해 previousElementSibling을 사용합니다.
-	        	var targetElement = categoryElement.previousElementSibling;
+              // 카테고리 클래스 바로 위의 요소를 찾기 위해 previousElementSibling을 사용합니다.
+              var targetElement = categoryElement.previousElementSibling;
 
-	        	// targetElement가 존재하면 스크롤을 수행합니다.
-	        	if (targetElement) {
-	        	  targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
-	        	}
-	          
-	          
-	          const saDefaultMargin = 300;
-	          let saTriggerMargin = 0;
-	          let saTriggerHeight = 0;
-	          const saElementList = document.querySelectorAll('.sa');
+              // targetElement가 존재하면 스크롤을 수행합니다.
+              if (targetElement) {
+                targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              }
+             
+             
+             const saDefaultMargin = 300;
+             let saTriggerMargin = 0;
+             let saTriggerHeight = 0;
+             const saElementList = document.querySelectorAll('.sa');
 
-	          const saFunc = function() {
-	            for (const element of saElementList) {
-	              if (!element.classList.contains('show')) {
-	                if (element.dataset.saMargin) {
-	                  saTriggerMargin = parseInt(element.dataset.saMargin);
-	                } else {
-	                  saTriggerMargin = saDefaultMargin;
-	                }
+             const saFunc = function() {
+               for (const element of saElementList) {
+                 if (!element.classList.contains('show')) {
+                   if (element.dataset.saMargin) {
+                     saTriggerMargin = parseInt(element.dataset.saMargin);
+                   } else {
+                     saTriggerMargin = saDefaultMargin;
+                   }
 
-	                if (element.dataset.saTrigger) {
-	                  saTriggerHeight = document.querySelector(element.dataset.saTrigger).getBoundingClientRect().top + saTriggerMargin;
-	                } else {
-	                  saTriggerHeight = element.getBoundingClientRect().top + saTriggerMargin;
-	                }
+                   if (element.dataset.saTrigger) {
+                     saTriggerHeight = document.querySelector(element.dataset.saTrigger).getBoundingClientRect().top + saTriggerMargin;
+                   } else {
+                     saTriggerHeight = element.getBoundingClientRect().top + saTriggerMargin;
+                   }
 
-	                if (window.innerHeight > saTriggerHeight) {
-	                  let delay = (element.dataset.saDelay) ? element.dataset.saDelay : 0;
-	                  setTimeout(function() {
-	                    element.classList.add('show');
-	                  }, delay);
-	                }
-	              }
-	            }
-	          }
-	          
-	          
-	          const fadeInElements = document.querySelectorAll('.sa-up');
+                   if (window.innerHeight > saTriggerHeight) {
+                     let delay = (element.dataset.saDelay) ? element.dataset.saDelay : 0;
+                     setTimeout(function() {
+                       element.classList.add('show');
+                     }, delay);
+                   }
+                 }
+               }
+             }
+             
+             
+             const fadeInElements = document.querySelectorAll('.sa-up');
 
-	          const fadeInOptions = {
-	            threshold: 0.5,
-	            rootMargin: '0px 0px -100px 0px' // 스크롤 이벤트 발생 시점을 조절하기 위한 여유값
-	          };
+             const fadeInOptions = {
+               threshold: 0.5,
+               rootMargin: '0px 0px -100px 0px' // 스크롤 이벤트 발생 시점을 조절하기 위한 여유값
+             };
 
-	          const fadeInObserver = new IntersectionObserver((entries, observer) => {
-	            entries.forEach(entry => {
-	              if (entry.isIntersecting) {
-	                entry.target.classList.add('show');
-	                fadeInObserver.unobserve(entry.target);
-	              }
-	            });
-	          }, fadeInOptions);
+             const fadeInObserver = new IntersectionObserver((entries, observer) => {
+               entries.forEach(entry => {
+                 if (entry.isIntersecting) {
+                   entry.target.classList.add('show');
+                   fadeInObserver.unobserve(entry.target);
+                 }
+               });
+             }, fadeInOptions);
 
-	          fadeInElements.forEach(element => {
-	            fadeInObserver.observe(element);
-	          });
-	          
-	          
-	          window.addEventListener('load', saFunc);
-	          window.addEventListener('scroll', saFunc);
-	        	
-	        	
-	          
-	        },
-	        error: function(request, status, error){
-	            alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
-	        }
-	      });
-	    });
-	   
+             fadeInElements.forEach(element => {
+               fadeInObserver.observe(element);
+             });
+             
+             
+             window.addEventListener('load', saFunc);
+             window.addEventListener('scroll', saFunc);
+              
+              
+             
+           },
+           error: function(request, status, error){
+               alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+           }
+         });
+       });
+      
     
     
     });// end of $(document).ready(function()--------------------
-  	
+     
     function goView(challengeCode) {
-		 location.href = "<%= ctxPath%>/challenge/challengeView?challengeCode="+challengeCode; 
-	}		
-    		
+       location.href = "<%= ctxPath%>/challenge/challengeView?challengeCode="+challengeCode; 
+   }      
+          
   
 </script>
 
@@ -946,79 +917,75 @@ a:hover { text-decoration: none;}
   </div>
   
   <div class="start_challenge" type="button" style="font-weight: bold; font-size: 20px; margin-bottom: 30px; ">
-  						
-
-	<a href="<%= ctxPath%>/challenge/add_challenge" style="color: inherit;">챌린지 개설하기</a>
-
-	<a href="<%= ctxPath%>" style="color: inherit;">챌린지 개설하기</a>
-
-    	    
+                    
+   <a href="<%= ctxPath%>/challenge/add_challenge" style="color: inherit;">챌린지 개설하기</a>
+           
   </div>
-		        	   
+                    
  
    
-	
+   
 
-	<c:if test="${not empty requestScope.challengeList}">
-	<ul class=challenge_category  style="border-bottom:3px dashed #3498d0;" >
-		<li class="challenge_category_item" >전체</li>				
-		<c:forEach var="cavo" items="${requestScope.categoryList}">
-		
-			<c:choose>
-				<c:when test="${cavo.categoryCode == 1}">
-					<li class="challenge_category_item" data-category_code="1"><img src="https://images.munto.kr/munto-web/culture_icon.svg" class="challenge_category__image">${cavo.categoryName}</li>
-				</c:when>
-				
-				<c:when test="${cavo.categoryCode == 2}">
-					<li class="challenge_category_item" data-category_code="2"><img src="https://images.munto.kr/munto-web/activite_icon.svg" class="challenge_category__image">${cavo.categoryName}</li>
-				</c:when>
-				
-				<c:when test="${cavo.categoryCode == 3}">
-				<li class="challenge_category_item" data-category_code="3"><img src="https://images.munto.kr/munto-web/food_icon.svg" class="challenge_category__image">${cavo.categoryName}</li>
-				</c:when>
-				
-				<c:when test="${cavo.categoryCode == 4}">
-				<li class="challenge_category_item" data-category_code="4"><img src="https://images.munto.kr/munto-web/hobby_icon.svg" class="challenge_category__image">${cavo.categoryName}</li>
-				</c:when>
-				
-				<c:when test="${cavo.categoryCode == 5}">
-				<li class="challenge_category_item" data-category_code="5"><img src="https://images.munto.kr/munto-web/trip_icon.svg" class="challenge_category__image">${cavo.categoryName}</li>
-				</c:when>
-				
-				<c:when test="${cavo.categoryCode == 6}">
-				<li class="challenge_category_item" data-category_code="6"><img src="https://images.munto.kr/munto-web/growth_icon.svg" class="challenge_category__image">${cavo.categoryName}</li>
-				</c:when>
-				
-				<c:when test="${cavo.categoryCode == 7}">
-				<li class="challenge_category_item" data-category_code="7"><img src="https://images.munto.kr/munto-web/icon_category_peer.svg" class="challenge_category_image">${cavo.categoryName}</li>
-				</c:when>
-				
-				<c:when test="${cavo.categoryCode == 8}">
-				<li class="challenge_category_item" data-category_code="8"><img src="https://images.munto.kr/munto-web/icon_category_blind-date.svg" class="challenge_category_image">${cavo.categoryName}</li>
-				</c:when>
+   <c:if test="${not empty requestScope.challengeList}">
+   <ul class=challenge_category  style="border-bottom:3px dashed #3498d0;" >
+      <li class="challenge_category_item" >전체</li>            
+      <c:forEach var="cavo" items="${requestScope.categoryList}">
+      
+         <c:choose>
+            <c:when test="${cavo.categoryCode == 1}">
+               <li class="challenge_category_item" data-category_code="1"><img src="https://images.munto.kr/munto-web/culture_icon.svg" class="challenge_category__image">${cavo.categoryName}</li>
+            </c:when>
+            
+            <c:when test="${cavo.categoryCode == 2}">
+               <li class="challenge_category_item" data-category_code="2"><img src="https://images.munto.kr/munto-web/activite_icon.svg" class="challenge_category__image">${cavo.categoryName}</li>
+            </c:when>
+            
+            <c:when test="${cavo.categoryCode == 3}">
+            <li class="challenge_category_item" data-category_code="3"><img src="https://images.munto.kr/munto-web/food_icon.svg" class="challenge_category__image">${cavo.categoryName}</li>
+            </c:when>
+            
+            <c:when test="${cavo.categoryCode == 4}">
+            <li class="challenge_category_item" data-category_code="4"><img src="https://images.munto.kr/munto-web/hobby_icon.svg" class="challenge_category__image">${cavo.categoryName}</li>
+            </c:when>
+            
+            <c:when test="${cavo.categoryCode == 5}">
+            <li class="challenge_category_item" data-category_code="5"><img src="https://images.munto.kr/munto-web/trip_icon.svg" class="challenge_category__image">${cavo.categoryName}</li>
+            </c:when>
+            
+            <c:when test="${cavo.categoryCode == 6}">
+            <li class="challenge_category_item" data-category_code="6"><img src="https://images.munto.kr/munto-web/growth_icon.svg" class="challenge_category__image">${cavo.categoryName}</li>
+            </c:when>
+            
+            <c:when test="${cavo.categoryCode == 7}">
+            <li class="challenge_category_item" data-category_code="7"><img src="https://images.munto.kr/munto-web/icon_category_peer.svg" class="challenge_category_image">${cavo.categoryName}</li>
+            </c:when>
+            
+            <c:when test="${cavo.categoryCode == 8}">
+            <li class="challenge_category_item" data-category_code="8"><img src="https://images.munto.kr/munto-web/icon_category_blind-date.svg" class="challenge_category_image">${cavo.categoryName}</li>
+            </c:when>
 
-			</c:choose>
-		</c:forEach>
-	</ul>
-		
-		<div id="chal_none">
+         </c:choose>
+      </c:forEach>
+   </ul>
+      
+      <div id="chal_none">
         
         </div>
-		
+      
         
-		<div class="All_content__card__a " id="All_content__card__a" style="background-color: #f4f4f4">
-		<div class="All_content__card__b" >
-		<div class="All_content__card__c" style="background-color: #f4f4f4">
-		<div class="All_content__card__d" id="All_content__card__d" >
-		</div>
-		</div>
-		</div>
-		</div>
-		
-		
-		
-    </c:if>     	 
-      	
+      <div class="All_content__card__a " id="All_content__card__a" style="background-color: #f4f4f4">
+      <div class="All_content__card__b" >
+      <div class="All_content__card__c" style="background-color: #f4f4f4">
+      <div class="All_content__card__d" id="All_content__card__d" >
+      </div>
+      </div>
+      </div>
+      </div>
+      
+      
+      
+    </c:if>         
+         
 
  
 
