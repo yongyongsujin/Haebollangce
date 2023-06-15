@@ -6,6 +6,7 @@
 <% String ctxPath = request.getContextPath();
 	// /challenge
 %>
+
     
     <!-- Font Awesome 5 Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
@@ -107,7 +108,7 @@
 	
 	.Main_content_title {
 		font-family: Pretendard;
-		width: fit-content;
+		width: 90%;
 	    font-style: normal;
 	    font-weight: 600;
 	    font-size: 35px;
@@ -327,11 +328,22 @@
 
 <script type="text/javascript">
 
-	function participate() {
+		function participate() { // 참가하기 클릭시 
+			
+			if("${userid}" != "") {
+				location.href='<%= ctxPath%>/challenge/join?challenge_code="${challengedto.challengeCode}"';
+			}
+			else {
+				location.href='<%= ctxPath%>/user/login';
+			}
+		}
 		
-		location.href='<%= ctxPath%>/challenge/join?challenge_code='+${challengedto.challengeCode};
+		function challdel() {
+		      
+		      location.href='<%= ctxPath%>/challenge/challengedel?challengeCode='+${challengedto.challengeCode};
+		      
+		} 
 		
-	}
 
 </script>
 
@@ -347,7 +359,19 @@
 						</a>
 						<div class="Host_name">${challengedto.fkUserid}</div>
 					</div>
-					<div class="Main_content_title">${challengedto.challengeName}</div>
+					<div class="Main_content_title">${challengedto.challengeName}
+						<c:if test="${likecount != 1}">
+						<i id="not_like" class="far fa-bookmark" data-likeyn="${likecount}" style="float: right; color: #db4d4d; cursor: pointer;" onclick="likeadd('${challengedto.challengeCode}', 'not_like')"></i>
+						<i id="like" class="fas fa-bookmark" data-likeyn="${likecount}" style="float: right; color: #db4d4d; cursor: pointer; display: none;" onclick="likeadd('${challengedto.challengeCode}', 'like')"></i>
+						</c:if>
+						
+						<c:if test="${likecount == 1}">
+						<i id="like" class="fas fa-bookmark" data-likeyn="${likecount}" style="float: right; color: #db4d4d; cursor: pointer;" onclick="likeadd('${challengedto.challengeCode}', 'like')"></i>
+						<i id="not_like" class="far fa-bookmark" data-likeyn="${likecount}" style="float: right; color: #db4d4d; cursor: pointer; display: none;" onclick="likeadd('${challengedto.challengeCode}', 'not_like')"></i>
+						</c:if>
+						
+					</div>
+					
 					<div class="challenge_frequency">${challengedto.frequency}</div>
 					<div class="Info_notification__detail">
 						<div class="Info_memberCount">
@@ -356,7 +380,9 @@
 					</div>
 				</div>
 				<div class="edit_delete"  style="float: right; width:95%;">
-						<button type="button" style="float: right;">삭제</button>
+					<c:if test="${userid == challengedto.fkUserid && challengedto.checkDate > 0}">
+						 <i class="fa-regular fa-trash-can btn btnDelete" style="color:gray; float: right;" onclick="challdel()">&nbsp;챌린지 삭제하기</i>
+					</c:if>	
 				</div>
 			</div>
 			<div class="Commenter_introduce">
@@ -421,7 +447,10 @@
 				<div class="Info_startDate_info">&nbsp;챌린지 기간 : ${challengedto.startDate} ~ ${challengedto.enddate} 까지</div>
 				</div>
 		</div>
-		
+		<div>
+			<input type="hidden" id="userid" value="${userid}">
+			<input type="hidden" id="challengeCode" value="${challengedto.challengeCode}">
+		</div>
 		<div class="RecommendSwipe_template">
 		
 		
@@ -431,13 +460,111 @@
 		<div class="Banner_baner">
 		
 			<div class="banner_content">
-				<button class="challenge_join" type="button" onclick="participate()">챌린지 참가</button>
+				<c:if test="${userid == '' || challengedto.checkJoinUser != 1}">
+					<button class="challenge_join" type="button" onclick="participate()">챌린지 참가</button>
+				</c:if>
+				
+				<c:if test="${userid != '' && challengedto.checkJoinUser != 0}">
+					<button class="challenge_join" type="button" onclick="location.href='<%=ctxPath%>/challenge/certify?challenge_code=${challengedto.challengeCode}'">챌린지 인증하기</button>
+				</c:if>
 			</div>
-			<span>
-			<i class="fa-regular fa-trash-can btn btnDelete" style="color:gray;" onclick="javascript:location.href='<%= ctxPath%>/challenge/challengedel?challengeCode=${challengedto.challengeCode}'">&nbsp;글 삭제하기</i>
-			</span>
-			
+
 		</div>	
 	</div>
   </div>
-</div>    
+</div>   
+
+<script>
+
+	//전역 변수로 선택된 아이콘을 저장할 변수 선언
+	let selectedIcon = "";
+	
+	function likeadd(challengeCode, iconId) {
+		
+		  selectedIcon = document.getElementById(iconId); // like / not_like
+		  var otherIcon = (iconId === "like") ? document.getElementById("not_like") : document.getElementById("like");
+		  
+		  // 선택된 아이콘에 대한 처리 로직 작성
+		  if (selectedIcon.style.display === "none") {
+		    // 선택된 아이콘이 숨겨져 있는 경우
+		    // 선택된 아이콘을 보이도록 설정하고, 다른 아이콘을 숨깁니다.
+		    selectedIcon.style.display = "inline";
+		    otherIcon.style.display = "none";
+		  } else {
+		    // 선택된 아이콘이 보이는 경우
+		    // 선택된 아이콘을 숨기고, 다른 아이콘을 보이도록 설정합니다.
+		    selectedIcon.style.display = "none";
+		    otherIcon.style.display = "inline";
+		  }
+		  
+		  /* var data = document.getElementById('like');*/
+		  
+		  
+		  /* likeyn = data.dataset.likeyn; */
+		  
+		  console.log(selectedIcon);
+		  
+		}
+	
+	window.onbeforeunload = function() {
+		  // 아이콘 상태에 따라 서버에 AJAX 요청을 보내고 DB 작업을 처리하는 로직 작성
+		  /* var likeIcon = document.getElementById('like');
+		  var notLikeIcon = document.getElementById('not_like');
+		   */
+		  let likeyn = "";
+		  
+		  likeyn = ${likecount}; // DB에 있는 like값 (있으면 1, 없으면 0)
+	      console.log(likeyn); 
+		   
+		  if(selectedIcon == "") {
+			  // 아무것도 안하면 그냥 리턴
+			  return;
+		  } 
+		  else {
+				if ( (likeyn == 1 && selectedIcon.id == "not_like") ||
+					 (likeyn == 0 && selectedIcon.id == "like") ) {
+					return;
+				}
+				else if ( ( selectedIcon.id == "not_like" ) ) {
+					// insert 로 가기
+					
+					$.ajax({
+						url:"<%= ctxPath%>/challenge/challengelikeadd",
+						data:{"userid":"${userid}",
+							  "challengeCode":"${challengedto.challengeCode}"},
+					    type:"post",
+		  	    			dataType:"json",
+		  	    			success:function(json){
+		  	    				console.log("북마크 변경 완료");
+		  	    			},
+					    error: function(request, status, error){
+		             		alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+		          	    }	  
+					});
+					
+				}
+				else if ( (selectedIcon.id == "like") ) {
+					// delete 로 가기
+					$.ajax({
+						url:"<%= ctxPath%>/challenge/likedelete",
+						data:{"userid":"${userid}",
+							  "challengeCode":"${challengedto.challengeCode}"},
+					    type:"post",
+		  	    			dataType:"json",
+		  	    			success:function(json){
+		  	    				console.log("북마크 변경 완료");
+		  	    			},
+					    error: function(request, status, error){
+		             		alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+		          	    }	  
+					});
+				}
+			  
+		  }
+	};
+	
+	
+	
+	
+
+</script> 

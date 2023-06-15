@@ -250,7 +250,7 @@
 	         }
 	         
 	         
-	         if (confirm("챌린지 등록시 인증관련 사진은 수정이 불가합니다. 정말로 등록하시겠습니까?")) {
+	         if (confirm("챌린지 등록시 수정이 불가합니다. 정말로 등록하시겠습니까?")) {
 	             const frm = document.addFrm;
 	             frm.method = "POST";
 	             frm.action = "<%= ctxPath %>/challenge/addEnd";
@@ -275,8 +275,7 @@
 		    	<tr>
 	        		<th>성명</th>
 	         	<td>
-	            	<input type="text" name="fkUserid" />
-	           <!--  	<input type="hidden" name="fk_userid" value="${sessionScope.loginuser.userid}" readonly/> -->
+	            	<input type="text" name="fkUserid" value="${userid}" readonly/>
 	         	</td>
 	      	</tr>
 	      	

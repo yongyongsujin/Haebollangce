@@ -29,35 +29,45 @@
 
 	<select id="getview" parameterType="HashMap" resultType="com.sist.haebollangce.challenge.dto.ChallengeDTO">
 		select C.challenge_code, 
-			   fk_category_code, 
-			   G.category_name as category_name, 
-			   challenge_name, 
-			   content, 
-			   C.regDate,
-		       challenge_exp, 
-		       member_count, 
-		       thumbnail, 
-		       fk_freq_type, 
-		       F.frequency, 
-		       fk_during_type, 
-		       D.set_date,
-		       to_char(startDate, 'yyyy-mm-dd') as startdate, 
-		       C.fk_userid,
-		       to_char(hour_start, 'hh24:mi') as hour_start, 
-		       to_char(hour_end, 'hh24:mi') as hour_end,
-		       success_img, 
-		       fail_img, 
-		       example,
-		       startdate + (to_number(fk_during_type) * 7) as enddate,
-		       U.profile_pic
-		from tbl_challenge C 
-		join tbl_category G             on G.category_code = C.fk_category_code
-		join tbl_user U				    on C.fk_userid = U.userid
-		join tbl_challenge_during D     on D.during_type = C.fk_during_type
-		join tbl_certify_freq F         on F.freq_type = C.fk_freq_type
-		join tbl_certify_hour H         on H.challenge_code = C.challenge_code
-		left join tbl_certify_exam E    on E.challenge_code = C.challenge_code
-		where C.challenge_code = #{challengeCode}
+	    fk_category_code, 
+	    G.category_name as category_name, 
+	    challenge_name, 
+	    content, 
+	    C.regDate,
+	    challenge_exp, 
+	    member_count, 
+	    thumbnail, 
+	    fk_freq_type, 
+	    F.frequency, 
+	    fk_during_type, 
+	    D.set_date,
+	    to_char(startDate, 'yyyy-mm-dd') as startdate, 
+	    C.fk_userid,
+	    to_char(hour_start, 'hh24:mi') as hour_start, 
+	    to_char(hour_end, 'hh24:mi') as hour_end,
+	    success_img, 
+	    fail_img, 
+	    example,
+	    startdate + (to_number(fk_during_type) * 7) as enddate,
+	    U.profile_pic,
+	    (
+	    		select count(*)
+	    		from tbl_challenge_info 
+	    		where fk_userid = #{userid} and fk_challenge_code = #{challengeCode}
+	    ) as checkJoinUser,
+	    (
+	    		select trunc((startDate - sysdate),2)
+			from tbl_challenge
+			where challenge_code = #{challengeCode} 
+	    ) as checkDate
+	from tbl_challenge C 
+	join tbl_category G             on G.category_code = C.fk_category_code
+	join tbl_user U                on C.fk_userid = U.userid
+	join tbl_challenge_during D     on D.during_type = C.fk_during_type
+	join tbl_certify_freq F         on F.freq_type = C.fk_freq_type
+	join tbl_certify_hour H         on H.challenge_code = C.challenge_code
+	left join tbl_certify_exam E    on E.challenge_code = C.challenge_code
+	where C.challenge_code = #{challengeCode} 
 	</select>
 	
 	<!-- 챌린지 개설 -->
@@ -75,6 +85,24 @@
 		INSERT INTO tbl_certify_exam(challenge_code, success_img, fail_img, example)
 		VALUES (challenge_code_seq.currval, #{successImg}, #{failImg}, #{example})
 	</insert>
+	
+	<!-- 좋아요 되어 있는지 안 되어 있는지 확인 -->
+	<select id="checkLike" parameterType="HashMap" resultType="int">
+		SELECT COUNT(*) FROM tbl_like 
+		WHERE fk_userid = #{userid} AND fk_challenge_code=#{challengeCode}
+	</select>
+	
+	<!-- 챌린지 북마크(관심)등록 -->
+	<insert id="challengelikeadd" parameterType="com.sist.haebollangce.challenge.dto.ChallengeDTO">
+		insert into tbl_like(like_code, fk_userid, fk_challenge_code)
+		values (SEQ_TBL_LIKE_LIKE_CODE.nextval, #{userid}, #{challengeCode})
+	</insert>
+	
+	<!-- 챌린지 북마크(관심)해제 -->
+	<delete id="likedelete" parameterType="com.sist.haebollangce.challenge.dto.ChallengeDTO">
+		delete from tbl_like
+		where fk_userid = #{userid} AND fk_challenge_code = to_number(#{challengeCode})
+	</delete>
 	
 	
 
