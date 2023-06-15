@@ -117,7 +117,7 @@ font-weight: 400;
 
 .challenge_category {
  list-style-type: none;
- width: auto;
+ width: 100%;
  height: 84px;
  display: flex;
  background-color: #fefefe;
@@ -214,7 +214,7 @@ font-weight: 400;
 }
 
 .All_content__card__c {
-  width: 1536px;
+  width: 100%;
   margin-right: 100px;
   height: auto;
   display: flex;
@@ -306,10 +306,17 @@ a:hover { text-decoration: none;}
 }
 
 .ChallengeCard_info__describe {
+
+  font-size: 15px;
+    line-height: 24px;
+    letter-spacing: -.4px;
+    font-weight: 600;
+
   font-size: 20px;
     line-height: 24px;
     letter-spacing: -.4px;
     font-weight: 400;
+
     color: #999696;
     display: flex;
     margin-bottom: 20px;
@@ -359,11 +366,18 @@ a:hover { text-decoration: none;}
 
 .ChallengeCard_participant_image {
   font-size: 16px;
+
+    font-family: Pretendard;
+    font-weight: 600;
+    letter-spacing: -.4px;
+    color: black;
+
     line-height: 19px;
     font-family: Pretendard;
     font-weight: 400;
     letter-spacing: -.4px;
     color: #999696;
+
   
   
 }
@@ -393,7 +407,7 @@ a:hover { text-decoration: none;}
   font-size: 16px;
   line-height: 19px;
   font-family: Pretendard;
-  font-weight: 400;
+  font-weight: 600;
   letter-spacing: -.4px;
   color: #999696;
 }
@@ -507,17 +521,18 @@ a:hover { text-decoration: none;}
 
 
   $(document).ready(function() {
-	
 	  
+
+
 	  
 	  
 	    
 		
 	  
+
 	    window.onload = function() {
 		  fetchCategories(); // 전체 카테고리를 가져오기 위해 categoryCode를 null로 설정합니다.
 		};
-
 
 		function fetchCategories(categoryCode) {
 			  
@@ -557,9 +572,15 @@ a:hover { text-decoration: none;}
 		        	                     '<div class="ChallengeCard_info__describe">' +
 		        	                     '챌린지 ·&nbsp;<img alt="info-calender" class="ChallengeCard_info_calender" src="/images/캘린더.png"/>' +
 		        	                     '<div style="font-size:18px;">' + month + '.' + day + '('+dayString+')</div> '+ '&nbsp;· '+ item.setDate +   // 월과 일을 화면에 표시합니다.
+
+		        	                     '<img alt="info-check" src="https://images.munto.kr/munto-web/ic_action_check_off_24px.svg?s=48x48" class="ChallengeCard_info_check"/>' +
+		        	                     '<div>' + item.frequency + '</div>' +
+		        	                    
+
 		        	                     '<img alt="info-check" src="https://images.munto.kr/munto-web/ic_action_check_off_24px.svg?s=48x48" class="ChallengeCard_info_check"/>주' +
 		        	                     '<div>' + item.fkDuringType + '</div>' +
 		        	                     '회' +
+
 		        	                     '</div>' +
 		        	                     '<div class="ChallengeCard_info_participants">' +
 		        	                     '<div class="ChallengeCard_participant_image">'+'개설자ID&nbsp; : ' + item.fkUserid + '</div>' +	        	                      
@@ -606,7 +627,7 @@ a:hover { text-decoration: none;}
 		        	
 		          
 		          
-		          const saDefaultMargin = 0;
+		          const saDefaultMargin = 500;
 		          let saTriggerMargin = 0;
 		          let saTriggerHeight = 0;
 		          const saElementList = document.querySelectorAll('.sa');
@@ -781,9 +802,9 @@ a:hover { text-decoration: none;}
 	        	                      '<div class="ChallengeCard_info__describe">' +
 	        	                      '챌린지 ·&nbsp;<img alt="info-calender" class="ChallengeCard_info_calender" src="/images/캘린더.png"/>' +
 	        	                      '<div style="font-size:18px;">' + month + '.' + day + '('+dayString+')</div> '+ '&nbsp;· '+ item.setDate +   // 월과 일을 화면에 표시합니다.
-	        	                      '<img alt="info-check" src="https://images.munto.kr/munto-web/ic_action_check_off_24px.svg?s=48x48" class="ChallengeCard_info_check"/>주' +
-	        	                      '<div>' + item.fkDuringType + '</div>' +
-	        	                      '회' +
+	        	                      '<img alt="info-check" src="https://images.munto.kr/munto-web/ic_action_check_off_24px.svg?s=48x48" class="ChallengeCard_info_check"/>' +
+	        	                      '<div>' + item.frequency + '</div>' +
+	        	                      
 	        	                      '</div>' +
 	        	                      '<div class="ChallengeCard_info_participants">' +
 	        	                      '<div class="ChallengeCard_participant_image">'+'개설자ID&nbsp; : ' + item.fkUserid + '</div>' +	        	                      
@@ -926,7 +947,11 @@ a:hover { text-decoration: none;}
   
   <div class="start_challenge" type="button" style="font-weight: bold; font-size: 20px; margin-bottom: 30px; ">
   						
+
+	<a href="<%= ctxPath%>/challenge/add_challenge" style="color: inherit;">챌린지 개설하기</a>
+
 	<a href="<%= ctxPath%>" style="color: inherit;">챌린지 개설하기</a>
+
     	    
   </div>
 		        	   

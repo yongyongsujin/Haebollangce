@@ -17,11 +17,21 @@
 	  b.member_count,
 	  b.fk_category_code,
 	  a.category_code AS category_code,
+<<<<<<< HEAD
+	  b.challenge_code AS challengeCode,
+	  f.frequency AS frequency
+	  FROM
+	  tbl_challenge b
+	  JOIN tbl_category a ON b.fk_category_code = a.category_code
+	  JOIN tbl_challenge_during c ON b.fk_during_type = c.during_type
+	  JOIN tbl_certify_freq f ON b.fk_freq_type = f.freq_type
+=======
 	  b.challenge_code AS challengeCode
 	  FROM
 	  tbl_challenge b
 	  JOIN tbl_category a ON b.fk_category_code = a.category_code
 	  JOIN tbl_challenge_during c ON b.fk_during_type = c.during_type
+>>>>>>> refs/heads/main
 	  
 	  
 	  
@@ -35,6 +45,26 @@
 
 	<select id="challengelist" resultType="com.sist.haebollangce.challenge.dao.challengeVO">
 	  SELECT
+<<<<<<< HEAD
+    b.fk_userid AS fkuserid,
+    a.category_name AS category_name,
+    b.challenge_name AS challengeName,
+    b.thumbnail AS thumbnail,
+    b.content,
+    b.startDate,
+    b.fk_during_type,
+    c.set_date,
+    b.member_count,
+    b.fk_category_code,
+    a.category_code AS category_code,
+    b.challenge_code AS challenge_code,
+    f.frequency AS frequency
+	FROM
+    tbl_challenge b
+    JOIN tbl_category a ON b.fk_category_code = a.category_code
+    JOIN tbl_challenge_during c ON b.fk_during_type = c.during_type
+    JOIN tbl_certify_freq f ON b.fk_freq_type = f.freq_type
+=======
 	  b.fk_userid AS fkuserid,
 	  a.category_name AS category_name,
 	  b.challenge_name AS challengeName,
@@ -51,6 +81,7 @@
 	  tbl_challenge b
 	  JOIN tbl_category a ON b.fk_category_code = a.category_code
 	  JOIN tbl_challenge_during c ON b.fk_during_type = c.during_type
+>>>>>>> refs/heads/main
 	<where>
 	  <if test="category_code != null and category_name != '전체'">
 	    AND a.category_code = #{categoryCode}
@@ -72,7 +103,12 @@
 	  b.member_count,
 	  b.fk_category_code,
 	  a.category_code AS category_code,
+<<<<<<< HEAD
+	  b.challenge_code AS challengeCode,
+	  b.fk_userid AS fkUserid
+=======
 	  b.challenge_code AS challengeCode
+>>>>>>> refs/heads/main
 		FROM
 			  tbl_user m
 		JOIN
@@ -92,9 +128,16 @@
 	</delete>
 	
 	<select id="index_loungeList" resultType="com.sist.haebollangce.lounge.model.LoungeBoardDTO">
+<<<<<<< HEAD
+		select fk_userid, content, subject, name, readcount, likeCount, commentCount, readCount, thumbnail, seq
+		from TBL_LOUNGE_BOARD
+	</select>
+	
+=======
 		select fk_userid, content, subject, name, readcount, likeCount, commentCount, readCount, thumbnail
 		from TBL_LOUNGE_BOARD
 	</select>
+>>>>>>> refs/heads/main
 	
 	
 </mapper>
