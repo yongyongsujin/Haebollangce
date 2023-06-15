@@ -91,7 +91,7 @@
 							 + "			</div>"
 							 + "		</div>"
 							 + "	<div class='mt-3' onclick='goView(" + json[i].seq + ")' style='cursor:pointer;'>"
-							 + "		<img style='width:100%;' src='<%= ctxPath%>/images/" + json[i].filename + "' />"
+							 + "		<img style='width:100%;' src='<%= ctxPath%>/images/lgthumFiles/" + json[i].thumbnail + "' />"
 							 + "		<div class='mt-2'>"
 							 + "			<div class='lgcontent'>" + json[i].subject + "</div>"
 							 + "			<div class='mt-3'>"

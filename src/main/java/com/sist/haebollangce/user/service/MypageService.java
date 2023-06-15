@@ -574,7 +574,7 @@ public class MypageService implements InterMypageService {
 				jsonObj.addProperty("commentCount", (String) map.get("commentCount"));
 				jsonObj.addProperty("readCount", (String) map.get("readCount"));
 				jsonObj.addProperty("profile_pic", (String) map.get("profile_pic"));
-				jsonObj.addProperty("filename", (String) map.get("filename"));
+				jsonObj.addProperty("thumbnail", (String) map.get("thumbnail"));
 				
 				jsonArr.add(jsonObj);
 			}

@@ -1,5 +1,6 @@
 package com.sist.haebollangce.config;
 
+import com.sist.haebollangce.config.token.exception.LoginAuthenticationEntryPoint;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -27,7 +28,8 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 public class SecurityConfig {
 
     private final AuthenticationManagerConfig authenticationManagerConfig;
-    private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
+//    private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
+    private final LoginAuthenticationEntryPoint loginAuthenticationEntryPoint;
     private final PrincipalOauth2UserService principalOauth2UserService;
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -46,8 +48,8 @@ public class SecurityConfig {
                 .authorizeRequests()
                     .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
 //                    .mvcMatchers("/api/v1/user/**").access("hasAnyRole('ADMIN', 'MANAGER', 'USER')")
-                    .mvcMatchers("/manager/**").access("hasAnyRole('ADMIN', 'MANAGER')")
-                    .mvcMatchers("/admin/**").access("hasRole('ADMIN')")
+//                    .mvcMatchers("/manager/**").access("hasAnyRole('ADMIN', 'MANAGER')")
+//                    .mvcMatchers("/admin/**").access("hasRole('ADMIN')")
                     .mvcMatchers("/mypage/**",
                                  "/challenge/add_challenge","/challenge/join","/challenge/joinEnd",
                                  "/challenge/certifyList","/challenge/certify","/challenge/certifyMyInfo","/challenge/userReport",
@@ -55,7 +57,8 @@ public class SecurityConfig {
                     .anyRequest().permitAll()
                 .and()
                 .exceptionHandling()
-                    .authenticationEntryPoint(customAuthenticationEntryPoint)
+                    .authenticationEntryPoint(loginAuthenticationEntryPoint)
+//                    .authenticationEntryPoint(customAuthenticationEntryPoint)
                 .and()
                 .oauth2Login()
                     .loginPage("/user/form-login")

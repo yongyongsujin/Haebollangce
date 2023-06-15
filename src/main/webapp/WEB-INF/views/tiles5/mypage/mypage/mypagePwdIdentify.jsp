@@ -95,13 +95,13 @@
 <script type="text/javascript">
 
 	$(document).ready(function(){
-		/*
+		
 		$("input#input_pwd").bind("keydown", function(e){
 			if(e.keyCode == 13) {
 				go_identify();
 			}
 		});
-		*/
+		
 	});
 	
 	/* 패스워드 확인 메소드 시작 */

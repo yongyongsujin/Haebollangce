@@ -41,11 +41,13 @@ public class EntryPointApiController {
         String priorUrl = request.getHeader("custom-from");
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.SET_COOKIE, String.valueOf(cookie));
-
+        System.out.println("이전 페이지 찾기 "+priorUrl);
         String encodedPriorUrl = URLEncoder.encode(priorUrl, "utf-8");
         String encodedDefaultUrl = URLEncoder.encode("/challenge/main", "utf-8");
         if(priorUrl.length() > 0) {
             headers.add(HttpHeaders.LOCATION, "/user/login-process?redirect="+encodedPriorUrl+"&xduTvAAQVxq=true");
+        } else if("http://localhost:7070/user/login".equals(priorUrl)) {
+            headers.add(HttpHeaders.LOCATION, "/user/login-process?redirect="+encodedDefaultUrl+"&xduTvAAQVxq=true");
         } else {
             headers.add(HttpHeaders.LOCATION, "/user/login-process?redirect="+encodedDefaultUrl+"&xduTvAAQVxq=true");
         }
@@ -73,7 +75,7 @@ public class EntryPointApiController {
         service.formSignup(signupUser);
 
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Location", "/user/login");
+        headers.add("Location", "/challenge/main");
 
         return new ResponseEntity(headers,HttpStatus.FOUND);
     }
