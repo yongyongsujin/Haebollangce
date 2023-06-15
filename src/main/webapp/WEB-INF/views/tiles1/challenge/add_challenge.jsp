@@ -273,7 +273,7 @@
 		<form name="addFrm" enctype="multipart/form-data">
 			<table style="width: 1200px; table-layout:fixed;" class="table table-bordered" >
 		    	<tr>
-	        		<th>성명</th>
+	        		<th>아이디</th>
 	         	<td>
 	            	<input type="text" name="fkUserid" value="${userid}" readonly/>
 	         	</td>

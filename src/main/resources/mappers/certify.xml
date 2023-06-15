@@ -154,11 +154,14 @@
 	<select id="getMyCertifyHistory" parameterType="HashMap" resultType="com.sist.haebollangce.challenge.dto.CertifyDTO">
 		select certify_no, fk_userid, fk_challenge_code, certify_time, certify_img
 		from tbl_certify_history
-		where 
-		<if test="fk_userid != ''">
-			fk_userid = #{fk_userid} and 
-		</if>
-		fk_challenge_code = #{challenge_code}
+		where fk_userid = #{fk_userid} and fk_challenge_code = #{challenge_code}
+		order by certify_no desc
+	</select>
+	
+	<select id="getAllCertifyHistory" parameterType="HashMap" resultType="com.sist.haebollangce.challenge.dto.CertifyDTO">
+		select certify_no, fk_userid, fk_challenge_code, certify_time, certify_img
+		from tbl_certify_history
+		where fk_userid != #{fk_userid} and fk_challenge_code = #{challenge_code}
 		order by certify_no desc
 	</select>
 	

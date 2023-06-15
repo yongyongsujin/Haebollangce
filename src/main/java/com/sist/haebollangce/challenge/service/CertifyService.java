@@ -574,8 +574,7 @@ public class CertifyService implements InterCertifyService {
     	List<CertifyDTO> myCertifyHistory = dao.getMyCertifyHistory(paraMap);
     	// 내 인증기록 가져오기 (인증샷)
     	
-    	paraMap.put("fk_userid", "");
-    	List<CertifyDTO> allCertifyHistory = dao.getMyCertifyHistory(paraMap);
+    	List<CertifyDTO> allCertifyHistory = dao.getAllCertifyHistory(paraMap);
     	// 모든유저의 인증기록 가져오기 (인증샷)
 
     	Map<String, String> userAchieveCharts = dao.getUserAchieveCharts(challenge_code);

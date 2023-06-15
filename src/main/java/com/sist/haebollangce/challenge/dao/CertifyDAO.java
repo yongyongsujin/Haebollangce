@@ -159,4 +159,11 @@ public class CertifyDAO implements InterCertifyDAO {
 		return resultMap;
 	}
 
+	// 모든유저의 인증기록 가져오기 (인증샷)
+	@Override
+	public List<CertifyDTO> getAllCertifyHistory(Map<String, String> paraMap) {
+		List<CertifyDTO> allCertifyHistory = mapper.getAllCertifyHistory(paraMap);
+		return allCertifyHistory;
+	}
+
 }
