@@ -130,10 +130,23 @@
 				return;
 			}
 			
-			const frm = document.certifyform;
-			frm.method = "post";
-			frm.action = "<%= ctxPath%>/challenge/certify";
-			frm.submit();
+			Swal.fire({
+				icon: "question",
+				title: "정말로 인증하시겠습니까 ?",
+				html: "<div style='font-weight: bold;'>하루에 한번만 인증 가능하며, 완료된 인증은 철회할 수 없습니다.</div>",
+				confirmButtonColor: "#EB534C",
+				confirmButtonText: "확인",
+				showCancelButton: true,
+				cancelButtonText: '취소',
+				cancelButtonColor: '#999999'
+			}).then(function(result){
+				if(result.isConfirmed){
+					const frm = document.certifyform;
+					frm.method = "post";
+					frm.action = "<%= ctxPath%>/challenge/certify";
+					frm.submit();
+				}
+			})
 			
 		});
 		
@@ -144,7 +157,7 @@
 <div class="container-fluid" style="background-color: #f4f4f4;">
 <div class="container" style="border-radius: 20px; background-color: white; text-align: center;">
 	<br>
-	<h3 style="font-weight: bold;">인증하기</h3>
+	<h3 style="font-weight: bold;"><span style="line-height: 50px; height: 50px; border-radius: 8px; width:250px; display: inline-block; background-color: #EB485C; color: white;">인증하기</span></h3>
 	<br>
 	<div style="height: 783px; justify-content: center;">
 		<div id="img_exam" class="mb-5">

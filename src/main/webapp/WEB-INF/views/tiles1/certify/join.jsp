@@ -333,7 +333,7 @@
 <div class="container-fluid" style="background-color: #f4f4f4;">
 <div class="container pb-5" style="border-radius: 20px; background-color: white; padding: 0; text-align: center;"> 
 	<br>
-	<h3 style="font-weight: bold;">챌린지 참가하기</h3>
+	<h3 class="py-3" style="font-weight: bold;"><span style="box-shadow: 0px 0px 10px 1px gray; line-height: 50px; height: 50px; border-radius: 8px; width:250px; display: inline-block; background-color: #EB534C; color: white;">챌린지 참가하기</span></h3>
 	<br>
 	<div id="challenge_join_header" class="mx-5" style="height: 250px;">
 		<div class="join_body" style="box-shadow: 0px 0px 10px 1px gray; display: flex; justify-content: center; align-items:center; width: 100%; height: 100%; border-radius: 20px; font-size: 16pt;">

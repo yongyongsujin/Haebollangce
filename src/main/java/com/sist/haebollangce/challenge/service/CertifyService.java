@@ -417,7 +417,7 @@ public class CertifyService implements InterCertifyService {
 
 	
 	// 매일 챌린지 정산하는 스케줄러
-	@Scheduled(cron="0 30 12 * * *") // 매일 00시 30분에 정산시작 cron="0 30 00 * * *"
+	@Scheduled(cron="0 30 0 * * *") // 매일 00시 30분에 정산시작 cron="0 30 00 * * *"
 	public void rewardCalculate() {
 		// 스케줄러로 사용되어지는 메소드는 반드시 파라미터는 없어야 한다.
 	      
