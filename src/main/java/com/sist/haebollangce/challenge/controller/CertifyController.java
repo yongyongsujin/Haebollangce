@@ -91,7 +91,7 @@ public class CertifyController {
 			// 인증이 실패되었을 경우 - challenge_info 테이블에 달성률의 체크제약 조건 0 ~ 100 안의 숫자만 가능 
 			// 100%가 넘는 인증일 경우 종료된 챌린지이어야함
 			
-			String message = "모든 인증을 챌린지입니다.";
+			String message = "모든 인증을 완료한 챌린지입니다.";
     		String loc = mrequest.getContextPath()+"/challenge/certifyList";
     		String icon = "info";
     		
