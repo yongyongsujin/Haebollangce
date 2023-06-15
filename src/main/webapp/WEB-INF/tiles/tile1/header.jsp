@@ -262,22 +262,22 @@ String ctxPath = request.getContextPath();
 		
 		//Notification.requestPermission();
 		//new Notification("[해볼랑스 푸시알림]", {body:'게시글에 댓글과 좋아요가 달리면 알림이 울리게 하시겠습니까? :-)'});
-	
-		
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
+		document.getElementById('islogin').innerHTML=login_false;
+
+		if(isLogined === 'true') {
+			document.getElementById('islogin').innerHTML=login_true;
+			const rUrl = document.location.href.split("?");
+			// location.href = rUrl[0];
+		}
+
+		$(document).on("click", "button#logout", function () {
+			localStorage.setItem("login", null);
+		});
+
+
+
+
 
 	});
 

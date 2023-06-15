@@ -181,13 +181,21 @@
 		// 금액 키보드로 입력시 함수
 		$("input#price").on("keyup", function(e){
 			
-			const price = Number($(this).val());
+			let price = $(this).val();
+			
+			while ( price.indexOf('0') == "0" ) {
+				price = price.substring(1);
+			}
+			
+			$(this).val(price);
+			price = Number(price);
 			
 			if ( price < 0) {
 				$(this).val("10000");
 			}
 			else if ( price > 200000) { 
 				$(this).val("200000");
+				price = Number($(this).val());
 			}
 			
 			const price_list = $("p.price_choice").children();
@@ -323,7 +331,7 @@
 </script>
 
 <div class="container-fluid" style="background-color: #f4f4f4;">
-<div class="container pb-5" style="border-radius: 20px; background-color: white; width: 70% !important; padding: 0; text-align: center;"> 
+<div class="container pb-5" style="border-radius: 20px; background-color: white; padding: 0; text-align: center;"> 
 	<br>
 	<h3 style="font-weight: bold;">챌린지 참가하기</h3>
 	<br>
@@ -374,7 +382,7 @@
 				<p class="price_choice"><span class="price_list">30000</span>원</p>
 				<p class="price_choice"><span class="price_list">50000</span>원</p>
 				<p class="price_choice"><span class="price_list">100000</span>원</p>
-				<p class="price_choice"><span class="price_list">200000</span>원</p>
+				<p class="price_choice" id="price_200000"><span class="price_list">200000</span>원</p>
 			</div> 
 		</div> 
 		<div id="explain_price" class="join_body">최소 1만원 ~ 최대 20만원 (1만원 단위 가능)</div>
@@ -438,8 +446,8 @@
 </div>
 
 <form name="challenge_info">
-	<input type="text" id="userid" name="fk_userid" value="${userid}" <%-- readonly="readonly" --%>>
-	<input type="number" id="price" name="entry_fee" value="" <%-- readonly="readonly" --%>>
-	<input type="text" id="challenge_code" name="fk_challenge_code" value="${chaDTO.challengeCode}" <%-- readonly="readonly" --%>>
-	<input type="text" id="after_deposit" name="after_deposit" value="" <%-- readonly="readonly" --%>>
+	<input type="hidden" id="userid" name="fk_userid" value="${userid}" readonly="readonly">
+	<input type="hidden" id="price" name="entry_fee" value="" readonly="readonly">
+	<input type="hidden" id="challenge_code" name="fk_challenge_code" value="${chaDTO.challengeCode}" readonly="readonly">
+	<input type="hidden" id="after_deposit" name="after_deposit" value="" readonly="readonly">
 </form>

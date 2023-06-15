@@ -285,7 +285,7 @@ const imgInfo = document.querySelector('.img_info');
 
 
 <div class="container-fluid" style="background-color: #f4f4f4;">
-<div class="container pb-5" style="border-radius: 20px; width: 70% !important; background-color: white; text-align: center; font-size: 18pt;">
+<div class="container pb-5" style="border-radius: 20px; background-color: white; text-align: center; font-size: 18pt;">
 	<br>
 	<h3 style="font-weight: bold;">참가중인 챌린지 인증정보</h3>
 	<br>
