@@ -196,12 +196,12 @@
 		});
 		// 글씨 색 변화주기 끝
 		
-		<%-- 챌린지 추천하기 시작 --%>
+		<%-- 챌린지 갯수 불러오기 시작 --%>
 		$.ajax ({
 			url:"/mypage/mypage_challenging_ajax",
 			type:"GET",
 			data:{
-				"userid":"jisu",
+				"userid":"${requestScope.userid}",
 				"fk_category_code":"0"
 			},
 			dataType:"json",
@@ -238,7 +238,7 @@
 				
 				for(var i=0; i<json.length; i++) {
 					
-					if( "jisu" == json[i].fk_userid) {    // 로그인기능 만들어지면 로그인한 상대로 변경해주기
+					if( "${requestScope.userid}" == json[i].fk_userid) {    // 로그인기능 만들어지면 로그인한 상대로 변경해주기
 						fk_cnt++;
 					}
 					
@@ -251,7 +251,7 @@
 				alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
 			}
 		});
-		<%-- 챌린지 추천하기 끝 --%>
+		<%-- 챌린지 갯수 불러오기 끝 --%>
 
 		
 		
@@ -264,7 +264,7 @@
 			url:"/mypage/mypage_challenging_ajax",
 			type:"GET",
 			data:{
-				"userid":"jisu",
+				"userid":"${requestScope.userid}",
 				"fk_category_code":code
 			},
 			dataType:"json",
@@ -431,15 +431,17 @@
 						
 						let ratio = (ing_cnt/$("input#ing_cnt").val())*100;
 						
+						let roundNum = Math.round(ratio * 10) / 10;
+						
 						html = "<div class='auto'>"
 							 + "	<div class='user_level'>참여 비율</div>"
 							 + "</div>"
 							 + "<div class='col'>"
 							 + "	<div class='progress progress-sm mr-2 bar_width'>"
-							 + "		<div class='progress-bar bg-info' role='progressbar' style='width:" + ratio + "%;' aria-valuenow='50' aria-valuemin='0' aria-valuemax='100'></div>"
+							 + "		<div class='progress-bar bg-info' role='progressbar' style='width:" + roundNum + "%;' aria-valuenow='50' aria-valuemin='0' aria-valuemax='100'></div>"
 							 + "	</div>"
 							 + "</div>"
-							 + "<span>" + ratio + "%</span>";
+							 + "<span>" + roundNum + "%</span>";
 							 
 						$("div#show_challenging_ratio").html(html);
 						
@@ -472,12 +474,12 @@
 	} // end of function show_challenging(code) -----
 	
 	function show_finish(code){
-		
+		// 끝난 챌린지 보여주기
 		$.ajax ({
 			url:"/mypage/mypage_challenging_ajax",
 			type:"GET",
 			data:{
-				"userid":"jisu",
+				"userid":"${requestScope.userid}",
 				"fk_category_code":code
 			},
 			dataType:"json",
@@ -604,15 +606,17 @@
 						
 						let ratio = (fin_cnt/$("input#fin_cnt").val())*100;
 						
+						let roundNum = Math.round(ratio * 10) / 10;
+						
 						html = "<div class='auto'>"
 							 + "	<div class='user_level'>참여 비율</div>"
 							 + "</div>"
 							 + "<div class='col'>"
 							 + "	<div class='progress progress-sm mr-2 bar_width'>"
-							 + "		<div class='progress-bar bg-info' role='progressbar' style='width:" + ratio + "%;' aria-valuenow='50' aria-valuemin='0' aria-valuemax='100'></div>"
+							 + "		<div class='progress-bar bg-info' role='progressbar' style='width:" + roundNum + "%;' aria-valuenow='50' aria-valuemin='0' aria-valuemax='100'></div>"
 							 + "	</div>"
 							 + "</div>"
-							 + "<span>" + ratio + "%</span>";
+							 + "<span>" + roundNum + "%</span>";
 							 
 						$("div#show_finish_ratio").html(html); 
 						
@@ -645,12 +649,12 @@
 	} // end of function show_finish(code) -----
 	
 	function show_create(code) {
-		
+		// 개설한 챌린지 보러가기
 		$.ajax ({
 			url:"/mypage/mypage_challenging_ajax",
 			type:"GET",
 			data:{
-				"userid":"jisu",
+				"userid":"${requestScope.userid}",
 				"fk_category_code":code
 			},
 			dataType:"json",

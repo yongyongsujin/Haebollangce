@@ -61,6 +61,7 @@
 		text-align: center;
 		transition: 0.3s;
 		border-radius: 35px;
+		
 	}
 	
 	button.go_button_style:hover {
@@ -84,7 +85,7 @@
 			url: "/mypage/like_challenge_ajax",
 			type: "get",
 			data: {
-				userid:"jisu"
+				"userid":"${requestScope.userid}"
 			},
 			dataType: "json",
 			success:function(json){

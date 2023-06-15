@@ -5,7 +5,10 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+
 import com.sist.haebollangce.common.mapper.InterMypageMapper;
+import com.sist.haebollangce.user.dto.DepositDTO;
+import com.sist.haebollangce.user.dto.RewardDTO;
 import com.sist.haebollangce.user.dto.UserDTO;
 
 @Repository
@@ -24,13 +27,13 @@ public class MypageDAO implements InterMypageDAO {
 	}
 	
 	// 사용자가 보유하고 있는 예치금 알아오기
-	@Override
-	public int user_deposit(String userid) {
-
-		int user_deposit = mapper.user_deposit(userid);
-		
-		return user_deposit;
-	}
+	/*
+	 * @Override public int user_deposit(String userid) {
+	 * 
+	 * int user_deposit = mapper.user_deposit(userid);
+	 * 
+	 * return user_deposit; }
+	 */
 	
 	// 상금 전환 테이블에 전환된 내용 넣기
 	@Override
@@ -185,6 +188,15 @@ public class MypageDAO implements InterMypageDAO {
 		
 		return chart_list;
 	}
+	
+	// 상금 그래프 보여주기
+	@Override
+	public List<Map<String, String>> reward_chart(Map<String, String> paraMap) {
+		
+		List<Map<String, String>> chart_list = mapper.reward_chart(paraMap);
+		
+		return chart_list;
+	}
 		
 	// 비밀번호 확인 후 회원 정보수정 페이지 가기
 	@Override
@@ -293,13 +305,13 @@ public class MypageDAO implements InterMypageDAO {
 		return mypage_challenging_list;
 	}
 
-	// 마이페이지 홈화면 사용자 정보 불러오기
+	// 마이페이지 충전도 불러오기
 	@Override
-	public List<Map<String, String>> user_information(String userid) {
+	public int user_exp(String userid) {
 
-		List<Map<String, String>> information_list = mapper.user_information(userid);
+		int exp = mapper.user_exp(userid);
 		
-		return information_list;
+		return exp;
 	}
 
 	// 진행중인 챌린지 중 오늘 하루 인증했는지 여부
@@ -346,6 +358,38 @@ public class MypageDAO implements InterMypageDAO {
 		// System.out.println("dao userid : " + paraMap.get("month"));
 		
 		return category_list;
+	}
+
+	@Override
+	public int user_deposit(Map<String, String> paraMap) {
+		
+		int user_deposit = mapper.user_deposit(paraMap);
+		
+		return user_deposit;
+	}
+
+	@Override
+	public RewardDTO all_reward(Map<String, String> paraMap) {
+		
+		RewardDTO rdto = mapper.all_reward(paraMap);
+		
+		return rdto;
+	}
+
+	// 유저 보유 예치금
+	@Override
+	public DepositDTO depo_dto(Map<String, String> paraMap) {
+
+		DepositDTO depo_dto = mapper.depo_dto(paraMap);
+		
+		return depo_dto;
+	}
+
+	@Override
+	public void modifyPw(UserDTO udto) {
+
+		mapper.modifyPw(udto);
+		
 	}
 	
 }

@@ -273,6 +273,8 @@
 						
 						for(var i=0; i<json.length; i++) {
 						
+							let purchase_price = json[i].purchase_price.toLocaleString('en');
+							
 							if(date != json[i].purchase_date.substring(0,10)) {
 								// 시,분,초가 다를 때 시,분,초를 뺀 날짜를 입력해준다.
 								html += "<tr class='table_position'>"
@@ -295,7 +297,7 @@
 								html += "	<td class='td_style'>취소</td>"
 									 +	"</tr>"
 									 +  "<tr>"
-									 +	"	<td class='red_font td_style'>" + json[i].purchase_price + "</td>"
+									 +	"	<td class='red_font td_style'>" + purchase_price + "</td>"
 									 +	"</tr>";
 							}
 							html += "</tr>";
@@ -320,7 +322,10 @@
 					let date = "";
 					
 					if(json.length > 0) {
+						
 						for(var i=0; i<json.length; i++) {
+							
+							let entry_fee = json[i].entry_fee.toLocaleString('en');
 							
 							if(date != json[i].startdate.substring(0,10)) {
 								html += "<tr class='table_position'>"
@@ -334,7 +339,7 @@
 								 +	"</tr>"
 								 +  "<tr>"
 								 +	"	<td class='blue_font td_style'>" + json[i].challenge_name + " 챌린지</td>"
-								 +	"	<td class='blue_font td_style'>" + json[i].entry_fee + "</td>"
+								 +	"	<td class='blue_font td_style'>" + entry_fee + "</td>"
 								 +	"</tr>";
 							
 							date = json[i].startdate.substring(0,10);
@@ -358,6 +363,8 @@
 						
 						for(var i=0; i<json.length; i++) {
 							
+							let reward = json[i].reward.toLocaleString('en');
+							
 							if(date != json[i].reward_date.substring(0,10)) {
 								html += "<tr class='table_position'>"
 									 + "	<td colspan='3'>" + json[i].reward_date.substring(0,10) + "</td>"
@@ -370,7 +377,7 @@
 								 +	"</tr>"
 								 +  "<tr>"
 								 +	"	<td class='blue_font td_style'>" + json[i].challenge_name + " 챌린지</td>"
-								 +	"	<td class='blue_font td_style'>" + json[i].reward + "</td>"
+								 +	"	<td class='blue_font td_style'>" + reward + "</td>"
 								 +	"</tr>";
 							
 							date = json[i].reward_date.substring(0,10);
@@ -394,6 +401,8 @@
 						
 						for(var i=0; i<json.length; i++) {
 							
+							let convert_reward = json[i].convert_reward.toLocaleString('en');
+							
 							if(date != json[i].convert_date.substring(0,10)) {
 								html += "<tr class='table_position'>"
 									 + "	<td colspan='3'>" + json[i].convert_date.substring(0,10) + "</td>"
@@ -405,7 +414,7 @@
 								 + "	<td class='td_style'>환전</td>"
 								 +	"</tr>"
 								 +  "<tr>"
-								 +	"	<td class='blue_font td_style'>" + json[i].convert_reward + "</td>"
+								 +	"	<td class='blue_font td_style'>" + convert_reward + "</td>"
 								 +	"</tr>";
 							
 							date = json[i].convert_date.substring(0,10);
@@ -437,7 +446,7 @@
 		$.ajax({
 			url:"/mypage/get_pagebar_ajax",
 			data:{
-				"userid":"jisu",
+				"userid":"${requestScope.userid}",
 				"page_size":"10",
 				"start":$("input#start").val(),
 				"end":$("input#end").val(),

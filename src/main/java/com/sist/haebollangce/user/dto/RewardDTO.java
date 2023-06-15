@@ -9,25 +9,12 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class DepositDTO {
-	
-	private String purchaseCode;
-	private String fkUserid;
-	private String purchaseDate;
-	private String purchasePrice;
-	private String purchaseStatus;
-	
-	private String entryFee;
+public class RewardDTO {
 	
 	private String reward;
 	
 	private String convertReward;
 	
-	private String allDeposit;
 	private String allReward;
-	
-	//////////////////////////////////////
-	
-	
 	
 }
