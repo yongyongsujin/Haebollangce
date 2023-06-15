@@ -243,7 +243,7 @@
 		                </div>
 		            </div>
 		            <c:if test="${loginuser != null && loginuser.userid == lgboarddto.fkUserid}">
-		            	<div class="badge2"> <span style="font-size=5pt;">프로필편집</span> </div>
+		            	<div class="badge2"> <span style="font-size=5pt;" onclick="javascript:location.href='/mypage_info_edit_ajax'">프로필편집</span> </div>
 		            </c:if>
 		            <c:if test="${loginuser != null && loginuser.userid != lgboarddto.fkUserid}">
 		            	<div class="badge2"> <span>follow</span> </div>
