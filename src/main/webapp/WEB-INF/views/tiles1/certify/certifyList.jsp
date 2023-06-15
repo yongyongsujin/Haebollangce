@@ -268,7 +268,7 @@
 <div class="container-fluid" style="background-color: #f4f4f4;">
 <div class="container pb-5" style="border-radius: 20px; background-color: white; text-align: center;">
 	<br>
-	<h3 style="font-weight: bold;">참여중인 챌린지</h3>
+	<h3 class="py-3" style="font-weight: bold;"><span style="box-shadow: 0px 0px 10px 1px gray; line-height: 50px; height: 50px; border-radius: 8px; width:250px; display: inline-block; background-color: #EB534C; color: white;">참가중인 챌린지</span></h3>
 	<br>
 	<ul class="nav nav-tabs" style="justify-content: center;">
 		<li class="nav-item certify_menu">

@@ -287,7 +287,7 @@ const imgInfo = document.querySelector('.img_info');
 <div class="container-fluid" style="background-color: #f4f4f4;">
 <div class="container pb-5" style="border-radius: 20px; background-color: white; text-align: center; font-size: 18pt;">
 	<br>
-	<h3 style="font-weight: bold;">참가중인 챌린지 인증정보</h3>
+	<h3 style="font-weight: bold;"><span style="box-shadow: 0px 0px 10px 1px gray; line-height: 50px; height: 50px; border-radius: 8px; width:350px; display: inline-block; background-color: #EB534C; color: white;">참가중인 챌린지 인증정보</span></h3>
 	<br>
 	<div style="height: 500px; width: 95%; margin:auto;">
 		<img src="<%= ctxPath%>/images/${joinedChallInfo.thumbnail}" width="100%" height="100%" style="object-fit: cover; border-radius: 20px;"/>
