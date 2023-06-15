@@ -9,7 +9,7 @@ public class LoungeBoardDTO {
 	
 	// insert 용 필드
 	private String seq;          // 글번호 
-	private String fk_userid;    // 사용자ID fk_userid
+	private String fkUserid;    // 사용자ID fk_userid
 	private String name;         // 글쓴이 
 	private String subject;      // 글제목
 	private String content;      // 글내용 
@@ -38,6 +38,7 @@ public class LoungeBoardDTO {
 	private String regDateAgo;	// 게시물 작성일로부터 경과한 일 수를 구하는데 사용 regDate_ago
 	private String likeCount;	// 게시물의 좋아요 갯수
 	private String lgbprofile; 	// 라운지 1개글 볼때 필요한 프로필이미지
+	private String isLike;		// 로그인한 회원의 좋아요여부 확인 (좋아요 눌렀으면 1, 아니면 0)
 	
 	//////////////////////////////////////////////////
 	// getter & setter
@@ -49,12 +50,12 @@ public class LoungeBoardDTO {
 		this.seq = seq;
 	}
 
-	public String getFk_userid() {
-		return fk_userid;
+	public String getFkUserid() {
+		return fkUserid;
 	}
 
-	public void setFk_userid(String fk_userid) {
-		this.fk_userid = fk_userid;
+	public void setFkUserid(String fkUserid) {
+		this.fkUserid = fkUserid;
 	}
 
 	public String getName() {
@@ -197,6 +198,13 @@ public class LoungeBoardDTO {
 
 	public void setLgbprofile(String lgbprofile) {
 		this.lgbprofile = lgbprofile;
+	}
+
+	public String getIsLike() {
+		return isLike;
+	}
+	public void setIsLike(String isLike) {
+		this.isLike = isLike;
 	}
 
 	

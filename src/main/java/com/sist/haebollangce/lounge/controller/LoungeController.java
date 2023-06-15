@@ -2,7 +2,6 @@ package com.sist.haebollangce.lounge.controller;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.*;
@@ -15,21 +14,23 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.sist.haebollangce.common.FileManager;
+import com.sist.haebollangce.config.token.CookieUtil;
+import com.sist.haebollangce.config.token.JwtTokenizer;
 import com.sist.haebollangce.lounge.model.LoungeBoardDTO;
 import com.sist.haebollangce.lounge.model.LoungeCommentDTO;
 import com.sist.haebollangce.lounge.model.LoungelikeDTO;
 import com.sist.haebollangce.lounge.service.InterLoungeService;
+import com.sist.haebollangce.user.dto.UserDTO;
+import com.sist.haebollangce.user.service.InterUserService;
 
 
 @Controller
@@ -44,11 +45,31 @@ public class LoungeController {
 	@Autowired  
 	private FileManager fileManager;
 	
+	// === 토큰 사용 === 
+	@Autowired 
+	private JwtTokenizer jwtTokenizer;
+	@Autowired 
+    private InterUserService interuserservice;
 	 
 	// === #1. 라운지 글 작성하는 form 페이지 요청 === (#51. aop 사용으로 수정 필요)
 	@GetMapping(value = "/loungeAdd")
-	public ModelAndView loungeAdd(ModelAndView mav) {
+	public ModelAndView loungeAdd(ModelAndView mav, HttpServletRequest request) {
 	
+		// 쿠키에서 accessToken (jWT 형식)을 가져옵니다. 
+		String accessToken = CookieUtil.getToken(request,"accessToken");
+
+		String userid = "";
+		
+		// 로그인 되어있다면 정상적으로 토큰에 접근 가능하며 아래와 같이 userid를 얻을  수 있습니다.
+		// (로그아웃을 한 경우 null)
+		if(accessToken != null) {
+		   userid = jwtTokenizer.getUseridFromToken(accessToken);
+		}
+		
+		UserDTO loginuser = interuserservice.findByUserid(userid);
+		
+		mav.addObject("loginuser", loginuser);
+		
 		mav.setViewName("lounge/loungeAdd.tiles1");
 		// => /WEB-INF/views/tiles1/lounge/loungeAdd.jsp view 단을 보여준다. 
 		
@@ -57,7 +78,20 @@ public class LoungeController {
 	
 	// === #2. 라운지 글쓰기 완료 요청 === (#54.)
 	@PostMapping(value = "/loungeAddEnd")
-	public ModelAndView loungeAddEnd(ModelAndView mav, LoungeBoardDTO lgboarddto, MultipartHttpServletRequest mrequest) throws Exception {
+	public ModelAndView loungeAddEnd(ModelAndView mav, LoungeBoardDTO lgboarddto, MultipartHttpServletRequest mrequest, HttpServletRequest request) throws Exception {
+		
+		// 쿠키에서 accessToken (jWT 형식)을 가져옵니다. 
+		String accessToken = CookieUtil.getToken(request,"accessToken");
+
+		String userid = "";
+		
+		// 로그인 되어있다면 정상적으로 토큰에 접근 가능하며 아래와 같이 userid를 얻을  수 있습니다.
+		// (로그아웃을 한 경우 null)
+		if(accessToken != null) {
+		   userid = jwtTokenizer.getUseridFromToken(accessToken);
+		}
+		
+		mav.addObject("userid", userid);
 		
 		// === #2-1. 첨부파일이 있는 경우 작업  ===
 		MultipartFile attach =  lgboarddto.getAttach();
@@ -205,7 +239,7 @@ public class LoungeController {
 	// === #3. 라운지 글목록 보기 페이지 요청 === (#58.)
 	@GetMapping(value = "/loungeList")
 	public ModelAndView loungeList(ModelAndView mav, HttpServletRequest request) {
-	
+		
 		List<LoungeBoardDTO> lgboardList = null; // 글이 없을 수도 있으니까 default 값으로 null 설정
 	
 		// --- session 을 사용해 새로고침 할 때는 조회수 증가 없이 select 만 하게 하자 (#69.)
@@ -246,12 +280,8 @@ public class LoungeController {
 	    int startRno = 0;		    // 시작 행번호
 	    int endRno = 0;   			// 끝 행번호
 	    
-	    // --- #3-2. 총 게시물 건수(totalCount) 구하기 ---
-	    // 총 게시물 건수(totalCount)를 구하기 위해 DTO 에 가야하는데 service 로 보내보겠다
+	    // --- #3-2. 총 게시물 건수(totalCount) 구하기 (=> 검색이 있을 때 검색한 값들의 총 갯수임)---
 	    totalCount = service.lggetTotalCount(paraMap);
-	    // System.out.println("~~~ 확인용 totalCount : " + totalCount);
-	    // ~~~ 확인용 totalCount : 9 => 검색이 없을 때
-	    // ~~~ 확인용 totalCount : 2 => '글' 로 검색할 때 검색결과 항목의 갯수가 나옴 .
 		
 	    // --- 만약에 총 게시물 건수(totalCount)가 127개 이라면 총페이지수(totalPage)는 13개가 되어야 한다.
 	    totalPage = (int) Math.ceil((double) totalCount/sizePerPage);
@@ -279,6 +309,24 @@ public class LoungeController {
 	    
 	    paraMap.put("startRno", String.valueOf(startRno));
 	    paraMap.put("endRno", String.valueOf(endRno));
+	    
+		// 쿠키에서 accessToken (jWT 형식)을 가져옵니다. 
+		String accessToken = CookieUtil.getToken(request,"accessToken");
+
+		String userid = "";
+		
+		// 로그인 되어있다면 정상적으로 토큰에 접근 가능하며 아래와 같이 userid를 얻을  수 있습니다.
+		// (로그아웃을 한 경우 null)
+		if(accessToken != null) {
+		   userid = jwtTokenizer.getUseridFromToken(accessToken);
+		   
+		   paraMap.put("userid", userid);
+		}
+		
+		UserDTO loginuser = interuserservice.findByUserid(userid);
+		
+		mav.addObject("loginuser", loginuser);
+	    
 	    
 		// --- #3-1. 페이징 처리 한 검색어 있는 전체 글 목록 보기 (#102. -> #114.)
 		lgboardList = service.lgboardListSearch(paraMap);
@@ -329,7 +377,6 @@ public class LoungeController {
       	
       	// >>> 페이징 처리 끝 <<< //
 		
-		
 		mav.addObject("lgboardList", lgboardList);
 		mav.setViewName("lounge/loungeList.tiles1");
 		// => /WEB-INF/views/tiles1/lounge/loungeList.jsp view 단을 보여준다.  
@@ -372,8 +419,9 @@ public class LoungeController {
 	
 	// === #4. 라운지 글 1개 보는 페이지 요청 ===
 	@GetMapping(value = "/loungeView")
-	public ModelAndView loungeView(ModelAndView mav, HttpServletRequest request) {
+	public ModelAndView loungeView(ModelAndView mav, HttpServletRequest request, LoungelikeDTO lglikedto) {
 	
+		
 		// === #9-4. 답변글쓰기가 추가된 경우 시작 === //
 		String fk_seq = request.getParameter("fk_seq");
 		String groupno = request.getParameter("groupno");
@@ -390,9 +438,31 @@ public class LoungeController {
 		mav.addObject("name", name); // -> 원글쓰기의 경우에는 위 4개의 값이 모두 null 일 것이다
 		// === 답변글쓰기가 추가된 경우 끝 ===================================================
 		
+		// 쿠키에서 accessToken (jWT 형식)을 가져옵니다. 
+		String accessToken = CookieUtil.getToken(request,"accessToken");
+
+		String userid = "";
+		
+		// 로그인 되어있다면 정상적으로 토큰에 접근 가능하며 아래와 같이 userid를 얻을  수 있습니다.
+		// (로그아웃을 한 경우 null)
+		if(accessToken != null) {
+		   userid = jwtTokenizer.getUseridFromToken(accessToken);
+		}
+		
+		UserDTO loginuser = interuserservice.findByUserid(userid);
+		
+		mav.addObject("loginuser", loginuser);
+		
 		// --- 조회하고자 하는 글번호 받아오기 ---
 		String seq = request.getParameter("seq");
 		
+		
+		// === #13-0. 라운지 특정글에 대한 좋아요가 눌렸는지 확인하기 ===
+		lglikedto.setFk_userid(userid);
+		lglikedto.setFk_seq(seq);
+		int n = service.loungelikeCheck(lglikedto);
+		
+		mav.addObject("n", n);
 		
 		String searchType = request.getParameter("searchType");
 		String searchWord = request.getParameter("searchWord");
@@ -714,6 +784,7 @@ public class LoungeController {
 				JSONObject jsonObj = new JSONObject();
 				jsonObj.put("parentSeq", lgcmtvo.getParentSeq());
 				jsonObj.put("seq", lgcmtvo.getSeq());
+				jsonObj.put("fk_userid", lgcmtvo.getFkUserid());
 				jsonObj.put("name", lgcmtvo.getName());
 				jsonObj.put("content", lgcmtvo.getContent());
 				jsonObj.put("regdate", lgcmtvo.getRegDate());
@@ -805,7 +876,7 @@ public class LoungeController {
 	@PostMapping(value = "/loungelikeAdd", produces="text/plain;charset=UTF-8")
 	public String loungelikeAdd(LoungelikeDTO lglikedto) throws SQLException {
 		
-		int n = 0;
+		int n = 0, m = 0;
 		
 		// === #13-0. 라운지 특정글에 대한 좋아요가 눌렸는지 확인하기 ===
 		n = service.loungelikeCheck(lglikedto);
@@ -813,11 +884,11 @@ public class LoungeController {
 		String message = "";
 		
 		if(n == 0) {
-			n = service.loungelikeAdd(lglikedto); // --- #13-1.tbl_lounge_like 테이블에 좋아요 추가하기(insert)
+			m = service.loungelikeAdd(lglikedto); // --- #13-1.tbl_lounge_like 테이블에 좋아요 추가하기(insert)
 			message = "좋아요 :-)";
 		}
 		else {
-			n = service.loungelikeCancel(lglikedto); // --- #13-3.tbl_lounge_like 테이블에 좋아요 취소하기(delete)
+			m = service.loungelikeCancel(lglikedto); // --- #13-3.tbl_lounge_like 테이블에 좋아요 취소하기(delete)
 			message = "좋아요 취소 :-(";
 		}
 		
@@ -825,7 +896,8 @@ public class LoungeController {
 		jsonObj.put("message", message); 
 		// {"message":"좋아요 :-)"} 또는  {"message":"좋아요 취소 :-("}
 		
-		jsonObj.put("n", n); // 정상이면 1, rollback 당하면 0 이 나올 것이다.
+		jsonObj.put("n", n); // 체크가 안되어 있으면0, 되어 있으면 1
+		jsonObj.put("m", m); // 좋아요 누르면 무조건 1로 실패했을 때 0 이 나올 경우가 없다.
 		jsonObj.put("fk_userid", lglikedto.getFk_userid());
 		
 		return jsonObj.toString(); 

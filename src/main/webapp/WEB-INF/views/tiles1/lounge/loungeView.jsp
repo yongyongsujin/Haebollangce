@@ -90,10 +90,10 @@
 			data: {"parentSeq":"${requestScope.lgboarddto.seq}"},
 			dataType:"json",
 			success:function(json){
-			//	console.log("~~~ 확인뇽 : " + JSON.stringify(json));
+				console.log("~~~ 확인뇽 : " + JSON.stringify(json));
 			//	console.log("~~~ 확인뇽 json.length : " + json.length); //-> 여기서 값은 잘 나오지만 $ 앞에 \ 를 안써줘서 값이 안나왔었다
 				
-				let html = `<form name="CmtFrm">`;
+				let html = ``;
   				if(json.length > 0) {
   					$.each(json, function(index, item){
   						
@@ -101,19 +101,24 @@
 	  						html += ` <div class="d-flex flex-row mb-3"> 
 			                		 	<img style="border: solid 3px #eee; border-radius: 100%; width:45px; height: 45px; vertical-align: top;" src="<%= ctxPath%>/images/\${item.lgcprofile}" /> 
 			  	              		 	<div class="c-details"> 
-			  	                     		<h5 class="mb-1 ml-3 lounge_comment_userid"><span class="lounge_comment_name">\${item.name}</span></h5> 
+			  	                     		<h5 class="mb-1 ml-3 lounge_comment_userid"><span class="lounge_comment_name">\${item.fk_userid}</span></h5> 
 			  	                     		<input type="hidden" name="seq" id="seq" value="\${item.seq}" /> 
 			  	                     		<div class="c-details">
 			  		                 			<h6 class="mb-0 ml-3 lounge_comment_content">\${item.content}</h6>
 			  	                	 		</div>
 			  	                	 		<div class="c-details"> 
-			  	                				<small class="mb-0 ml-3" style="color:gray;">\${item.regdate}</small>
-			  	                				<small type="button" class="mb-0 ml-2" style="color:gray;" onclick="javascript:location.href='/lounge/loungeView?seq=\${item.parentSeq}&fk_seq=\${item.seq}&groupno=\${item.groupno}&depthno=\${item.depthno}&name=\${item.name}'">답글달기</small> 
-			  	                				<small type="button" class="mb-0 ml-2 p-1" style="color:gray; background-color:#eee; border-radius:5px;">수정</small>
-			  	                				<small type="button" class="mb-0 ml-1 p-1" style="color:gray; background-color:#eee; border-radius:5px;" onclick="lgcommentDel('\${item.seq}')">삭제</small>
-			  	                			</div>
+			  	                				<small class="mb-0 ml-3" style="color:gray;">\${item.regdate}</small>`;
+			  	             if ("${requestScope.loginuser}" != "") {
+			  	             		html += `	<small type="button" class="mb-0 ml-2" style="color:gray;" onclick="javascript:location.href='/lounge/loungeView?seq=\${item.parentSeq}&fk_seq=\${item.seq}&groupno=\${item.groupno}&depthno=\${item.depthno}&name=\${item.name}'">답글달기</small>`;
+			  	             }
+			  	             if (item.fk_userid == "${requestScope.loginuser.userid}") {				
+			  	                				
+				  	               html += `	<small type="button" class="mb-0 ml-2 p-1" style="color:gray; background-color:#eee; border-radius:5px;">수정</small>
+				  	                			<small type="button" class="mb-0 ml-1 p-1" style="color:gray; background-color:#eee; border-radius:5px;" onclick="lgcommentDel('\${item.seq}')">삭제</small>`;
+			  	             }
+			  	             html += `		</div>
 			  	                		</div> 
-		  	              		 	  </div></form>`; 
+		  	              		 	  </div>`; 
   						} 
   						
   						else if (item.depthno > 0) {
@@ -127,13 +132,18 @@
 			  		                 			<h6 class="mb-0 ml-3 lounge_comment_content">\${item.content}</h6>
 			  	                	 		</div>
 			  	                	 		<div class="c-details"> 
-			  	                				<small class="mb-0 ml-3" style="color:gray;">\${item.regdate}</small>
-			  	                				<small type="button" class="mb-0 ml-2" style="color:gray;" onclick="javascript:location.href='/lounge/loungeView?seq=\${item.parentSeq}&fk_seq=\${item.seq}&groupno=\${item.groupno}&depthno=\${item.depthno}&name=\${item.name}'">답글달기</small>
-			  	                				<small type="button" class="mb-0 ml-2 p-1" style="color:gray; background-color:#eee; border-radius:5px;">수정</small>
-			  	                				<small type="button" class="mb-0 ml-1 p-1" style="color:gray; background-color:#eee; border-radius:5px;" onclick="lgcommentDel('\${item.seq}')">삭제</small>
-			  	                			</div> 
+			  	                				<small class="mb-0 ml-3" style="color:gray;">\${item.regdate}</small>`;
+	                		if ("${requestScope.loginuser}" != "") {
+			  	            	html += `		<small type="button" class="mb-0 ml-2" style="color:gray;" onclick="javascript:location.href='/lounge/loungeView?seq=\${item.parentSeq}&fk_seq=\${item.seq}&groupno=\${item.groupno}&depthno=\${item.depthno}&name=\${item.name}'">답글달기</small>`;
+			  	            }			  	                				
+  							if (item.fk_userid == "${requestScope.loginuser.userid}") {				
+	                				
+			  	                html += `		<small type="button" class="mb-0 ml-2 p-1" style="color:gray; background-color:#eee; border-radius:5px;">수정</small>
+				  	                			<small type="button" class="mb-0 ml-1 p-1" style="color:gray; background-color:#eee; border-radius:5px;" onclick="lgcommentDel('\${item.seq}')">삭제</small>`;
+			  	            }
+			  	             html += `		</div>
 			  	                		</div> 
-			              		 	</div></form>`;
+		  	              		 	  </div>`; 
   						}
   					});
   				}
@@ -151,7 +161,7 @@
   	}//end of function lggoReadComment()----------------
   	
   	
-  	// 라운지 특정 글에서 댓글  삭제하기  CmtFrm
+  	// 라운지 특정 글에서 댓글  삭제하기  
   	function lgcommentDel(seq) {
   		
   		if(confirm("댓글을 삭제하면 하위 댓글들도 모두 삭제됩니다. 삭제 하시겠습니까?")) {
@@ -163,8 +173,6 @@
   			    type:"post",
   	    		dataType:"json",
   	    		success:function(json){
-  	    			console.log("~~~ 확인 : " + JSON.stringify(json));
-  	    			// ~~~ 확인뇽 : {"name":"망나뇽수진","n":0}
   	    			
   	    			if(json.n == 0) {
   	    				alert("댓글삭제 실패");
@@ -188,10 +196,10 @@
  	// 라운지 특정글에 대한 좋아요 등록하기 
    	function lggoLikeAdd(seq) {
    
-      	/* if(${empty sessionScope.loginuser}) {
+      	if(${empty loginuser}) {
     	  	alert("좋아요를 누르려면 먼저 로그인 하셔야 합니다.");
     	  	return;
-      	} */
+      	}
       
       	$.ajax({
 			url:"<%= request.getContextPath()%>/lounge/loungelikeAdd",
@@ -200,11 +208,9 @@
 				  "fk_seq":seq},
 			dataType:"json",
 			success: function(json){
-				// console.log(JSON.stringify(json));
-			
+				
 				alert(json.message);
 				location.href="javascript:history.go(0)";
-
 			},
 			error: function(request, status, error){
              		alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
@@ -214,9 +220,7 @@
    	}// end of golikeAdd(pnum)---------------------------
   	
 	function goView(seq) {
-		const searchType = $("select#searchType").val();
-  		const searchWord = $("input#searchWord").val();
-		location.href = "<%= ctxPath%>/lounge/loungeView?seq="+seq+"&searchType="+searchType+"&searchWord="+searchWord; 
+		location.href = "<%= ctxPath%>/lounge/loungeView?seq="+seq+"&searchType=&searchWord="; 
 	}
    	
 </script>
@@ -226,8 +230,7 @@
 	<div class="row col-lg-6 col-md-6 col-sm-6 mx-auto my-5 justify-content-center">
 	
 		<c:if test="${not empty requestScope.lgboarddto}">
-		
-		    <div class="card p-3 mb-5 mt-5" >
+			<div class="card p-3 mb-5 mt-5" >
 		        <div class="d-flex justify-content-between">
 		            <div class="d-flex flex-row align-items-center">
 		                <div><img style="border-radius:60%; width:60px; height: 60px;" src="<%= ctxPath%>/images/${lgboarddto.lgbprofile}" /> </div>
@@ -239,7 +242,15 @@
 		                    </span>
 		                </div>
 		            </div>
-		            <div class="badge2"> <span>chat me</span> </div>
+		            <c:if test="${loginuser != null && loginuser.userid == lgboarddto.fkUserid}">
+		            	<div class="badge2"> <span style="font-size=5pt;">프로필편집</span> </div>
+		            </c:if>
+		            <c:if test="${loginuser != null && loginuser.userid != lgboarddto.fkUserid}">
+		            	<div class="badge2"> <span>follow</span> </div>
+		            </c:if>
+		            <c:if test="${loginuser == null}">
+		            	<div class="badge2"> <span>follow</span> </div>
+		            </c:if>
 		        </div>
 		        <div class="mt-4" style="padding:10px;">
 		   			<img style="width:100%;" src="<%= ctxPath%>/images/lgthumFiles/${lgboarddto.thumbnail}" />
@@ -248,78 +259,92 @@
 		                <div>${lgboarddto.content}</div>
 		                <c:if test="${lgboarddto.orgFilename != null}">
 			                <div style="border:solid 1px silver; border-radius:7px; margin:10px; padding:7px;"> 첨부파일 |  
-			                	<a href="<%= request.getContextPath() %>/lounge/lgdownload?seq=${lgboarddto.seq}" style="color:black;">${lgboarddto.orgFilename} ( <fmt:formatNumber value="${lgboarddto.fileSize}" pattern="#,###" /> bytes ) </a>
-			                <%--<c:if test="${sessionScope.loginuser != null}">
+			                	<c:if test="${loginuser != null}">
 			               			<a href="<%= request.getContextPath() %>/lounge/lgdownload?seq=${lgboarddto.seq}" style="color:black;">${lgboarddto.orgFilename} ( <fmt:formatNumber value="${lgboarddto.fileSize}" pattern="#,###" /> bytes ) </a>
 			               		</c:if>
-			               		<c:if test="${sessionScope.loginuser == null}">
+			               		<c:if test="${loginuser == null}">
 			               			${lgboarddto.orgFilename}
-			               		</c:if> --%>
+			               		</c:if>
 			                </div>
 		                </c:if>
 		                <div class="mt-4"> 
 		                	<span class="text1 ">
-		                	<%--<c:if test="${}"> 로그인한 유저가 좋아요를 누른상태면 빨간하트를 --%>
-		                			<img src="<%= request.getContextPath()%>/images/lounge-redheart.jpg" alt="Lounge Like"  width="29" height="29" style="cursor: pointer;" onclick="lggoLikeAdd('${lgboarddto.seq}')"/>${lgboarddto.likeCount}
-		                		<%-- </c:if>
-		                		<c:if test="${}"> 로그인한 유저가 좋아요를 누르지 않은 상태면 빈 하트를 보이자  --%>
-		                			<img src="<%= request.getContextPath()%>/images/lounge-emptyheart.jpg" alt="Lounge Like"  width="29" height="29" style="cursor: pointer;" onclick="lggoLikeAdd('${lgboarddto.seq}')"/>${lgboarddto.likeCount}
-		                		<%-- </c:if> --%>
-		                		<img src="https://images.munto.kr/munto-web/ic_action_comment_30px.svg?s=32x32" style="cursor: pointer;" onclick="goView(${lgboarddto.seq})"/>${lgboarddto.commentCount}
-		                		<img src="https://images.munto.kr/munto-web/info_group.svg?s=32x32"/>${lgboarddto.readCount}
+		                		<c:if test="${requestScope.n == 1 && loginuser != null}"> <%-- 로그인한 유저가 좋아요를 누른상태면 빨간하트를 --%>
+		                			<img src="/images/lounge-redheart.jpg" alt="Lounge Like"  width="29" height="29" style="cursor: pointer;" onclick="lggoLikeAdd('${lgboarddto.seq}')"/>
+		                		</c:if>
+		                		<c:if test="${requestScope.n == 0 || loginuser == null}"> <%-- 로그인한 유저가 좋아요를 누르지 않은 상태면 빈 하트를 보이자  --%>
+		                			<img src="/images/lounge-emptyheart.jpg" alt="Lounge Like"  width="29" height="29" style="cursor: pointer;" onclick="lggoLikeAdd('${lgboarddto.seq}')"/>
+		                		</c:if>
+		                		${lgboarddto.likeCount}
+		                		<img src="/images/comment.png" width="29" height="29" style="cursor: pointer;" onclick="goView(${lgboarddto.seq})"/>${lgboarddto.commentCount}
+		                		<img src="/images/readcount.png" width="29" height="29" style="cursor: pointer;" />${lgboarddto.readCount}	
 		                	</span> 
-		                	
-					        <span class="dropup">
-								<a class="nav-link dropdown-toggle headerfont" data-toggle="dropdown"><i class="fa-solid fa-ellipsis" style="color: #0d0d0d;"></i></a>
-								<ul class="dropdown-menu">
-									<li><i class="dropdown-item fa-solid fa-pen btnEdit" style="color: gray;" onclick="javascript:location.href='<%= ctxPath%>/lounge/loungeEdit?seq=${requestScope.lgboarddto.seq}'">&nbsp;글 수정하기</i></li>
-									<li><i class="dropdown-item fa-solid fa-trash btnDelete" style="color:gray;" onclick="javascript:location.href='<%= ctxPath%>/lounge/loungeDel?seq=${requestScope.lgboarddto.seq}'">&nbsp;글 삭제하기</i></li>
-								</ul>
-							</span>
-		                	
+		                	<c:if test="${loginuser.userid == lgboarddto.fkUserid}">
+						        <span class="dropup">
+									<a class="nav-link dropdown-toggle headerfont" data-toggle="dropdown"><i class="fa-solid fa-ellipsis" style="color: #0d0d0d;"></i></a>
+									<ul class="dropdown-menu">
+										<li><i class="dropdown-item fa-solid fa-pen btnEdit" style="color: gray;" onclick="javascript:location.href='/lounge/loungeEdit?seq=${requestScope.lgboarddto.seq}'">&nbsp;글 수정하기</i></li>
+										<li><i class="dropdown-item fa-solid fa-trash btnDelete" style="color:gray;" onclick="javascript:location.href='/lounge/loungeDel?seq=${requestScope.lgboarddto.seq}'">&nbsp;글 삭제하기</i></li>
+									</ul>
+								</span>
+		                	</c:if>
 		                </div>
 		            </div>
 		        </div>
 		     
 		    	<!-- 댓글쓰기 폼 추가 (로그인했을때만 가능)-->
-		    <%--<c:if test="${not empty sessionScope.loginuser}">--%>
-		    	<form name="addWriteFrm" id="addWriteFrm" style="margin-top: 20px;" onsubmit="return false;">
+		    	<c:if test="${empty loginuser}">
 			    	<div class="d-flex flex-row align-items-center">
-		                <div > 
-		                	<img style="border: solid 3px #eee; border-radius: 100%; width:45px; height: 45px; vertical-align: top;" src="<%= ctxPath%>/images/"/> <!-- *여기는 지금 로그인 한 사람의 profile_pic 정보가 와야함!* -->
-		                </div>
-		                <div style="width:100%;">
-		                	<input type="hidden" name="fk_userid" id="fk_userid" value="sudin" />  <!-- *여기는 지금 로그인 한 사람의 userid 정보가 와야함!* -->
-		                	<input type="hidden" name="name" id="name" value="슈딘쓰" />  <!-- *여기는 지금 로그인 한 사람의 name 정보가 와야함!* -->
-		                    
-		                    <div class=" c-details">
-		                    	<h6 class="mb-0 ml-2 lounge_comment_content align-items-center">
-		                    		
-		                    		<!-- 댓글쓰기인 경우 -->
-		                    		<c:if test="${requestScope.fk_seq eq ''}">
-				                    	<input type="text" name="content" id="commentContent" style="border-radius:10px; border: solid 3px #eee; height: 35px; width:90%;" placeholder=" 댓글달기.." /> 
-			                    	</c:if>
-			                    	
-			                    	<!-- 대댓글쓰기인 경우 -->
-		                    		<c:if test="${requestScope.fk_seq ne ''}">
-				                    	<input type="text" name="content" id="commentContent" style="border-radius:10px; border: solid 3px #eee; height: 35px; width:90%;" placeholder=" @ ${requestScope.name} 님에게 댓글달기.." /> 
-			                    	</c:if>
-			                    	
-								   	<%-- === #9-4. 답변글쓰기가 추가된 경우 시작 === --%>
-								   	<input type="hidden" name="fk_seq" value="${requestScope.fk_seq}" /> 
-								   	<input type="hidden" name="groupno" value="${requestScope.groupno}" />   	
-								   	<input type="hidden" name="depthno" value="${requestScope.depthno}" />  
-								   	<%--=== 답변글쓰기가 추가된 경우 끝 === --%>
-   	
-			                    	<%-- 댓글에 달리는 원게시물의 글번호(즉, 부모글 글번호) --%>
-			                    	<input type="hidden" name="parentSeq" id="parentSeq" value="${requestScope.lgboarddto.seq}"/>&nbsp;
-			                    	<button type="button" class="btn btn-habol btn-sm" style="width:50px;" onclick="lgcgoAddWrite()">게시</button>
-		                    	</h6>
-		                	</div>
-		                </div>
-		            </div>
-		        </form>
-		    <%--</c:if>--%>
+			                <div > 
+			                	<img style="border: solid 3px #eee; border-radius: 100%; width:45px; height: 45px; vertical-align: top;" src="/images/기본프로필.png"/>
+			                </div>
+			                <div style="width:100%;">
+			                	<div class=" c-details">
+			                    	<h6 class="mb-0 ml-2 lounge_comment_content align-items-center">
+			                    		<input type="text" name="content" id="commentContent" style="border-radius:10px; border: solid 3px #eee; height: 35px; width:90%;" placeholder="로그인 후 댓글을 남겨 보세요~^^" readonly/> 
+				                    </h6>
+			                	</div>
+			                </div>
+			            </div>
+		    	</c:if>
+		   		<c:if test="${not empty loginuser}">
+			    	<form name="addWriteFrm" id="addWriteFrm" style="margin-top: 20px;" onsubmit="return false;">
+				    	<div class="d-flex flex-row align-items-center">
+			                <div > 
+			                	<img style="border: solid 3px #eee; border-radius: 100%; width:45px; height: 45px; vertical-align: top;" src="<%= ctxPath%>/images/${loginuser.profilePic}"/>
+			                </div>
+			                <div style="width:100%;">
+			                	<input type="hidden" name="fkUserid" id="fk_userid" value="${loginuser.userid}" /> 
+			                	<input type="hidden" name="name" id="name" value="${loginuser.name}" />
+			                    
+			                    <div class=" c-details">
+			                    	<h6 class="mb-0 ml-2 lounge_comment_content align-items-center">
+			                    		
+			                    		<!-- 댓글쓰기인 경우 -->
+			                    		<c:if test="${requestScope.fk_seq eq ''}">
+					                    	<input type="text" name="content" id="commentContent" style="border-radius:10px; border: solid 3px #eee; height: 35px; width:90%;" placeholder=" 댓글달기.." /> 
+				                    	</c:if>
+				                    	
+				                    	<!-- 대댓글쓰기인 경우 -->
+			                    		<c:if test="${requestScope.fk_seq ne ''}">
+					                    	<input type="text" name="content" id="commentContent" style="border-radius:10px; border: solid 3px #eee; height: 35px; width:90%;" placeholder=" @ ${requestScope.name} 님에게 댓글달기.." /> 
+				                    	</c:if>
+				                    	
+									   	<%-- === #9-4. 답변글쓰기가 추가된 경우 시작 === --%>
+									   	<input type="hidden" name="fk_seq" value="${requestScope.fk_seq}" /> 
+									   	<input type="hidden" name="groupno" value="${requestScope.groupno}" />   	
+									   	<input type="hidden" name="depthno" value="${requestScope.depthno}" />  
+									   	<%--=== 답변글쓰기가 추가된 경우 끝 === --%>
+	   	
+				                    	<%-- 댓글에 달리는 원게시물의 글번호(즉, 부모글 글번호) --%>
+				                    	<input type="hidden" name="parentSeq" id="parentSeq" value="${requestScope.lgboarddto.seq}"/>&nbsp;
+				                    	<button type="button" class="btn btn-habol btn-sm" style="width:50px;" onclick="lgcgoAddWrite()">게시</button>
+			                    	</h6>
+			                	</div>
+			                </div>
+			            </div>
+			        </form>
+		    	</c:if>
 		    	<!-- 댓글쓰기끝 -->
 		    	
 		    	<hr style="border: solid 1px #eee;">

@@ -17,7 +17,6 @@ public class LoungelikeDTO {
 	}
 	public void setFk_seq(String fk_seq) {
 		this.fk_seq = fk_seq;
-	}
-	
+	}	
 	
 }

@@ -8,13 +8,13 @@
 	<!-- // === #2. 게시판 글쓰기 완료 요청 === -->
 	<insert id="loungeAdd" parameterType="com.sist.haebollangce.lounge.model.LoungeBoardDTO">
 		insert into tbl_lounge_board(seq, fk_userid, name, subject, content, pw, readCount, regDate, status, thumbnail)
-		values(lounge_boardSeq.nextval, #{fk_userid}, #{name}, #{subject}, #{content}, #{pw}, default, default, default, #{thumbnail})
+		values(lounge_boardSeq.nextval, #{fkUserid}, #{name}, #{subject}, #{content}, #{pw}, default, default, default, #{thumbnail})
 	</insert>
 
 	<!-- // === #2-1. 파일첨부가 있는 게시판 글쓰기 완료 요청 === -->
 	<insert id="loungeAdd_withFile" parameterType="com.sist.haebollangce.lounge.model.LoungeBoardDTO">
 		insert into tbl_lounge_board(seq, fk_userid, name, subject, content, pw, readCount, regDate, status, fileName, orgFilename, fileSize, thumbnail)
-		values(lounge_boardSeq.nextval, #{fk_userid}, #{name}, #{subject}, #{content}, #{pw}, default, default, default, #{fileName}, #{orgFilename}, #{fileSize}, #{thumbnail})
+		values(lounge_boardSeq.nextval, #{fkUserid}, #{name}, #{subject}, #{content}, #{pw}, default, default, default, #{fileName}, #{orgFilename}, #{fileSize}, #{thumbnail})
 	</insert>
 
 	<!-- // #3-1. 페이징 처리 한 검색어 있는 전체 글 목록 보기  --> 
@@ -31,7 +31,14 @@
 		on B.fk_userid = U.userid
 		where B.status = 1
 		<if test="searchType != '' and searchWord != ''">
-		and lower(${searchType}) like '%' || lower(#{searchWord}) || '%'
+			<choose>
+			    <when test="searchType == 'subject'">
+			      	and lower(subject) like '%' || lower(#{searchWord}) || '%'
+			    </when>
+			    <when test="searchType == 'name'">
+			      	and lower(B.name) like '%' || lower(#{searchWord}) || '%'
+			    </when>
+		  	</choose>
 		</if>
 		) V
 		where V.rno between #{startRno} and #{endRno}
@@ -62,7 +69,7 @@
              	where status = 1 
              	and lower(${searchType}) like '%'|| lower(#{searchWord}) ||'%'
       	<choose>
-         	<when test="searchType neq 'name'">
+         	<when test="searchType eq 'name'">
          		order by ${searchType} asc
             </when>
         	<otherwise>
@@ -110,11 +117,11 @@
 	<insert id="loungeaddComment" parameterType="com.sist.haebollangce.lounge.model.LoungeCommentDTO">
 		<if test='fk_seq != null and fk_seq.equals("")'> 
 			insert into tbl_lounge_comment(seq, fk_userid, name, content, regDate, parentSeq, status, groupno, fk_seq, depthno)
-			values(lounge_commentSeq.nextval, #{fk_userid}, #{name}, #{content}, default, #{parentSeq}, default, #{groupno}, default, default)
+			values(lounge_commentSeq.nextval, #{fkUserid}, #{name}, #{content}, default, #{parentSeq}, default, #{groupno}, default, default)
 		</if>	
 		<if test='fk_seq != null and !fk_seq.equals("")'>
 			insert into tbl_lounge_comment(seq, fk_userid, name, content, regDate, parentSeq, status, groupno, fk_seq, depthno)
-			values(lounge_commentSeq.nextval, #{fk_userid}, #{name}, #{content}, default, #{parentSeq}, default, #{groupno}, #{fk_seq}, #{depthno}+1)
+			values(lounge_commentSeq.nextval, #{fkUserid}, #{name}, #{content}, default, #{parentSeq}, default, #{groupno}, #{fk_seq}, #{depthno}+1)
 		</if>	
 	</insert>
 	
@@ -153,12 +160,12 @@
 	
 	<!-- // === #10. 원 게시물에 딸린 댓글들을 조회 (계층형쿼리) === -->
 	<select id="lggetCommentList" parameterType="String" resultType="com.sist.haebollangce.lounge.model.LoungeCommentDTO">
-		select seq, parentSeq, name, content, regdate, status, groupno, fk_seq, depthno, lgcprofile
+		select seq, fk_userid, parentSeq, name, content, regdate, status, groupno, fk_seq, depthno, lgcprofile
 		from 
 		(
-		    select seq, parentSeq, content, name, regDate, status, groupno, fk_seq, depthno, lgcprofile
+		    select seq, fk_userid, parentSeq, content, name, regDate, status, groupno, fk_seq, depthno, lgcprofile
 		    from (
-		            select seq, parentSeq, content, C.name, to_char(C.regdate, 'yyyy-mm-dd hh24:mi:ss') AS regDate, C.status, groupno, fk_seq, depthno, U.profile_pic as lgcprofile
+		            select seq, C.fk_userid, parentSeq, content, C.name, to_char(C.regdate, 'yyyy-mm-dd hh24:mi:ss') AS regDate, C.status, groupno, fk_seq, depthno, U.profile_pic as lgcprofile
 		            from tbl_lounge_comment C 
 		            join tbl_user U
 		            on C.fk_userid = U.userid 

@@ -111,7 +111,7 @@
 <div class=" container-fluid mt-5 mb-5 mx-auto bg-white">
 	<div class=" col-md-10 mx-auto my-5 justify-content-center" style="width:80%; ">
 
-		<h4 class="d-flex justify-content-center mb-1 pb-1" style="padding-top:50px;"><span style="border-bottom: solid 3px;">라운지 글작성하기</span></h4>
+		<h4 class="d-flex justify-content-center mb-1 pb-1" style="padding-top:50px;"><span style="border-bottom: solid 3px;">라운지 글수정하기</span></h4>
 	
 		<form name="editFrm" enctype="multipart/form-data">
 		
@@ -123,7 +123,7 @@
 		                <div class="c-details">
 		                	<!-- 글 수정을 위해 글번호 seq 가 필요해 hidden 으로 넣어둔다. -->
             				<input type="hidden" name="seq" value="${requestScope.lgboarddto.seq}" readonly />
-		                    <input type="hidden" name="fk_userid" id="fk_userid" value="${requestScope.lgboarddto.fk_userid}" readonly />
+		                    <input type="hidden" name="fkUserid" id="fk_userid" value="${requestScope.lgboarddto.fkUserid}" readonly />
 	                    	<input type="text" name="name" style="border:none; font-size:16pt; margin-left:10px;" value="${requestScope.lgboarddto.name}" readonly />
             			</div>
 		            </div>
