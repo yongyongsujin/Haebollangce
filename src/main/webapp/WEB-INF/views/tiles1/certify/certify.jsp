@@ -142,12 +142,12 @@
 </script>
 
 <div class="container-fluid" style="background-color: #f4f4f4;">
-<div class="container" style="border-radius: 20px; width: 70% !important; background-color: white; text-align: center;">
+<div class="container" style="border-radius: 20px; background-color: white; text-align: center;">
 	<br>
 	<h3 style="font-weight: bold;">인증하기</h3>
 	<br>
 	<div style="height: 783px; justify-content: center;">
-		<div id="img_exam">
+		<div id="img_exam" class="mb-5">
 			<div style="width: 50%; border-radius: 20px;">
 				<img class="img_insert" src="<%= ctxPath%>/images/${oneExample.success_img}" width="100%" height="90%" style="object-fit: cover;"/>
 				<p class="img_OX" style="background-color:#57B585;">○</p>
@@ -178,15 +178,15 @@
 	<div style="display: flex; justify-content: center;">
 		<br>
 		<form name="certifyform" enctype="multipart/form-data">
-			<label id="label_file" for="input_file" class="mx-3 my-3">사진 선택</label>
-			<input id="input_file" name="certify_img" type="file" accept="image/*" capture="camera" <%-- readonly="readonly" --%> style="display: none;">
-			<input name="fk_userid" type="text" value="${paraMap.fk_userid}" <%-- readonly="readonly" --%>>
-			<input name="fk_challenge_code" type="text" value="${paraMap.challenge_code}" <%-- readonly="readonly" --%>>
+			<label id="label_file" for="input_file" class="mx-3 my-3 btn-lg">사진 선택</label>
+			<input id="input_file" name="certify_img" type="file" accept="image/*" capture="camera" readonly="readonly" style="display: none;">
+			<input name="fk_userid" type="hidden" value="${paraMap.fk_userid}" readonly="readonly">
+			<input name="fk_challenge_code" type="hidden" value="${paraMap.challenge_code}" readonly="readonly">
 		</form>
 		<br>
 	</div>
-	<div style="display: flex; justify-content: center;">
-	    <button type="button" class="btn btn-secondary btn-md mb-3" id="btn_certify">인증하기</button>
+	<div class="pb-5" style="display: flex; justify-content: center;">
+	    <button type="button" class="btn btn-secondary btn-md mb-3 btn-lg" id="btn_certify">인증하기</button>
 	</div>
         
 </div>

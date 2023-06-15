@@ -1,5 +1,6 @@
 package com.sist.haebollangce.user.controller;
 
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Controller;
 import com.sist.haebollangce.config.token.CookieUtil;
 import com.sist.haebollangce.config.token.JwtTokenizer;
@@ -10,12 +11,14 @@ import javax.servlet.http.HttpServletRequest;
 @Controller
 @RequestMapping("/user")
 @RequiredArgsConstructor
-public class UserEntryPointViewController {
+public class EntryPointViewController {
 
     private final JwtTokenizer jwtTokenizer;
 
     @GetMapping("/login")
-    public String formLogin() {
+    public String formLogin(HttpServletRequest request) {
+        String targetUrl = request.getHeader("referer");
+        request.setAttribute("from", targetUrl);
         return "/userEntryPoint/login";
     }
 

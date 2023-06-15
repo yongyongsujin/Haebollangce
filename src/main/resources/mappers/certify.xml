@@ -44,7 +44,7 @@
 	
 	<insert id="joinChallenge" parameterType="HashMap">
 		insert into tbl_challenge_info (challenge_info, fk_userid, fk_challenge_code, entry_fee, achievement_pct) 
-    		values( seq_tbl_challenge_info_challenge_info.nextval, 'qwer1234', #{fk_challenge_code}, #{entry_fee}, default)
+    		values( seq_tbl_challenge_info_challenge_info.nextval, #{fk_userid}, #{fk_challenge_code}, #{entry_fee}, default)
 	</insert>
 	
 	

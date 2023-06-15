@@ -1,8 +1,8 @@
 package com.sist.haebollangce.user.controller;
 
 import com.sist.haebollangce.config.token.CookieUtil;
-import com.sist.haebollangce.config.token.JwtTokenizer;
 import com.sist.haebollangce.user.Role;
+import com.sist.haebollangce.user.dto.TokenDTO;
 import com.sist.haebollangce.user.dto.UserDTO;
 import com.sist.haebollangce.user.service.InterUserService;
 import lombok.RequiredArgsConstructor;
@@ -13,42 +13,33 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+
 @RestController
 @RequestMapping("/api/v1/user")
 @RequiredArgsConstructor
-public class UserEntryPointApiController {
+public class EntryPointApiController {
 
     private final InterUserService service;
-    private final JwtTokenizer jwtTokenizer;
     private final PasswordEncoder passwordEncoder;
     private final CookieUtil cookieUtil;
 
     @PostMapping("/login")
-    public ResponseEntity login(@RequestBody UserDTO.UserLoginDTO loginUser) {
-        UserDTO user = service.findByUserid(loginUser.getUserid());
-        
+    public ResponseEntity login(@RequestBody UserDTO.UserLoginDTO loginUser, HttpServletRequest request) {
+
+        UserDTO user = service.formLogin(loginUser);
+
         if(user == null) {
-            return new ResponseEntity("No Such User Found.", HttpStatus.UNAUTHORIZED);
-        }
-        if( !passwordEncoder.matches(loginUser.getPw(), user.getPw() )) {
-            return new ResponseEntity("Wrong Password.", HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity("Wrong Password", HttpStatus.UNAUTHORIZED);
         }
 
-        String accessToken = jwtTokenizer.createAccessToken(user.getUserid(),
-                                                            user.getName(),
-                                                            user.getEmail(),
-                                                            user.getRoleId());
+        TokenDTO tokens = service.getTokens(user);
+        ResponseCookie cookie = cookieUtil.saveAccessToken("accessToken", tokens.getAccessToken());
 
-        String refreshToken = jwtTokenizer.createRefreshToken(user.getUserid(),
-                                                              user.getName(),
-                                                              user.getEmail(),
-                                                              user.getRoleId());
-
-        ResponseCookie cookie = cookieUtil.saveAccessToken("accessToken", accessToken);
-
+        String redirectUrl = request.getHeader("custom-from");
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.SET_COOKIE, String.valueOf(cookie));
-        headers.add("Location", "/user/tiles-test");
+        headers.add(HttpHeaders.LOCATION, redirectUrl+"?xduTvAAQVxq=true");
 
         return new ResponseEntity(headers,HttpStatus.FOUND);
     }
@@ -59,7 +50,7 @@ public class UserEntryPointApiController {
 
         HttpHeaders headers = new HttpHeaders();
         headers.add("Set-Cookie", String.valueOf(cookie));
-        headers.add("Location", "/user/login");
+        headers.add("Location", "/challenge/main");
 
         return new ResponseEntity(headers,HttpStatus.FOUND);
     }

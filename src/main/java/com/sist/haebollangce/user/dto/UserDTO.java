@@ -33,6 +33,9 @@ public class UserDTO {
         this.roleId = roleId;
     }
 
+    /**
+     * `/user/login' URI 페이지의 form으로부터 받아온 userid, pw
+     */
     @Getter
     @Setter
     @NoArgsConstructor
@@ -47,6 +50,9 @@ public class UserDTO {
 
     }
 
+    /**
+     * JWT claims 에 담길 정보
+     */
     @Getter
     @Setter
     @NoArgsConstructor

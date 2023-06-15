@@ -43,6 +43,8 @@
         <a href="/user/signup"><span>일반 회원가입</span></a>
 
     </div>
+
+    <input type="hidden" name="from" value="${from}"/>
 </div>
 <script type="text/javascript">
     const submit = document.getElementById("login");
@@ -50,10 +52,14 @@
 
         const userid = document.querySelector('input[name="userid"]').value;
         const pw = document.querySelector('input[name="pw"]').value;
+        const from = document.querySelector('input[name="from"]').value;
 
         const xhr = new XMLHttpRequest;
         xhr.open('POST', 'http://localhost:7070/api/v1/user/login', 'true');
         xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+        if(from.length > 0) {
+            xhr.setRequestHeader('custom-from', from);
+        }
         xhr.withCredentials = true;
         const json = {"userid":userid, "pw":pw};
         xhr.send(JSON.stringify(json));
@@ -61,8 +67,7 @@
         xhr.onreadystatechange = () => {
             if (xhr.readyState === XMLHttpRequest.DONE) {
                 if (xhr.status === 200) {
-                    const redirectUrl = xhr.responseURL;
-                    window.location.href = redirectUrl;
+                    window.location.href = xhr.responseURL;
                 } else {
                 }
             }

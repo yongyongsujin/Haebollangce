@@ -52,6 +52,8 @@
 	$(document).ready(function(){
 		
 		checkCertifyTime(); // 처음 로드 됐을때 인증시간 체크
+		Notification.requestPermission(); // 브라우저 알림을 허용하는지 권한 요청
+		notifyCertifyTime(); // 인증시간 알림 체크
 		
 		// 챌린지 목록 호버효과
 		$("div.challengeList").hover(function(){
@@ -69,7 +71,6 @@
 		
 		// 목록중 챌린지 하나를 선택했을시
 		$("div.challengeList").click(function(e){
-			
 			let challenge_code = $(this).find("input#challenge_code").val();
 			location.href='<%= ctxPath%>/challenge/certifyMyInfo?challenge_code='+challenge_code;
 		});
@@ -78,6 +79,7 @@
 		// 1분 마다 챌린지의 인증시간을 체크함 (버튼활성화, 비활성화)
 		setInterval(function() {
 			checkCertifyTime();
+			notifyCertifyTime();
 			console.log("인증시간 체크완료");
 		}, 60000);
 		
@@ -95,6 +97,7 @@
 				$(element).next().prop('disabled', true );
 			} 
 		});
+		
 		
 		
 	}); // end $(document).ready
@@ -139,9 +142,7 @@
 		// console.log(nowday);
 		// 0 일 , 1 월 , 2 화, 3 수, 4 목, 5 금, 6 토
 		
-		// freq_type이 100 일 경우  매일
-		// freq_type이 101 일 경우  평일
-		// freq_type이 102 일 경우  주말
+		// freq_type이 100 일 경우  매일, 101=평일, 102=주말
 		switch (freq_type) {
 			case "100" :
 				if ( nowday == 0 || nowday == 1 || nowday == 2 || nowday == 3 || nowday == 4 || nowday == 5 || nowday == 6) {
@@ -204,6 +205,57 @@
 		
 		});
 	} // end function checkCertifyTime
+
+	
+	// 크롬 알림참을 띄우는 객체
+	function notify (challengeName) {
+		
+		if (Notification.permission != "denied") {
+			
+			new Notification("인증해주세요 !", {
+				body: "진행중인 챌린지 [ "+challengeName+" ] 의 인증시간입니다." ,
+				icon: "<%= ctxPath%>/images/fire-solid.png"
+			});
+		}
+	}
+	
+	
+	// 진행중인 챌린지중 인증시간이 되면 알림창을 띄우는 함수
+	function notifyCertifyTime() {
+		
+		const chaList = ${requestScope.chaListTime};
+		
+		$.each(chaList, function(index, elt) {
+			const startDate = new Date(elt.startDate);
+			const endDate = new Date(elt.endDate);
+			const today = new Date();
+
+			startDate.setHours(0);
+			endDate.setHours(23,59,59);
+
+			if ( startDate <= today && today <= endDate ) {
+				const time = elt.startTime;
+				const time_hour = time.substring(0, 2);
+				const time_min = time.substring(3, 5);
+				
+				const certifyTime = new Date(today.getFullYear(), today.getMonth(), today.getDate(), Number(time_hour), Number(time_min));
+				// const certifyTime = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 9, 34);
+				// 특정시간 지정하는 테스트 용도
+
+				let diff = (certifyTime.getTime() - today.getTime()) / 1000;
+				diff /= 60;
+				// console.log( Math.abs(Math.round(diff)) );
+				// 현재시간과 인증시간의 남은 분 출력하기
+				
+				if (Math.abs(Math.round(diff)) == 0) {
+					// 현재시간과 인증시간의 차이가 0 일때 알림 띄우기
+					notify(elt.challengeName);
+				}
+			}
+			
+		});
+	}
+	
 	
 </script>
 
@@ -214,7 +266,7 @@
 	  탭을 클릭할 때 탭이 페이드 인 및 페이드 아웃되도록 하려면 .fade 클래스를 .tab-pane에 추가하세요. 
 -->
 <div class="container-fluid" style="background-color: #f4f4f4;">
-<div class="container pb-5" style="border-radius: 20px; width: 70% !important; background-color: white; text-align: center;">
+<div class="container pb-5" style="border-radius: 20px; background-color: white; text-align: center;">
 	<br>
 	<h3 style="font-weight: bold;">참여중인 챌린지</h3>
 	<br>
@@ -255,7 +307,7 @@
 				  				<h4 class="my-3" style="font-weight: bold;">${chaDTO.challengeName}</h4>
 				  				<div class="pr-3" style="margin-top: 30px; display: flex; justify-content: space-between;">
 				  					<div><span>인증빈도 - </span><span>${chaDTO.frequency }</span></div>
-				  					<div><span>인증시간 - </span><span>${chaDTO.hourStart} ~ ${chaDTO.hourEnd}</span></div>
+				  					<div><span>인증시간 - </span><span class="certifyTime">${chaDTO.hourStart} ~ ${chaDTO.hourEnd}</span></div>
 				  				</div>
 				  				<div class="mr-3" style="display: flex; justify-content: space-between; margin-top: 30px;">
 					  				<div>
@@ -265,11 +317,10 @@
 					  				<%-- 순서 건들면 스크립트 틀어짐 --%>
 					  				<input class="checkCertify" type="hidden" value="${chaDTO.todayCheckCertify}">
 					  				<button id="certify" style="width: 300px; background-color: #EB534C;" type="button" class="btn btn-secondary btn-lg btn_certify">인증하기</button>
-				  					<input class="hour_start" type="hidden" value="${chaDTO.hourStart}" <%-- readonly="readonly" --%>>
-				  					<input class="hour_end" type="hidden" value="${chaDTO.hourEnd}" <%-- readonly="readonly" --%>>
-				  					<input class="fk_freq_type" type="hidden" value="${chaDTO.fkFreqType}" <%-- readonly="readonly" --%>>
-				  					<input id="challenge_code" type="hidden" value="${chaDTO.challengeCode}" <%-- readonly="readonly" --%>>
-				  					<%-- 챌린지의 참가중인 userid 들어와야함 get방식으로 보낼때 아이디 추가--%>
+				  					<input class="hour_start" type="hidden" value="${chaDTO.hourStart}" readonly="readonly">
+				  					<input class="hour_end" type="hidden" value="${chaDTO.hourEnd}" readonly="readonly">
+				  					<input class="fk_freq_type" type="hidden" value="${chaDTO.fkFreqType}" readonly="readonly">
+				  					<input id="challenge_code" type="hidden" value="${chaDTO.challengeCode}" readonly="readonly">
 				  					<%-- 순서 건들면 스크립트 틀어짐 --%>
 				  				</div>
 				  			</div>
