@@ -295,7 +295,7 @@ public class ChallengeController {
    // 	System.out.println("확인용 n : "  + n);
     		
     		if(n == 3) {
-    			mav.setViewName("redirect:/challenge/join");
+    			mav.setViewName("redirect:/challenge/challenge_all");
     		}
     		else {
     			mav.setViewName("lounge/error/add_arror.tiles1");
