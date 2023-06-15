@@ -263,11 +263,7 @@ font-weight: 400;
 }
 
 .All_content__card__h {
-
   width: 100%;
-
-  width: 1536px;
-
   margin-right: 100px;
   height: auto;
   display: flex;
@@ -359,13 +355,8 @@ a:hover { text-decoration: none;}
 }
 
 
-
-
-
-
-
 .ChallengeCard_info__describe {
-	font-size: 15px;
+   font-size: 15px;
     line-height: 24px;
     letter-spacing: -.4px;
     font-weight: 600;
@@ -419,18 +410,10 @@ a:hover { text-decoration: none;}
 
 .ChallengeCard_participant_image {
    font-size: 16px;
-
     font-family: Pretendard;
     font-weight: 600;
     letter-spacing: -.4px;
     color: black;
-
-    line-height: 19px;
-    font-family: Pretendard;
-    font-weight: 400;
-    letter-spacing: -.4px;
-    color: #999696;
-
   
   
 }
@@ -494,7 +477,7 @@ a:hover { text-decoration: none;}
 }
 
 
-
+/* Scroll Animation (sa, 스크롤 애니메이션) */
 .sa {
   opacity: 0;
   transition: all 0.8s ease;
@@ -504,7 +487,7 @@ a:hover { text-decoration: none;}
   
 }
 
-
+/* 아래에서 위로 페이드 인 */
 .sa-up {
   transform: translate(0, -100px);
 }
@@ -530,11 +513,7 @@ a:hover { text-decoration: none;}
   letter-spacing: -.4px;
   margin-top: 25px;
   text-decoration: none;
-
   margin-left: 678px;
-
-  margin-left: 649px;
-
   color: inherit;
 
 }
@@ -639,238 +618,136 @@ a:hover { text-decoration: none;}
 
 <script type="text/javascript">
 
-	$(document).ready(function(){
-		
-		$.ajax({
-			url: '<%=ctxPath%>/challenge/main_a',
-			method: 'GET',
-			dataType: 'json',
-			success: function(json) {
-				
-				let html = "";
+   $(document).ready(function(){
+      
+      $.ajax({
+         url: '<%=ctxPath%>/challenge/main_a',
+         method: 'GET',
+         dataType: 'json',
+         success: function(json) {
+            
+            let html = "";
 
-				// 데이터가 존재하는 경우
-				
-					$.each(json, function(index, item) {
-						 var startDate = new Date(item.startDate);
-		                 var month = startDate.getMonth() + 1; 
-		                 var day = startDate.getDate();
-		                 var dayOfWeek = startDate.getDay(); 
-		                 var daysOfWeek = ['일', '월', '화', '수', '목', '금', '토'];
-		                 var dayString = daysOfWeek[dayOfWeek];
-						
+            // 데이터가 존재하는 경우
+            
+               $.each(json, function(index, item) {
+                   var startDate = new Date(item.startDate);
+                       var month = startDate.getMonth() + 1; 
+                       var day = startDate.getDate();
+                       var dayOfWeek = startDate.getDay(); 
+                       var daysOfWeek = ['일', '월', '화', '수', '목', '금', '토'];
+                       var dayString = daysOfWeek[dayOfWeek];
+                  
+                  console.log(item.challengeCode);
+                  html += `
+                     <div class="All_content__card__e">
+                        <a class="ChallengeCard_card" onclick="javascript:location.href='/challenge/challengeView?challengeCode=\${item.challengeCode}'">
+                              <span><img src="/images/`+item.thumbnail+`" class="ChallengeCard_card_image"/></span>
+                           <div class="ChallengeCard_info" >
+                              <div class="ChallengeCard_info__subject">
+                                 <div class="ChallengeCard_tag">`+item.categoryName+`</div>
+                              </div>
+                              <div class="ChallengeCard_info__title">` + item.challengeName + `</div>
+                              <div class="ChallengeCard_info__describe">
+                                   챌린지 ·&nbsp;<img alt="info-calender" class="ChallengeCard_info_calender" src="/images/캘린더.png"/>
+                                       <div style="font-size:18px;">` + month + `.` + day + `(`+dayString+`)</div> `+ `&nbsp;· `+ item.setDate +` 
+                                       <img alt="info-check" src="https://images.munto.kr/munto-web/ic_action_check_off_24px.svg?s=48x48" class="ChallengeCard_info_check"/>
+                                       <div>` + item.frequency + `</div>
+                                                                  
+                              </div>
+                              <div class="ChallengeCard_info_participants">
+                                      <div class="ChallengeCard_participant_image"> 개설자ID`+ `&nbsp; : `+ item.fkUserid + `</div>                                    
 
-						console.log(item.challengeCode);
-						html += `
-							<div class="All_content__card__e">
-								<a class="ChallengeCard_card" onclick="javascript:location.href='/challenge/challengeView?challengeCode=\${item.challengeCode}'">
-						            <span><img src="/images/`+item.thumbnail+`" class="ChallengeCard_card_image"/></span>
-									<div class="ChallengeCard_info" >
-										<div class="ChallengeCard_info__subject">
-											<div class="ChallengeCard_tag">`+item.categoryName+`</div>
-										</div>
-										<div class="ChallengeCard_info__title">` + item.challengeName + `</div>
-										<div class="ChallengeCard_info__describe">
-										     챌린지 ·&nbsp;<img alt="info-calender" class="ChallengeCard_info_calender" src="/images/캘린더.png"/>
-		        	                      <div style="font-size:18px;">` + month + `.` + day + `(`+dayString+`)</div> `+ `&nbsp;· `+ item.setDate +` 
-		        	                      <img alt="info-check" src="https://images.munto.kr/munto-web/ic_action_check_off_24px.svg?s=48x48" class="ChallengeCard_info_check"/>
-		        	                      <div>` + item.frequency + `</div>
-		        	                                                 
-										</div>
-										<div class="ChallengeCard_info_participants">
-		        	                     <div class="ChallengeCard_participant_image"> 개설자ID`+ `&nbsp; : `+ item.fkUserid + `</div>	        	                      
+                                 <div class="ChallengeCard_member">
+                                        &nbsp;&nbsp;<img alt="people" srcSet="https://images.munto.kr/munto-web/ic_info_person_14px.svg?s=16x16 1x, https://images.munto.kr/munto-web/ic_info_person_14px.svg?s=32x32 2x" src="https://images.munto.kr/munto-web/ic_info_person_14px.svg?s=32x32"/>
+                                        <div class="ChallengeCard_member_count">` + item.memberCount + `명</div>
+                                         </div>
+                              </div>
+                           </div>
+                        </a>
+                     </div>
+                  `;
+               });
+            
 
-											<div class="ChallengeCard_member">
-			        	                    &nbsp;&nbsp;<img alt="people" srcSet="https://images.munto.kr/munto-web/ic_info_person_14px.svg?s=16x16 1x, https://images.munto.kr/munto-web/ic_info_person_14px.svg?s=32x32 2x" src="https://images.munto.kr/munto-web/ic_info_person_14px.svg?s=32x32"/>
-			        	                    <div class="ChallengeCard_member_count">` + item.memberCount + `명</div>
-			        	                     </div>
-										</div>
-									</div>
-								</a>
-							</div>
-						`;
-					});
-				
+            // html 변수에 저장된 코드를 기존 요소에 추가
+            $(".All_content__card__d").append(html);
+         },
+         error: function(request, status, error){
+               alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+           }
+      });
 
-				// html 변수에 저장된 코드를 기존 요소에 추가
-				$(".All_content__card__d").append(html);
-			},
-			error: function(request, status, error){
-	            alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
-	        }
-		});
-
-		
-		
-		$.ajax({
-			url: '<%=ctxPath%>/challenge/main_b',
-			method: 'GET',
-			dataType: 'json',
-			success: function(json) {
-				
-				let html = "";
-				
-				// 데이터가 존재하는 경우
-				
-				$.each(json, function(index, item) {
-					
-					var contentWithoutTags = item.content.replace(/<p>/g, '').replace(/<\/p>/g, '').replace(/<span[^>]*>/g, '').replace(/<\/span>/g, '');					
-					console.log(json);
-					html += `
-						<div class="All_content__card__e" >
-						<a class="ChallengeCard_card" onclick="javascript:location.href='/lounge/loungeView?seq=\${item.seq}'">
-				            <span><img src="/images/lgthumFiles/`+item.thumbnail+`" class="ChallengeCard_card_image"/></span>
-							<div class="ChallengeCard_info">
-								<div class="ChallengeCard_info__subject">
-									<div class="ChallengeCard_tag">`+item.name+`</div>
-								</div>
-								<div class="ChallengeCard_info__title">` + item.subject + `</div>
-								<div class="ChallengeCard_info__describe">
-								     
-        	                      <div style="font-size:18px;"></div>`+ contentWithoutTags +` 
-        	                      
-        	                      <div>` + item.readCount + `</div>
-        	                                                 회
-								</div>
-								<div class="ChallengeCard_info_participants">
-								<img src="https://images.munto.kr/munto-web/ic_action_like-empty-black_30px.svg?s=32x32" />
-        	                     <div class="ChallengeCard_participant_image" style="padding-top:2px">`+ item.likeCount + `&nbsp;</div>	        	                      
-	                        		<img src="https://images.munto.kr/munto-web/ic_action_comment_30px.svg?s=32x32"/>
-	                        		<div class="ChallengeCard_participant_image" style="padding-top:2px">`+ item.commentCount + `&nbsp;</div>
-		                        	<img src="https://images.munto.kr/munto-web/info_group.svg?s=32x32"/>
-	                        		<div class="ChallengeCard_participant_image" style="padding-top:2px">`+ item.readCount + `</div>
+      
+      
+      $.ajax({
+         url: '<%=ctxPath%>/challenge/main_b',
+         method: 'GET',
+         dataType: 'json',
+         success: function(json) {
+            
+            let html = "";
+            
+            // 데이터가 존재하는 경우
+            
+            $.each(json, function(index, item) {
+               
+               var contentWithoutTags = item.content.replace(/<p>/g, '').replace(/<\/p>/g, '').replace(/<span[^>]*>/g, '').replace(/<\/span>/g, '');               
+               console.log(json);
+               html += `
+                  <div class="All_content__card__e" >
+                  <a class="ChallengeCard_card" onclick="javascript:location.href='/lounge/loungeView?seq=\${item.seq}'">
+                        <span><img src="/images/lgthumFiles/`+item.thumbnail+`" class="ChallengeCard_card_image"/></span>
+                     <div class="ChallengeCard_info">
+                        <div class="ChallengeCard_info__subject">
+                           <div class="ChallengeCard_tag">`+item.name+`</div>
+                        </div>
+                        <div class="ChallengeCard_info__title">` + item.subject + `</div>
+                        <div class="ChallengeCard_info__describe">
+                             
+                                 <div style="font-size:18px;"></div>`+ contentWithoutTags +` 
+                                 
+                                 <div>` + item.readCount + `</div>
+                                                            회
+                        </div>
+                        <div class="ChallengeCard_info_participants">
+                        <img src="https://images.munto.kr/munto-web/ic_action_like-empty-black_30px.svg?s=32x32" />
+                                <div class="ChallengeCard_participant_image" style="padding-top:2px">`+ item.likeCount + `&nbsp;</div>                                    
+                                 <img src="https://images.munto.kr/munto-web/ic_action_comment_30px.svg?s=32x32"/>
+                                 <div class="ChallengeCard_participant_image" style="padding-top:2px">`+ item.commentCount + `&nbsp;</div>
+                                 <img src="https://images.munto.kr/munto-web/info_group.svg?s=32x32"/>
+                                 <div class="ChallengeCard_participant_image" style="padding-top:2px">`+ item.readCount + `</div>
 
  
-        	                     </div>
-								</div>
-							
-						</a>
-					</div>
-					`;
-				});
-			
+                                </div>
+                        </div>
+                     
+                  </a>
+               </div>
+               `;
+            });
+         
 
-			// html 변수에 저장된 코드를 기존 요소에 추가
-			$(".All_content__card__j").append(html);
-		},
-		error: function(request, status, error){
+         // html 변수에 저장된 코드를 기존 요소에 추가
+         $(".All_content__card__j").append(html);
+      },
+      error: function(request, status, error){
             alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
         }
-	});
-		
-		
-	});
-		
-	
-	function goView(challengeCode) {
-		 location.href = "<%= ctxPath%>/challenge/challengeView?challengeCode="+challengeCode; 
-	}	
-	
-	function goView_a(seq) {
-		 location.href = "<%= ctxPath%>/lounge/loungeView?seq="+seq; 
-	}
-
-						console.log(item.challengeName);
-						html += `
-							<div class="All_content__card__e">
-								<a class="ChallengeCard_card">
-						            <span><img src="/images/`+item.thumbnail+`" class="ChallengeCard_card_image"/></span>
-									<div class="ChallengeCard_info">
-										<div class="ChallengeCard_info__subject">
-											<div class="ChallengeCard_tag">`+item.categoryName+`</div>
-										</div>
-										<div class="ChallengeCard_info__title">` + item.challengeName + `</div>
-										<div class="ChallengeCard_info__describe">
-										     챌린지 ·&nbsp;<img alt="info-calender" class="ChallengeCard_info_calender" src="/images/캘린더.png"/>
-		        	                      <div style="font-size:18px;">` + month + `.` + day + `(`+dayString+`)</div> `+ `&nbsp;· `+ item.setDate +` 
-		        	                      <img alt="info-check" src="https://images.munto.kr/munto-web/ic_action_check_off_24px.svg?s=48x48" class="ChallengeCard_info_check"/>주
-		        	                      <div>` + item.fkDuringType + `</div>
-		        	                                                 회
-										</div>
-										<div class="ChallengeCard_info_participants">
-		        	                     <div class="ChallengeCard_participant_image"> 개설자ID`+ `&nbsp; : `+ item.fkUserid + `</div>	        	                      
-
-											<div class="ChallengeCard_member">
-			        	                    &nbsp;&nbsp;<img alt="people" srcSet="https://images.munto.kr/munto-web/ic_info_person_14px.svg?s=16x16 1x, https://images.munto.kr/munto-web/ic_info_person_14px.svg?s=32x32 2x" src="https://images.munto.kr/munto-web/ic_info_person_14px.svg?s=32x32"/>
-			        	                    <div class="ChallengeCard_member_count">` + item.memberCount + `명</div>
-			        	                     </div>
-										</div>
-									</div>
-								</a>
-							</div>
-						`;
-					});
-				
-
-				// html 변수에 저장된 코드를 기존 요소에 추가
-				$(".All_content__card__d").append(html);
-			},
-			error: function(request, status, error){
-	            alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
-	        }
-		});
-
-		
-		
-		$.ajax({
-			url: '<%=ctxPath%>/challenge/main_b',
-			method: 'GET',
-			dataType: 'json',
-			success: function(json) {
-				
-				let html = "";
-				
-				// 데이터가 존재하는 경우
-				
-				$.each(json, function(index, item) {
-					var contentWithoutTags = item.content.replace(/<p>/g, '').replace(/<\/p>/g, '').replace(/<span[^>]*>/g, '').replace(/<\/span>/g, '');					
-					console.log(json);
-					html += `
-						<div class="All_content__card__e">
-						<a class="ChallengeCard_card">
-				            <span><img src="/images/lgthumFiles/`+item.thumbnail+`" class="ChallengeCard_card_image"/></span>
-							<div class="ChallengeCard_info">
-								<div class="ChallengeCard_info__subject">
-									<div class="ChallengeCard_tag">`+item.name+`</div>
-								</div>
-								<div class="ChallengeCard_info__title">` + item.subject + `</div>
-								<div class="ChallengeCard_info__describe">
-								     
-        	                      <div style="font-size:18px;"></div>`+ contentWithoutTags +` 
-        	                      
-        	                      <div>` + item.readCount + `</div>
-        	                                                 회
-								</div>
-								<div class="ChallengeCard_info_participants">
-        	                     <div class="ChallengeCard_participant_image"> 개설자ID`+ `&nbsp; : `+ item.likeCount + `</div>	        	                      
-
-									<div class="ChallengeCard_member">
-	        	                    &nbsp;&nbsp;<img alt="people" srcSet="https://images.munto.kr/munto-web/ic_info_person_14px.svg?s=16x16 1x, https://images.munto.kr/munto-web/ic_info_person_14px.svg?s=32x32 2x" src="https://images.munto.kr/munto-web/ic_info_person_14px.svg?s=32x32"/>
-	        	                    <div class="ChallengeCard_member_count">` + item.commentCount + `명</div>
-	        	                     </div>
-								</div>
-							</div>
-						</a>
-					</div>
-					`;
-				});
-			
-
-			// html 변수에 저장된 코드를 기존 요소에 추가
-			$(".All_content__card__j").append(html);
-		},
-		error: function(request, status, error){
-            alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
-        }
-	});
-
-		
-	});
-		
-	
-		
-
-	
+   });
+      
+      
+   });
+      
+   
+   function goView(challengeCode) {
+       location.href = "<%= ctxPath%>/challenge/challengeView?challengeCode="+challengeCode; 
+   }   
+   
+   function goView_a(seq) {
+       location.href = "<%= ctxPath%>/lounge/loungeView?seq="+seq; 
+   }
+   
 
 
 
@@ -891,38 +768,12 @@ a:hover { text-decoration: none;}
                              관심사 기반 커뮤니티, <b>&nbsp;Heabollangce</b>
                          </div>
                      
-
                      <img alt="people" src="<%= ctxPath%>/images/메인페이지.png" width="800" height="566" data-nimg="1" class="Main_people__qOdFR" style="color:transparent"/>
-
-                     <img alt="people" src="<%= ctxPath%>/images/메인페이지.png" width="800" height="566" decoding="async" data-nimg="1" class="Main_people__qOdFR" style="color:transparent"/>
-
                  </div>
 </section>     
     
 
-
 <div class="challenge_title_e" >
-
-    
-<div style="background-color: #f4f4f4">
-<div class="carousel">
-  <div class="carousel-container">
-    <div class="carousel-item">
-      <img src="https://images.munto.kr/munto-web/ic_info_challengeleader_16px.svg" alt="Image 1">
-    </div>
-    <div class="carousel-item">
-      <img src="https://images.munto.kr/munto-web/ic_info_challengeleader_16px.svg" alt="Image 2">
-    </div>
-    <div class="carousel-item">
-      <img src="https://images.munto.kr/munto-web/ic_info_challengeleader_16px.svg" alt="Image 3">
-    </div>
-  </div>
-</div>
-
-
-
-<div class="challenge_title_e">
-
     <div class="challenge_title_f" style="margin-top: 20px;">
         <img alt="challenge-mark" src="https://images.munto.kr/munto-web/ic_info_challengeleader_16px.svg" width="18" height="18"  data-nimg="1" class="challenge_title__icon__f3gEi"  style="color:transparent"/>챌린지
     </div>
@@ -932,28 +783,17 @@ a:hover { text-decoration: none;}
 <div class="All_content__card__a" >
   <div class="All_content__card__b">
       <div class="All_content__card__c">
-      <div class="All_content__card__d" >
-
-
+      <div class="All_content__card__d">
 
 
 
       </div>
       </div>
-
       </div>
       </div>
-
-      </div>
-      </div>
-		       
-
-
+             
           <a class="Socialing_more" href="<%=ctxPath%>/challenge/challenge_all"><div class="Socialing_more__text" style="color: black;">더보기<img src="https://images.munto.kr/munto-web/ic_arrow_right_14px.svg"></div></a>
-
-		 
-
-
+       
       <div class="challenge_title_e">
         <div class="challenge_title_h">
             <img alt="lounge-mark" src="https://images.munto.kr/munto-web/ic_info_lounge-fill_24px.svg" width="18" height="18" decoding="async" data-nimg="1" class="Lounge_title__icon__UV95I" loading="lazy" style="color:transparent"/>라운지
@@ -961,11 +801,7 @@ a:hover { text-decoration: none;}
         <div class="challenge_title_g">비슷한 관심사를 가진<br/>멤버들의 취향 피드 구독하기</div>
       </div>
     
-
     <div class="All_content__card__f" style="overflow-x:hidden" >
-
-    <div class="All_content__card__f">
-
       <div class="All_content__card__g">
           <div class="All_content__card__h">
           <div class="All_content__card__j">
