@@ -268,6 +268,10 @@ String ctxPath = request.getContextPath();
 
 	});
 
+	$(document).on('click', 'button#logout', () => {
+		localStorage.setItem('login', null);
+	});
+
 </script>
 
 <%-- 상단배너 시작 --%>
