@@ -683,13 +683,13 @@ public class MypageController {
 			
 			if(n==1) {
 				request.setAttribute("message", "회원탈퇴에 성공했습니다.\\n지금까지 이용해주셔서 감사합니다.");
-				request.setAttribute("loc", "/challenge/main");
+				request.setAttribute("loc", "/api/v1/user/logout");
 			}
 			else {
 				request.setAttribute("message", "회원탈퇴에 실패했습니다.\\n고객센터에 문의해주세요.");
 				request.setAttribute("loc", "/challenge/main");
 			}
-			
+			 
 			return "msg";
 		}
 	}
