@@ -314,6 +314,7 @@ public class LoungeController {
 		String accessToken = CookieUtil.getToken(request,"accessToken");
 
 		String userid = "";
+		UserDTO loginuser = null;
 		
 		// 로그인 되어있다면 정상적으로 토큰에 접근 가능하며 아래와 같이 userid를 얻을  수 있습니다.
 		// (로그아웃을 한 경우 null)
@@ -321,13 +322,11 @@ public class LoungeController {
 		   userid = jwtTokenizer.getUseridFromToken(accessToken);
 		   
 		   paraMap.put("userid", userid);
+		   
+		   loginuser = interuserservice.findByUserid(userid);
+		   mav.addObject("loginuser", loginuser);
 		}
 		
-		UserDTO loginuser = interuserservice.findByUserid(userid);
-		
-		mav.addObject("loginuser", loginuser);
-	    
-	    
 		// --- #3-1. 페이징 처리 한 검색어 있는 전체 글 목록 보기 (#102. -> #114.)
 		lgboardList = service.lgboardListSearch(paraMap);
 		// System.out.println("lgboardList : " + lgboardList);
@@ -442,16 +441,19 @@ public class LoungeController {
 		String accessToken = CookieUtil.getToken(request,"accessToken");
 
 		String userid = "";
+		UserDTO loginuser =  null;
 		
 		// 로그인 되어있다면 정상적으로 토큰에 접근 가능하며 아래와 같이 userid를 얻을  수 있습니다.
 		// (로그아웃을 한 경우 null)
 		if(accessToken != null) {
 		   userid = jwtTokenizer.getUseridFromToken(accessToken);
+		   
+		   loginuser = interuserservice.findByUserid(userid);
+			
+		   mav.addObject("loginuser", loginuser);
 		}
 		
-		UserDTO loginuser = interuserservice.findByUserid(userid);
 		
-		mav.addObject("loginuser", loginuser);
 		
 		// --- 조회하고자 하는 글번호 받아오기 ---
 		String seq = request.getParameter("seq");

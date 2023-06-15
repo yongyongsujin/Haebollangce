@@ -101,7 +101,7 @@
 	  						html += ` <div class="d-flex flex-row mb-3"> 
 			                		 	<img style="border: solid 3px #eee; border-radius: 100%; width:45px; height: 45px; vertical-align: top;" src="<%= ctxPath%>/images/\${item.lgcprofile}" /> 
 			  	              		 	<div class="c-details"> 
-			  	                     		<h5 class="mb-1 ml-3 lounge_comment_userid"><span class="lounge_comment_name">\${item.fk_userid}</span></h5> 
+			  	                     		<h5 class="mb-1 ml-3 lounge_comment_userid"><span class="lounge_comment_name">\${item.name}</span></h5> 
 			  	                     		<input type="hidden" name="seq" id="seq" value="\${item.seq}" /> 
 			  	                     		<div class="c-details">
 			  		                 			<h6 class="mb-0 ml-3 lounge_comment_content">\${item.content}</h6>
@@ -296,7 +296,7 @@
 		    	<c:if test="${empty loginuser}">
 			    	<div class="d-flex flex-row align-items-center">
 			                <div > 
-			                	<img style="border: solid 3px #eee; border-radius: 100%; width:45px; height: 45px; vertical-align: top;" src="/images/기본프로필.png"/>
+			                	<img style="border: solid 3px #eee; border-radius: 100%; width:45px; height: 45px; vertical-align: top;" src="/images/defaultProfic.png"/>
 			                </div>
 			                <div style="width:100%;">
 			                	<div class=" c-details">
