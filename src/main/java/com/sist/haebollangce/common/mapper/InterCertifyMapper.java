@@ -72,6 +72,10 @@ public interface InterCertifyMapper {
 	Map<String, String> checkReport(Map<String, String> paraMap);
 	// 로그인한 유저가 신고했던 인증인지 체크하는 메소드
 
+	List<CertifyDTO> getAllCertifyHistory(Map<String, String> paraMap);
+	// 모든유저의 인증기록 가져오기 (인증샷)
+
+
 
 
 
