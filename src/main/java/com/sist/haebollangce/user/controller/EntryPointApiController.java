@@ -14,6 +14,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 
 @RestController
 @RequestMapping("/api/v1/user")
@@ -25,7 +27,7 @@ public class EntryPointApiController {
     private final CookieUtil cookieUtil;
 
     @PostMapping("/login")
-    public ResponseEntity login(@RequestBody UserDTO.UserLoginDTO loginUser, HttpServletRequest request) {
+    public ResponseEntity login(@RequestBody UserDTO.UserLoginDTO loginUser, HttpServletRequest request) throws UnsupportedEncodingException {
 
         UserDTO user = service.formLogin(loginUser);
 
@@ -36,10 +38,17 @@ public class EntryPointApiController {
         TokenDTO tokens = service.getTokens(user);
         ResponseCookie cookie = cookieUtil.saveAccessToken("accessToken", tokens.getAccessToken());
 
-        String redirectUrl = request.getHeader("custom-from");
+        String priorUrl = request.getHeader("custom-from");
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.SET_COOKIE, String.valueOf(cookie));
-        headers.add(HttpHeaders.LOCATION, redirectUrl+"?xduTvAAQVxq=true");
+
+        String encodedPriorUrl = URLEncoder.encode(priorUrl, "utf-8");
+        String encodedDefaultUrl = URLEncoder.encode("/challenge/main", "utf-8");
+        if(priorUrl.length() > 0) {
+            headers.add(HttpHeaders.LOCATION, "/user/login-process?redirect="+encodedPriorUrl+"&xduTvAAQVxq=true");
+        } else {
+            headers.add(HttpHeaders.LOCATION, "/user/login-process?redirect="+encodedDefaultUrl+"&xduTvAAQVxq=true");
+        }
 
         return new ResponseEntity(headers,HttpStatus.FOUND);
     }

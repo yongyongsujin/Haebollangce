@@ -55,9 +55,9 @@
         const from = document.querySelector('input[name="from"]').value;
 
         const xhr = new XMLHttpRequest;
-        xhr.open('POST', 'http://localhost:7070/api/v1/user/login', 'true');
+        xhr.open('POST', '/api/v1/user/login', 'true');
         xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
-        if(from.length > 0) {
+        if(from.length > 0 || from != null) {
             xhr.setRequestHeader('custom-from', from);
         }
         xhr.withCredentials = true;

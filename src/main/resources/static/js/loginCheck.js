@@ -5,15 +5,16 @@
 * 아니라면 로그인 박스에 '로그인', '회원가입' 버튼 생성
 * */
 
-const params = new Proxy(new URLSearchParams(window.location.search), {
-    get: (searchParams, prop) => searchParams.get(prop),
-});
-
-const value = params.xduTvAAQVxq;
-console.log('value '+value);
-if(value) {
-    localStorage.setItem("login", value);
-}
+// const params = new Proxy(new URLSearchParams(window.location.search), {
+//     get: (searchParams, prop) => searchParams.get(prop),
+// });
+//
+// const value = params.xduTvAAQVxq;
+// const value = '${boolLogin}';
+// console.log('value '+value);
+// if(value) {
+//     localStorage.setItem("login", value);
+// }
 // else {
 //     localStorage.setItem("login", false);
 // }
