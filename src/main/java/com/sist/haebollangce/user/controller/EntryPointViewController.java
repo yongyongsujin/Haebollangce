@@ -38,4 +38,17 @@ public class EntryPointViewController {
         return "tiles_test_1.tiles1";
     }
 
+
+    @GetMapping("/login-process")
+    public String process(HttpServletRequest request){
+        String redirectUrl = request.getParameter("redirect");
+        String boolLogin = request.getParameter("xduTvAAQVxq");
+
+        request.setAttribute("boolLogin", boolLogin);
+        request.setAttribute("redirectUrl", redirectUrl);
+
+        return "login_process.tiles1";
+    }
+
+
 }
