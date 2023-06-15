@@ -243,7 +243,7 @@
 		                </div>
 		            </div>
 		            <c:if test="${loginuser != null && loginuser.userid == lgboarddto.fkUserid}">
-		            	<div class="badge2"> <span style="font-size=5pt;" onclick="javascript:location.href='/mypage_info_edit_ajax'">프로필편집</span> </div>
+		            	<div class="badge2"> <span style="font-size=5pt;" onclick="javascript:location.href='/mypage/mypageHome'">프로필편집</span> </div>
 		            </c:if>
 		            <c:if test="${loginuser != null && loginuser.userid != lgboarddto.fkUserid}">
 		            	<div class="badge2"> <span>follow</span> </div>
@@ -253,14 +253,14 @@
 		            </c:if>
 		        </div>
 		        <div class="mt-4" style="padding:10px;">
-		   			<img style="width:100%;" src="<%= ctxPath%>/images/lgthumFiles/${lgboarddto.thumbnail}" />
+		   			<img style="width:100%;" src="/images/lgthumFiles/${lgboarddto.thumbnail}" />
 		            <div class="mt-3">
 		            	<h4>${lgboarddto.subject}</h4>
 		                <div>${lgboarddto.content}</div>
 		                <c:if test="${lgboarddto.orgFilename != null}">
 			                <div style="border:solid 1px silver; border-radius:7px; margin:10px; padding:7px;"> 첨부파일 |  
 			                	<c:if test="${loginuser != null}">
-			               			<a href="<%= request.getContextPath() %>/lounge/lgdownload?seq=${lgboarddto.seq}" style="color:black;">${lgboarddto.orgFilename} ( <fmt:formatNumber value="${lgboarddto.fileSize}" pattern="#,###" /> bytes ) </a>
+			               			<a href="/lounge/lgdownload?seq=${lgboarddto.seq}" style="color:black;">${lgboarddto.orgFilename} ( <fmt:formatNumber value="${lgboarddto.fileSize}" pattern="#,###" /> bytes ) </a>
 			               		</c:if>
 			               		<c:if test="${loginuser == null}">
 			               			${lgboarddto.orgFilename}
