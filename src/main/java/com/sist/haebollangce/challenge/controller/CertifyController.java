@@ -32,13 +32,26 @@ public class CertifyController {
     @RequestMapping(value="/challenge/joinEnd")
     public String challenge_joinEnd(HttpServletRequest request) {
     	
+    	int n = 0;
     	try {
-			service.joinChallenge(request);
+			n = service.joinChallenge(request);
 		} catch (Throwable e) {
 			e.printStackTrace();
 		}
     	
-    	return "tiles1/certify/joinEnd";
+    	if (n==1) {
+    		return "tiles1/certify/joinEnd";
+    	}
+    	
+    	String message = "참가중에 알 수 없는 에러가 발생했습니다.<br>관리자에게 문의하세요";
+		String loc = request.getContextPath()+"/challenge/challenge_all";
+		String icon = "info";
+		
+		request.setAttribute("message", message);
+		request.setAttribute("loc", loc);
+		request.setAttribute("icon", icon);
+		
+		return "tiles1/certify/swal_msg";
     }
     
     
@@ -78,7 +91,7 @@ public class CertifyController {
 			// 인증이 실패되었을 경우 - challenge_info 테이블에 달성률의 체크제약 조건 0 ~ 100 안의 숫자만 가능 
 			// 100%가 넘는 인증일 경우 종료된 챌린지이어야함
 			
-			String message = "종료된 챌린지입니다.";
+			String message = "모든 인증을 챌린지입니다.";
     		String loc = mrequest.getContextPath()+"/challenge/certifyList";
     		String icon = "info";
     		
@@ -103,20 +116,7 @@ public class CertifyController {
     		mav.addObject("icon", icon);
     		
     		mav.setViewName("tiles1/certify/swal_msg");
-    		
-		} else {
-			// 인증이 실패되었을 경우
-
-			String message = "인증 실패.<br>관리자에게 문의하세요.";
-    		String loc = mrequest.getContextPath()+"/challenge/certifyList";
-    		String icon = "error";
-    		
-    		mav.addObject("message", message);
-    		mav.addObject("loc", loc);
-    		mav.addObject("icon", icon);
-    		
-    		mav.setViewName("tiles1/certify/swal_msg");
-		}
+		} 
 		
 		return mav;
     }

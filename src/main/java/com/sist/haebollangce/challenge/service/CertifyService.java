@@ -10,6 +10,8 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -119,11 +121,11 @@ public class CertifyService implements InterCertifyService {
      	paraMap.put("fk_challenge_code", fk_challenge_code);
      	paraMap.put("after_deposit", after_deposit);
  		
- 		int n = 0, m = 0, k = 0; 
+ 		int n = 0, m = 0, k = 0;
+ 		// 트랜잭션 처리
  		
  		m = dao.joinChallenge(paraMap);
- 		// 유저가 챌린지 참가했을 때 - tbl_challenge_info 에 insert (참가인원수 update 트랜잭션 처리)
- 		// 맵퍼 userid 변경해야함
+ 		// 유저가 챌린지 참가했을 때 - tbl_challenge_info 에 insert
  		
  		if (m == 1) {
  			n = dao.updateMemberCount(paraMap);
@@ -147,12 +149,7 @@ public class CertifyService implements InterCertifyService {
 	@Override
 	public ModelAndView getJoinedChaList(ModelAndView mav, HttpServletRequest request) {
 		
-		// 쿠키에서 accessToken (jWT 형식)을 가져옵니다. 
  		String accessToken = CookieUtil.getToken(request,"accessToken");
-
- 		// 로그인 되어있다면 정상적으로 토큰에 접근 가능하며 아래와 같이 userid를 얻을  수 있습니다.
- 		// (로그아웃을 한 경우 null)
- 		
  		String fk_userid = "";
  		
  		if(accessToken != null) {
@@ -163,9 +160,25 @@ public class CertifyService implements InterCertifyService {
 		List<ChallengeDTO> chaList = dao.getJoinedChaList(fk_userid);
 		// 참가중인 챌린지 리스트 가져오기
 		
-		int ing_count = 0;  // 초기값 설정
-    	int before_count = 0;  // 초기값 설정
-    	
+		JSONArray jsonArr = new JSONArray();
+		if ( chaList != null ) {
+			for (ChallengeDTO chaDTO : chaList) {
+				JSONObject jsonObj = new JSONObject();
+				jsonObj.put("challengeName", chaDTO.getChallengeName());
+				jsonObj.put("startDate", chaDTO.getStartDate());
+				jsonObj.put("endDate", chaDTO.getEnddate());
+				jsonObj.put("startTime", chaDTO.getHourStart());
+				jsonObj.put("endTime", chaDTO.getHourEnd());
+				
+				jsonArr.put(jsonObj);
+			}
+			
+		}
+		String chaListTime = jsonArr.toString();
+		
+		int ing_count = 0, before_count = 0;  // 초기값 설정
+    	// 진행중인 챌린지 개수와 시작전인 챌린지 개수 알아오기
+		
     	for (ChallengeDTO chaDTO : chaList) {
     	    
     	    String str_startDate = chaDTO.getStartDate(); // chaDTO에서 시작 날짜를 가져옴
@@ -197,6 +210,7 @@ public class CertifyService implements InterCertifyService {
     	mav.addObject("ing_count", ing_count);
     	mav.addObject("before_count", before_count);
     	mav.addObject("chaList", chaList);
+    	mav.addObject("chaListTime", chaListTime);
     	
 		return mav;
 	}
@@ -339,6 +353,7 @@ public class CertifyService implements InterCertifyService {
 	}
 
 	
+	// 유저 신고하기
 	@Override
 	public void userReport(HttpServletRequest request) {
 		
@@ -410,7 +425,6 @@ public class CertifyService implements InterCertifyService {
 	    
 		List<ChallengeDTO> endChallengeList = dao.getAllChallengeList();
 		// 전체 챌린지 리스트 가져오기 
-		// where 절 기간 수정해야함
 		
 		if (endChallengeList.size() > 0) {
 			// 종료된 챌린지가 있을 때
@@ -526,7 +540,6 @@ public class CertifyService implements InterCertifyService {
 			
 		} // end if 종료된 챌린지가 있을 경우
 		
-		return ;
 	}
 
 

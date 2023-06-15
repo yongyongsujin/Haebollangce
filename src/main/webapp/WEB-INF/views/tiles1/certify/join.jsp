@@ -323,7 +323,7 @@
 </script>
 
 <div class="container-fluid" style="background-color: #f4f4f4;">
-<div class="container pb-5" style="border-radius: 20px; background-color: white; width: 70% !important; padding: 0; text-align: center;"> 
+<div class="container pb-5" style="border-radius: 20px; background-color: white; padding: 0; text-align: center;"> 
 	<br>
 	<h3 style="font-weight: bold;">챌린지 참가하기</h3>
 	<br>
@@ -438,8 +438,8 @@
 </div>
 
 <form name="challenge_info">
-	<input type="text" id="userid" name="fk_userid" value="${userid}" <%-- readonly="readonly" --%>>
-	<input type="number" id="price" name="entry_fee" value="" <%-- readonly="readonly" --%>>
-	<input type="text" id="challenge_code" name="fk_challenge_code" value="${chaDTO.challengeCode}" <%-- readonly="readonly" --%>>
-	<input type="text" id="after_deposit" name="after_deposit" value="" <%-- readonly="readonly" --%>>
+	<input type="hidden" id="userid" name="fk_userid" value="${userid}" readonly="readonly">
+	<input type="hidden" id="price" name="entry_fee" value="" readonly="readonly">
+	<input type="hidden" id="challenge_code" name="fk_challenge_code" value="${chaDTO.challengeCode}" readonly="readonly">
+	<input type="hidden" id="after_deposit" name="after_deposit" value="" readonly="readonly">
 </form>
