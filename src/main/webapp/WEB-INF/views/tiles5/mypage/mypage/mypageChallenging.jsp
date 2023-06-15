@@ -316,7 +316,7 @@
 									 +	"			<div class='div_info'>인증시간 : " + json[i].hour_start + " ~ " + json[i].hour_end + "</div>"
 									 +  " 		</td>"
 									 +	"		<td class='td_width_22'>"
-									 +	"			<div type='button' class='go_button' onclick='go_certify("+json[i].fk_challenge_code+");'>인증하러가기</div>"
+									 +	"			<div type='button' class='go_button' onclick='go_certify();'>인증하러가기</div>"
 									 +  "		</td>"
 									 +  "	</tr>"
 									 +	"</table>";
@@ -397,7 +397,7 @@
 									  +	 "				<div class='div_info'>인증시간 : " + json[i].hour_start + " ~ " + json[i].hour_end + "</div>"
 									  +  " 			</td>"
 									  +	 "			<td class='td_width_22'>"
-									  +	 "				<div class='go_button' onclick='go_certify("+json[i].fk_challenge_code+");'>인증하러가기</div>"
+									  +	 "				<div class='go_button' onclick='go_certify();'>인증하러가기</div>"
 									  +  "			</td>"
 									  +  "		</tr>"
 									  +	 "</table>";
@@ -721,7 +721,7 @@
 										 +	"			<div class='div_info'>인증시간: " + json[i].hour_start + "~" + json[i].hour_end + "</div>"
 										 +  " 		</td>"
 										 +	"		<td class='td_width_22'>"
-										 +	"			<div class='go_button' onclick='go_certify("+json[i].fk_challenge_code+");'>인증하러가기</div>"
+										 +	"			<div class='go_button' onclick='go_certify();'>인증하러가기</div>"
 										 +  "		</td>"
 										 +  "	</tr>"
 										 +	"</table>";
@@ -814,7 +814,7 @@
 										 +	"			<div class='div_info'>인증시간: " + json[i].hour_start + "~" + json[i].hour_end + "</div>"
 										 +  " 		</td>"
 										 +	"		<td class='td_width_22'>"
-										 +	"			<div class='go_button' onclick='go_certify("+json[i].fk_challenge_code+");'>인증하러가기</div>"
+										 +	"			<div class='go_button' onclick='go_certify();'>인증하러가기</div>"
 										 +  "		</td>"
 										 +  "	</tr>"
 										 +	"</table>";
@@ -853,7 +853,7 @@
 	
 	function go_certify(e) {
 		
-		location.href = "<%=ctxPath%>/challenge/certify?challenge_code=" + e;
+		location.href = "<%=ctxPath%>/challenge/certifyList";
 		
 	} // end of function go_certify() -----
 	

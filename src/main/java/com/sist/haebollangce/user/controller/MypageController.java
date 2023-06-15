@@ -812,38 +812,34 @@ public class MypageController {
 		
 		String newFileName = "";
 		
-		if (profile_pic_file != null) {
-			try {
-				MultipartFile mtfile = mtp_request.getFile("profile_pic_file");
+		try {
+			MultipartFile mtfile = mtp_request.getFile("profile_pic_file");
+		
+			// System.out.println(mtfile);
 			
-				// System.out.println(mtfile);
-				
-				byte[] bytes = null;
-				// 첨부파일의 내용물을 담는 것
-				
-				long fileSize = 0;
-				// 첨부파일의 크기
-				
-				// 첨부파일의 내용물을 읽어오는 것
-				bytes = mtfile.getBytes();
-				
-				originalFilename = mtfile.getOriginalFilename();
-				
-				// System.out.println("originalFilename : " + originalFilename);
-				
-				newFileName = fileManager.doFileUpload(bytes, originalFilename, path);
-				
-				// System.out.println("newFileName : " + newFileName);
-				
-			} catch (IllegalStateException | IOException e) {
-				e.printStackTrace();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+			byte[] bytes = null;
+			// 첨부파일의 내용물을 담는 것
+			
+			long fileSize = 0;
+			// 첨부파일의 크기
+			
+			// 첨부파일의 내용물을 읽어오는 것
+			bytes = mtfile.getBytes();
+			
+			originalFilename = mtfile.getOriginalFilename();
+			
+			// System.out.println("originalFilename : " + originalFilename);
+			
+			newFileName = fileManager.doFileUpload(bytes, originalFilename, path);
+			
+			// System.out.println("newFileName : " + newFileName);
+			
+		} catch (IllegalStateException | IOException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-		else {
-			newFileName = udto.getProfilePic();
-		}
+		
 		// System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1 확인용 : " + newFileName);
 		
 		if( !passwordEncoder.matches(pw, udto.getPw() )) {
