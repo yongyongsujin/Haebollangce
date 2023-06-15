@@ -34,6 +34,8 @@
 	<!-- 스마트에디터 -->
 	<script type="text/javascript" src="/smarteditor/js/HuskyEZCreator.js" charset="utf-8"></script>
 	
+	<!-- 로그인 체크 -->
+	<script type="text/javascript" src="/js/loginCheck.js"></script>
 	<%--  ===== 스피너 및 datepicker 를 사용하기 위해  jquery-ui 사용하기 ===== --%>
 	<link rel="stylesheet" type="text/css" href="<%= ctxPath%>/jquery-ui-1.13.1.custom/jquery-ui.css" />
 	<script type="text/javascript" src="<%= ctxPath%>/jquery-ui-1.13.1.custom/jquery-ui.js"></script>
@@ -45,12 +47,17 @@
   	<script type="text/javascript" src="https://cdn.iamport.kr/js/iamport.payment-1.1.5.js"></script>
 	
 	<%-- 하이차트 --%>
-	<script src="<%= ctxPath%>/Highcharts-11.0.1/code/highcharts.js"></script>
-	<script src="<%= ctxPath%>/Highcharts-11.0.1/code/modules/data.js"></script>
-	<script src="<%= ctxPath%>/Highcharts-11.0.1/code/modules/drilldown.js"></script>
-	<script src="<%= ctxPath%>/Highcharts-11.0.1/code/modules/exporting.js"></script>
-	<script src="<%= ctxPath%>/Highcharts-11.0.1/code/modules/export-data.js"></script>
-	<script src="<%= ctxPath%>/Highcharts-11.0.1/code/modules/accessibility.js"></script>
+	<script src="https://code.highcharts.com/highcharts.js"></script>
+	<script src="https://code.highcharts.com/modules/series-label.js"></script>
+	<script src="https://code.highcharts.com/modules/data.js"></script>
+	<script src="https://code.highcharts.com/modules/drilldown.js"></script>
+	<script src="https://code.highcharts.com/modules/exporting.js"></script>
+	<script src="https://code.highcharts.com/modules/export-data.js"></script>
+	<script src="https://code.highcharts.com/modules/accessibility.js"></script>
+	
+	<%-- 툴팁 사용 --%>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
 	
 </head>
 

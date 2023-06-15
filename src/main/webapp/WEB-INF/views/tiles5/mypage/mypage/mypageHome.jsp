@@ -48,7 +48,7 @@
 		color: black;
 		padding: 7px 12px;
 		text-align: center;
-		font-size: 13pt;
+		font-size: 11pt;
 		transition: 0.3s;
 		border-radius: 35px;
 	}
@@ -140,6 +140,18 @@
 		overflow: auto;
 	}
 	
+	td.td_top {
+		padding: 20% 30% 1% 33%;
+	}
+	
+	td.td_middle {
+		padding: 0 20%;
+	}
+	
+	td.td_bottom {
+		padding: 5% 40% 23% 41%;
+	}
+	
 	/* 하이차트 css 시작 */
 	.highcharts-figure,
 	.highcharts-data-table table {
@@ -195,6 +207,11 @@
 	
 	$(document).ready(function(){
 		
+		const backURL = sessionStorage.getItem("URL")
+	    if ( backURL != null ){
+			location.href = backURL;
+			sessionStorage.removeItem("URL");
+	    }
 		
 		// 7일전 알아오기 시작 //
 		let nowDate = new Date();
@@ -233,12 +250,12 @@
 		const now_time = hour + ":" + minutes + ":" + seconds;
     	// 지금 시간 알아오기 끝 // 
     	
-		<%-- 사용자 정보 가져오기 시작 --%>
+		<%-- 사용자 충전도 알아오기 시작 --%>
 		$.ajax ({
 			url:"/mypage/user_information_ajax",
 			type:"get",
 			data:{
-				"userid":"jisu"
+				"userid":"${requestScope.udto.userid}"
 			},
 			dataType:"json",
 			success:function(json){
@@ -248,92 +265,102 @@
 				
 				let level = "";
 				
-				for(var i=0; i<json.length; i++) {
-					
-					let exp = json[i].exp;
-					
-					html = "<div class='auto'>";
-					 
-					if(exp < 100) {
-						html += "<div id='user_level' style='color:#996633'>Bronze</div>";
-					}
-					else if(exp >= 100 && exp < 300) { 
-						html += "<div id='user_level' style='color:#b3b3b3'>Sliver</div>";
-					}
-					else if(exp >=300 && exp < 800) {
-						html += "<div id='user_level' style='color:#e6e600'>Gold</div>";
-					}
-					else if(exp >=800 && exp < 1600) {
-						html += "<div id='user_level' style='color:#0052cc'>Sapphire</div>";
-					}
-					else if(exp >=1600 && exp < 2800) {
-						html += "<div id='user_level' style='color:#4d4d4d'>Diamond</div>";
-					}
-					else {
-						html += "<div id='user_level' style='color:#ff0000'>Vip</div>";
-					}
-					 
-					 html += "		</div>"
-					 	  +  "		<div class='col'>"
-					 	  + "			<div class='progress progress-sm mr-2 bar_size'>";
-					 	  
-				 	if(exp <= 100) {
-						html += "<div class='progress-bar bg-info' role='progressbar' style='width:" + exp + "%;' aria-valuenow='50' aria-valuemin='0' aria-valuemax='100'>"
-							 +	"<span>다음까지 남은 경험치: " + (100-exp) +"</span>"
-							 +  "</div>";
-					}
-					else if(exp > 100 && exp <= 300) {  
-						
-						let exp_width = (exp/300)*100;
-						
-						html += "<div class='progress-bar bg-info' role='progressbar' style='width:" + exp_width + "%;' aria-valuenow='50' aria-valuemin='0' aria-valuemax='100'>"
-							 +	"<span>다음까지 남은 경험치: " + (300-exp_width) +"</span>"
-							 +  "</div>";
-					}
-					else if(exp > 300 && exp <= 800) {
-						
-						let exp_width = (exp/800)*100;
-						
-						html += "<div class='progress-bar bg-info' role='progressbar' style='width:" + exp_width + "%;' aria-valuenow='50' aria-valuemin='0' aria-valuemax='100'>"
-						 	 +	"<span>다음까지 남은 경험치: " + (800-exp_width) +"</span>"
-						 	 +  "</div>";
-					}
-					else if(exp > 800 && exp <= 1600) {
-						
-						let exp_width = (exp/1600)*100;
-						
-						html += "<div class='progress-bar bg-info' role='progressbar' style='width:" + exp_width + "%;' aria-valuenow='50' aria-valuemin='0' aria-valuemax='100'>"
-							 +	"<span>다음까지 남은 경험치: " + (1600-exp_width) +"</span>"
-					 	 	 +  "</div>";
-					}
-					else if(exp > 1600 && exp <= 2800) {
-						
-						let exp_width = (exp/2800)*100;
-						
-						html += "<div class='progress-bar bg-info' role='progressbar' style='width:" + exp_width + "%;' aria-valuenow='50' aria-valuemin='0' aria-valuemax='100'>"
-							 +	"<span>다음까지 남은 경험치: " + (2800-exp_width) +"</span>"
-				 	 	 	 +  "</div>";
-					}
-					else {
-						
-						let exp_width = (exp/5000)*100;
-						
-						html += "<div class='progress-bar bg-info' role='progressbar' style='width:" + exp_width + "%;' aria-valuenow='50' aria-valuemin='0' aria-valuemax='100'></div>";
-					}	  
-					 	  
-					html += "		</div>"
-					 	 + "</div>";
+				let exp = json.exp;
 				
-					$("div#info_position").html(html);	
-				
-					html = json[i].user_all_deposit + " 원";
-					
-					$("div#deposit_position").html(html);
-					
-					html = json[i].user_all_reward + " 원";
-					
-					$("div#reward_position").html(html);
+				html = "<div class='auto'>";
+				 
+				if(exp < 100) {
+					html += "<div id='user_level' class='font-weight-bold' style='color:#996633'>충전도 10%</div>";
 				}
+				else if(exp >= 100 && exp < 300) { 
+					html += "<div id='user_level' class='font-weight-bold' style='color:#b3b3b3'>충전도 30%</div>";
+				}
+				else if(exp >=300 && exp < 800) {
+					html += "<div id='user_level' class='font-weight-bold' style='color:#e6e600'>충전도 50%</div>";
+				}
+				else if(exp >=800 && exp < 1600) {
+					html += "<div id='user_level' class='font-weight-bold' style='color:#0052cc'>충전도 70%</div>";
+				}
+				else if(exp >=1600 && exp < 2800) {
+					html += "<div id='user_level' class='font-weight-bold' style='color:#4d4d4d'>충전도 90%</div>";
+				}
+				else {
+					html += "<div id='user_level' style='color:#ff0000'>충전도 100%</div>";
+				}
+				 
+				 html += "		</div>"
+				 	  +  "		<div class='col'>"
+				 	  + "			<div class='progress progress-sm mr-2 bar_size'>";
+				 	  
+			 	if(exp <= 100) {
+			 		
+			 		roundNum = Math.round((100-exp) * 10) / 10;
+			 		
+					html += "<div class='progress-bar bg-danger' role='progressbar' style='width:" + exp + "%;' aria-valuenow='50' aria-valuemin='0' aria-valuemax='100'>"
+						 +	"<span>다음까지 남은 경험치: " + roundNum +"</span>"
+						 +  "</div>";
+				}
+				else if(exp > 100 && exp <= 300) {  
+					
+					let exp_width = (exp/300)*100;
+					
+					roundNum = Math.round((300-exp_width) * 10) / 10;
+					
+					html += "<div class='progress-bar bg-danger' role='progressbar' style='width:" + exp_width + "%;' aria-valuenow='50' aria-valuemin='0' aria-valuemax='100'>"
+						 +	"<span>다음까지 남은 경험치: " + roundNum +"</span>"
+						 +  "</div>";
+				}
+				else if(exp > 300 && exp <= 800) {
+					
+					let exp_width = (exp/800)*100;
+					
+					roundNum = Math.round((800-exp_width) * 10) / 10;
+					
+					html += "<div class='progress-bar bg-info' role='progressbar' style='width:" + exp_width + "%;' aria-valuenow='50' aria-valuemin='0' aria-valuemax='100'>"
+					 	 +	"<span>다음까지 남은 경험치: " + roundNum +"</span>"
+					 	 +  "</div>";
+				}
+				else if(exp > 800 && exp <= 1600) {
+					
+					let exp_width = (exp/1600)*100;
+					
+					const roundNum = Math.round((1600-exp_width) * 10) / 10;
+					
+					html += "<div class='progress-bar bg-danger' role='progressbar' style='width:" + exp_width + "%;' aria-valuenow='50' aria-valuemin='0' aria-valuemax='100'>"
+						 +	"<span>다음까지 남은 경험치: " + roundNum +"</span>"
+				 	 	 +  "</div>";
+				}
+				else if(exp > 1600 && exp <= 2800) {
+					
+					let exp_width = (exp/2800)*100;
+					
+					const roundNum = Math.round((2800-exp_width) * 10) / 10;
+					
+					html += "<div class='progress-bar bg-danger' role='progressbar' style='width:" + exp_width + "%;' aria-valuenow='50' aria-valuemin='0' aria-valuemax='100'>"
+						 +	"<span>다음까지 남은 경험치: " + roundNum +"</span>"
+			 	 	 	 +  "</div>";
+				}
+				else {
+					
+					let exp_width = (exp/5000)*100;
+					
+					html += "<div class='progress-bar bg-danger' role='progressbar' style='width:" + exp_width + "%;' aria-valuenow='50' aria-valuemin='0' aria-valuemax='100'></div>";
+				}	  
+				 	  
+				html += "		</div>"
+				 	 + "</div>";
+			
+				$("div#info_position").html(html);	
+			/* 
+				html = json[i].user_all_deposit + " 원";
+				
+				$("div#deposit_position").html(html);
+				
+				html = json[i].user_all_reward + " 원";
+				
+				$("div#reward_position").html(html);
+				 */
+			
 				 
 					 
 			},
@@ -341,7 +368,7 @@
 				alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
 	        }
 		});
-		<%-- 사용자 정보 가져오기 끝 --%>
+		<%-- 사용자 충전도 알아오기 끝 --%>
 		
 		
 		<%-- 100% 인증한 챌린지들 가지고 오기 시작 --%>
@@ -349,7 +376,7 @@
 			url : "/mypage/finish_100_ajax",
             type : "get",
             data: {
-            	"userid":"jisu"
+            	"userid":"${requestScope.udto.userid}"
             },
             dataType:"json",
             success:function(json){
@@ -360,7 +387,7 @@
                 		 + "</div>"
                 		 + "<div class='col'>"
                 		 + "	<div class='progress progress-sm mr-2 bar_size_2'>"
-                		 + "		<div class='progress-bar bg-info' role='progressbar' style='width:" + json.result + "%;' aria-valuenow='50' aria-valuemin='0' aria-valuemax='100'></div>"
+                		 + "		<div class='progress-bar bg-danger' role='progressbar' style='width:" + json.result + "%;' aria-valuenow='50' aria-valuemin='0' aria-valuemax='100'></div>"
                 		 + "	</div>"
                 		 + "</div>";
                 		 
@@ -379,7 +406,7 @@
 			url : "/mypage/home_user_challenging_ajax",
             type : "get",
             data: {
-            	"userid":"jisu"
+            	"userid":"${requestScope.udto.userid}"
             },
             dataType:"json",
             success:function(json){
@@ -429,7 +456,7 @@
                } // end of if(json.length > 0) -----
                else {
             	   
-            	   html = "<tr><td class='td_width_33'>인증이 필요한 챌린지가 없습니다.</td></tr>";
+            	   html = "<tr><td class='no_identify'>인증이 필요한 챌린지가 없습니다.</td></tr>";
             	   
             	   $("table#show_identify").html(html);
                }
@@ -447,7 +474,7 @@
 			url:"/mypage/mypage_recommend_ajax",
 			type:"GET",
 			data:{
-				"userid":"jisu"
+				"userid":"${requestScope.udto.userid}"
 			},
 			dataType:"json",
 			success:function(json){
@@ -456,7 +483,7 @@
 				
 				let html = "";
 				
-				let cnt = 0;
+				let cnt = 0; // 종료되서 없는건지, 진짜 없는건지 확인하기 위한 count
 				
 				if(json.length > 0) {
 					
@@ -487,11 +514,37 @@
 							
 						} // end of if(resultDate <= json[i].startdate) -----
 						
+						if(cnt == json.length) {	
+							// json 은 있으나, 요일, 시간 등등이 안 맞을 경우
+							html = "<tr>"
+							 	 + "	<td class='td_top'>현재 추천할만한 챌린지가 없습니다.</td>"
+							 	 + "</tr>"
+								 + "<tr>"
+								 + "	<td class='td_middle'>개인정보 수정으로 관심태그를 추가하거나 직접 개설해보세요.</td>"
+								 + "</tr>"
+								 + "<tr>"
+								 + "	<td class='td_bottom'><button type='button' class='go_detail' onclick='go_create();'>개설하러가기</button></td>"
+								 + "</tr>";
+						}
+						
 					} // end of for(var i=0; i<json.length; i++) -----
 					
-					$("table#recommend_position").html(html);
-					
+	            }
+				else {
+					// 챌린지가 존재하지 않을 경우
+					html = "<tr>"
+						 + "	<td class='td_top'>현재 추천할만한 챌린지가 없습니다.</td>"
+						 + "</tr>"
+						 + "<tr>"
+						 + "	<td class='td_middle'>개인정보 수정으로 관심태그를 추가하거나 직접 개설해보세요.</td>"
+						 + "</tr>"
+						 + "<tr>"
+						 + "	<td class='td_bottom'><button type='button' class='go_detail' onclick='go_create();'>개설하러가기</button></td>"
+						 + "</tr>";
+					 					
 				} // end of if(json.length > 0) -----
+				
+				$("table#recommend_position").html(html);
 				
 			},
 			error: function(request, status, error){
@@ -505,7 +558,7 @@
 		$.ajax({
 			url: "/mypage/chart_challenging",
 			data:{
-				"userid":"jisu"
+				"userid":"${requestScope.udto.userid}"
 			},
 			dataType:"json",
 			success:function(json1) {
@@ -529,7 +582,7 @@
 					$.ajax({
 						url:"/mypage/chart_category",
 						data:{
-							"userid":"jisu",
+							"userid":"${requestScope.udto.userid}",
 							"month":item1.month
 						},
 						dataType:"json",
@@ -647,26 +700,31 @@
 		
 	} // end of function go_detail() {} -----
 	
+	function go_create() {
+		
+		location.href = "/challenge/add_challenge";
+		
+	} // end of function go_create() {} -----
+	
 </script>
 
 	<div id="mainPosition">
 		<div class="row">
 			<div class="col-lg-12 mb-4" style="margin-bottom:41px;">
-					<div class="card border-left-info shadow h-100 py-2">
-						<div class="card-body">
-							<div class="row no-gutters align-items-center ">
-								 <img id='promainimg' alt='프로필사진' src='<%= ctxPath%>/images/${requestScope.udto.profilePic}'>
-								<div class='col mr-2'>
-						 			<div class='text-xs font-weight-bold text-info text-uppercase mb-1 font_size_18pt'>${requestScope.udto.name}<span id="span_userid">${requestScope.udto.userid}</span></div>
-									<div id="info_position" class="row no-gutters align-items-center">
-									</div>
+				<div class="card border-left-info shadow h-100 py-2">
+					<div class="card-body">
+						<div class="row no-gutters align-items-center ">
+							 <img id='promainimg' alt='프로필사진' src='<%= ctxPath%>/images/${requestScope.udto.profilePic}'>
+							<div class='col mr-2'>
+					 			<div class='text-xs font-weight-bold text-info text-uppercase mb-1 font_size_18pt'>${requestScope.udto.name}<span id="span_userid">${requestScope.udto.userid}</span></div>
+								<div id="info_position" class="row no-gutters align-items-center">
 								</div>
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
-		
+		</div>
 		
 		<!-- index 메인 시작 -->
 		<div class="row">
@@ -678,7 +736,7 @@
 						<div class="row no-gutters align-items-center">
 							<div class="col mr-2">
 								<div class="text-xs font-weight-bold text-primary text-uppercase mb-1">보유 예치금</div>
-								<div id="deposit_position" class="h5 mb-0 font-weight-bold text-gray-800"></div>
+								<div id="deposit_position" class="h5 mb-0 font-weight-bold text-gray-800">${requestScope.depo_dto.allDeposit}</div>
 							</div>
 							<div class="col-auto">
 								<button type="button" id="go_deposit" onClick="location.href='<%=ctxPath%>/mypage/depositPurchase'">
@@ -699,7 +757,7 @@
 						<div class="row no-gutters align-items-center">
 							<div class="col mr-2">
 								<div class="text-xs font-weight-bold text-success text-uppercase mb-1">보유 상금</div>
-								<div id="reward_position" class="h5 mb-0 font-weight-bold text-gray-800"></div>
+								<div id="reward_position" class="h5 mb-0 font-weight-bold text-gray-800">${requestScope.rdto.allReward}</div>
 							</div>
 							<div class="col-auto">
 								<button type="button" id="go_reward" onClick="location.href='<%=ctxPath%>/mypage/change_reward'">
@@ -732,26 +790,8 @@
 					</div>
 				</div>
 			</div>
-			<!-- 인증 성공률 끝 -->
-
-			<!-- 알림 시작
-			<div class="col-lg-3 col-md-6 mb-4">
-				<div class="card border-left-warning shadow h-100 py-2">
-					<div class="card-body">
-						<div class="row no-gutters align-items-center">
-							<div class="col mr-2">
-								<div class="text-xs font-weight-bold text-warning text-uppercase mb-1">알림</div>
-								<div class="h5 mb-0 font-weight-bold text-gray-800">18</div>
-							</div>
-							<div class="col-auto">
-								<i class="fas fa-bell fa-lg" style="color: #eeff00;"></i>
-							</div>
-						</div>
-					</div>
-				</div>
+				<!-- 인증 성공률 끝 -->
 			</div>
-			알림 끝 -->
-           </div>
            
 			<!-- 인증이 필요한 챌린지 시작 -->
 			<div class="row">
@@ -778,11 +818,9 @@
 							<h5 class="m-0 font-weight-bold">새로운 챌린지 추천</h5>
  						</div>
 						<div class="card-body">
-							<form>
-								<table id="recommend_position">
-								
-								</table>   
-							</form>
+							<table id="recommend_position">
+							
+							</table> 
 						</div>
 					</div>
 				</div>

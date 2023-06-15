@@ -17,26 +17,6 @@
 		values(seq_tbl_convert_reward_convert_code.nextval, #{userid}, default, #{reward})
 	</insert>
 	
-	<!-- 사용자가 보유하고 있는 예치금양 가지고 오기 -->
-	<select id="user_deposit" parameterType="String" resultType="int">
-		select purchase_price-entry_fee AS user_deposit
-		from
-		(
-    		select fk_userid, sum(nvl(purchase_price, 0)) as purchase_price
-    		from tbl_deposit
-    		where purchase_status = '0'
-    		group by fk_userid
-		) D join
-		(
-    		select nvl(fk_userid, #{userid}) as fk_userid, sum(nvl(entry_fee, 0)) as entry_fee
-    		from tbl_challenge_info right outer join dual
-		    on fk_userid = #{userid}
-		    group by fk_userid
-		) C
-		on D.fk_userid = C.fk_userid
-		where D.fk_userid = #{userid}
-	</select>
-	
 	<!-- 유저가 챌린지에 사용한 모든 예치금 -->
 	<select id="user_challenge_deposit" parameterType="String" resultType="int">
 		select sum(nvl(entry_fee, 0)) as entry_fee
@@ -59,11 +39,11 @@
 		from tbl_convert_reward right outer join dual
 		on fk_userid = #{userid}
 		group by fk_userid
-	</select>
+	</select> 
 	
 	<!-- 결제 취소하기 -->
 	<update id="purchase_cancel" parameterType="HashMap">
-		update tbl_deposit set purchase_status = 1
+		update tbl_deposit set purchase_status = 1, purchase_date = sysdate
 		where fk_userid = #{userid} and purchase_code = #{purchase_code}
 	</update>
 	
@@ -282,6 +262,87 @@
 	</select>
 	
 	
+	<!-- 예치금 그래프 그리기 -->
+	<resultMap type="HashMap" id="deposit_chart_map">
+		<result property="month" 		  column="month" 		  javaType="String" />
+		<result property="purchase_price" column="purchase_price" javaType="String" />
+		<result property="entry_fee" 	  column="entry_fee"      javaType="String" />
+		<result property="purchase_price" column="purchase_price" javaType="String" />
+	</resultMap>
+	<select id="deposit_chart" parameterType="HashMap" resultMap="deposit_chart_map">
+		select D.month as month,
+			   NVL(P.purchase_price, 0) as purchase_price,
+		       NVL(C.entry_fee, 0) as entry_fee,
+		       NVL(P.purchase_price, 0) - NVL(C.entry_fee, 0) as price
+		from 
+		(
+		    select level as month
+		    from dual
+		    connect by <![CDATA[level <= 12]]> 
+		) D left join
+		(
+		     select extract(month from startdate) as month, sum(entry_fee) as entry_fee
+					from tbl_challenge_info I join tbl_challenge C
+												on I.fk_challenge_code = C.challenge_code
+											  join tbl_category T
+												on C.fk_category_code = T.category_code
+				    where I.fk_userid=#{userid}
+				    		and to_char(startdate, 'yyyy-mm-dd') between to_char(sysdate-365, 'yyyy-mm-dd') and sysdate
+				    group by extract(month from startdate)
+		) C 
+		on D.month = C.month
+		left join
+		(
+		    select extract(month from purchase_date) as month, sum(purchase_price) as purchase_price
+		    from tbl_deposit
+			where fk_userid=#{userid}
+				and purchase_status = 0
+		            and to_char(purchase_date, 'yyyy-mm-dd') between to_char(sysdate-365, 'yyyy-mm-dd') and sysdate
+		    group by extract(month from purchase_date)
+		) P
+		on D.month = P.month
+		order by D.month
+	</select>
+	
+	
+	<!-- 상금 그래프 그리기 -->
+	<resultMap type="HashMap" id="reward_chart_map">
+		<result property="month" 		  column="month" 		  javaType="String" />
+		<result property="reward"		  column="reward"		  javaType="String" />
+		<result property="convert_reward" column="convert_reward" javaType="String" />
+		<result property="user_reward"	  column="user_reward"	  javaType="String" />
+	</resultMap>
+	<select id="reward_chart" parameterType="HashMap" resultMap="reward_chart_map">
+		select D.month as month,
+			   NVL(R.reward, 0) as reward,
+		       NVL(C.convert_reward, 0) as convert_reward,
+		       NVL(R.reward, 0) - NVL(C.convert_reward, 0) as user_reward
+		from 
+		(
+		    select level as month
+		    from dual
+		    connect by <![CDATA[level <= 12]]> 
+		) D left join
+		(
+		    select extract(month from reward_Date) as month, sum(reward) as reward
+			from tbl_reward
+			where fk_userid = #{userid} and <![CDATA[reward > 0]]> 
+		        and to_char(reward_Date, 'yyyy-mm-dd') between to_char(sysdate-365, 'yyyy-mm-dd') and sysdate
+			group by extract(month from reward_Date)
+		) R
+		on D.month = R.month
+		left join
+		(
+		    select extract(month from convert_date) as month, sum(convert_reward) as convert_reward
+			from tbl_convert_reward
+			where fk_userid = #{userid}
+		        and to_char(convert_date, 'yyyy-mm-dd') between to_char(sysdate-365, 'yyyy-mm-dd') and sysdate
+			group by extract(month from convert_date)
+		) C
+		on D.month = C.month
+		order by D.month
+	</select>
+	
 
 	<!-- 정보수정하기 페이지에서 수정할 정보들 가지고 오기 -->
 	<select id="select_info" parameterType="HashMap" resultType="com.sist.haebollangce.user.dto.UserDTO">
@@ -354,11 +415,20 @@
 	
 	<!-- 회원정보 수정하기 -->
 	<update id="mypage_info_edit" parameterType="HashMap">
-		update tbl_user set profile_pic=#{profilePic}, 
-							pw=#{pw}, 
-							email=#{email}, 
-							acct=#{acct}, 
+		update tbl_user set profile_pic=#{profilePic},
 							mobile=#{mobile}
+							<if test="acct != null">
+								,acct=#{acct}
+							</if>
+							<if test="email != null">
+								,email=#{email}
+							</if>
+		where userid=#{userid}
+	</update>
+	
+	<!-- 회원정보 수정하기  -->
+	<update id="modifyPw" parameterType="com.sist.haebollangce.user.dto.UserDTO">
+		update tbl_user set pw = #{pw}
 		where userid=#{userid}
 	</update>
 	
@@ -448,18 +518,10 @@
 		order by I.fk_challenge_code desc
 	</select>
 
-	<!-- 완료된 챌린지 페이지 그래프 그리기 -->
 	
 	<!-- 사용자 정보 가지고 오기 -->
-	<resultMap type="HashMap" id="user_information_map">
-		<result property="userid" 	   column="userid" 		javaType="String" />
-		<result property="name" 	   column="name"	    javaType="String" />
-		<result property="fk_level"    column="fk_level" 	javaType="String" />
-		<result property="exp" 		   column="exp"  		javaType="String" />
-		<result property="profile_pic" column="profile_pic" javaType="String" />
-	</resultMap>
-	<select id="user_information" parameterType="String" resultMap="user_information_map">
-		select userid, name, fk_level, exp, profile_pic
+	<select id="user_exp" parameterType="String" resultType="int">
+		select nvl(exp, 0)
 		from tbl_user
 		where userid = #{userid} 
 	</select>
@@ -533,5 +595,71 @@
 		order by percentage desc
 	</select>
 
+
+	<select id="user_deposit" parameterType="HashMap" resultType="int">
+		select sum(nvl(purchase_price, 0)) - sum(nvl(entry_fee, 0)) AS user_deposit
+		from
+		(
+    		select nvl(fk_userid, #{userid}) as fk_userid,
+    			   sum(nvl(purchase_price, 0)) as purchase_price
+    		from tbl_deposit
+    		where purchase_status = '0'
+    		group by fk_userid
+		) D left join
+		(
+    		select nvl(fk_userid, #{userid}) as fk_userid, 
+    			   sum(nvl(entry_fee, 0)) as entry_fee
+    		from tbl_challenge_info right outer join dual
+		    on fk_userid = #{userid}
+		    group by fk_userid
+		) C
+		on D.fk_userid = C.fk_userid
+		where D.fk_userid = #{userid}
+	</select>
+	
+	
+	<select id="all_reward" parameterType="HashMap" resultType="com.sist.haebollangce.user.dto.RewardDTO">
+		select reward, convert_reward,
+		       nvl(reward - convert_reward, 0) as allreward
+		from
+		    (
+		        select nvl(fk_userid, #{userid}) as fk_userid,
+		               sum(nvl(reward, 0)) as reward
+		        from tbl_reward
+		        right outer join dual on fk_userid = #{userid} and reward > 0
+		        group by fk_userid
+		    ) R join
+		    (
+		        select nvl(fk_userid, #{userid}) as fk_userid,
+		               sum(nvl(convert_reward, 0)) as convert_reward
+		        from tbl_convert_reward
+		        right outer join dual on fk_userid = #{userid}
+		        group by fk_userid
+		    ) C
+			on R.fk_userid = C.fk_userid
+			where R.fk_userid = #{userid}
+	</select>
+	
+	
+	<select id="depo_dto" parameterType="HashMap" resultType="com.sist.haebollangce.user.dto.DepositDTO">
+		select purchase_price, entry_fee, 
+			   nvl(purchase_price - entry_fee, 0) AS allDeposit
+		from
+		(
+    		select nvl(fk_userid, #{userid}) as fk_userid,
+    			   sum(nvl(purchase_price, 0)) as purchase_price
+    		from tbl_deposit right outer join dual
+		    on fk_userid = #{userid} and purchase_status = '0'
+    		group by fk_userid
+		) D join
+		(
+    		select nvl(fk_userid, #{userid}) as fk_userid,
+    		       sum(nvl(entry_fee, 0)) as entry_fee
+    		from tbl_challenge_info right outer join dual
+		    on fk_userid = #{userid}
+		    group by fk_userid
+		) C
+		on D.fk_userid = C.fk_userid
+	</select>
 
 </mapper>

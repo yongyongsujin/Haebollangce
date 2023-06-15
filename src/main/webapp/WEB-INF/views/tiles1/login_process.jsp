@@ -7,9 +7,6 @@
     if(value) {
         localStorage.setItem("login", value);
     }
-    // else {
-    //     localStorage.setItem("login", false);
-    // }
 
     location.href = '${redirectUrl}';
 </script>

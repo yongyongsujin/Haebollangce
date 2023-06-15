@@ -185,7 +185,6 @@
 		<result property="startDate" 		column="startDate"			javaType="String"/>
 		<result property="certifyCnt" 		column="certifyCnt"			javaType="String"/>
 		<result property="totalCertify" 	column="totalCertify"		javaType="String"/>
-		<result property="achievement_pct" 	column="achievement_pct"	javaType="String"/>
 		<result property="challenge_exp" 	column="challenge_exp"		javaType="String"/>
 	</resultMap>
 	<select id="getUserAchievePct" parameterType="HashMap" resultMap="getUserAchievePct_Map">
@@ -199,15 +198,6 @@
 		            else
 		                to_number(decode(fk_freq_type, '100', 7, '101', 5, '102', 2, 0)) * to_number(fk_during_type)
 		        end as totalcertify
-		     , trunc((select count(*) from tbl_certify_history where fk_userid = #{fk_userid} and fk_challenge_code = #{fk_challenge_code}) 
-		       / case
-		            when (to_char(startdate, 'D') between 2 and 6 and fk_freq_type in ('100', '101')) or (to_char(startdate, 'D') in (1, 7) and fk_freq_type = '102') then
-		                to_number(decode(fk_freq_type, '100', 7, '101', '102', 2, 0)) * to_number(fk_during_type) + 1
-		            when to_char(startdate, 'D') in (1, 7) and fk_freq_type = '100' then
-		                to_number(decode(fk_freq_type, '100', 7, '101', '102', 2, 0)) * to_number(fk_during_type) + 1
-		            else
-		                to_number(decode(fk_freq_type, '100', 7, '101', '102', 2, 0)) * to_number(fk_during_type)
-		            end * 100 ) as achievement_pct
 			 , C.challenge_exp
 		from tbl_challenge c
 		join tbl_challenge_during d on d.during_type = c.fk_during_type
@@ -218,7 +208,7 @@
 	
 	
 	<insert id="updateAchievePct" parameterType="HashMap">
-		update tbl_challenge_info set achievement_pct = to_number(#{achievement_pct}) where fk_userid = #{fk_userid} and fk_challenge_code = #{fk_challenge_code}
+		update tbl_challenge_info set achievement_pct = to_number(#{AchievePct}) where fk_userid = #{fk_userid} and fk_challenge_code = #{fk_challenge_code}
 	</insert>
 	
 	

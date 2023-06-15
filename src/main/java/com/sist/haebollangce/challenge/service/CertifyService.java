@@ -289,7 +289,12 @@ public class CertifyService implements InterCertifyService {
 		if (m==1) {
 			Map<String, String> userAchievePct = dao.getUserAchievePct(paraMap);
 			// 인증이 완료되었으면 해당 유저의 달성률을 계산하여 가져오기
-			paraMap.put("achievement_pct", userAchievePct.get("achievement_pct"));
+			
+			double certifyCnt = Double.parseDouble(userAchievePct.get("certifyCnt"));
+			double totalCertify = Double.parseDouble(userAchievePct.get("totalCertify"));
+			String AchievePct = String.valueOf((int)Math.floor((certifyCnt / totalCertify) * 100)) ; 
+			
+			paraMap.put("AchievePct", AchievePct);
 			paraMap.put("challenge_exp", userAchievePct.get("challenge_exp")); 
 			
 			k = dao.updateAchievePct(paraMap);

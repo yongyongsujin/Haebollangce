@@ -10,17 +10,14 @@
 		background-color:#f4f4f4
 	}
 
-	button#mypage {
-		padding: 36px 8px 73px 16px;
+	a#mypage {
+		padding: 26% 20% 24% 4%;
 		text-decoration: none;
 		font-size: 23px;
 		color: white;
 		display: block;
-		border: none;
-		background: none;
 		width: 100%;
 		text-align: left;
-		outline: none;
 		font-weight: bold;
 	}
 
@@ -117,10 +114,12 @@
 <body>
 <!-- 마이페이지 메뉴바 시작 -->
 	<div class="sidenav">
-		<form action="mypageHome" method="post">
+		<!-- <form action="mypageHome" method="post">
 			<input type="hidden" name="userid" value="jisu" /> 
 			<button type="submit" id="mypage">마이페이지</button>
-		</form>
+		</form> -->
+		
+		<a id="mypage" href="<%=ctxPath%>/mypage/mypageHome">마이페이지</a>
 		
 		<a href="<%=ctxPath%>/mypage/mypageChallenging">챌린지 현황</a>
 		
@@ -132,7 +131,7 @@
 			<a href="<%=ctxPath%>/mypage/change_reward" style="color:black;">상금 환전</a>
 		</div>
 		
-		<a href="<%=ctxPath%>/mypage/mypageUsing">결재 현황</a>
+		<a href="<%=ctxPath%>/mypage/mypageUsing">결재·상금 현황</a>
 		
 		<button class="dropdown-btn">찜현황
 			<i class="fa fa-caret-down"></i>
@@ -147,8 +146,7 @@
 		</button>
 		<div class="dropdown-container">
 			<form action="mypagePwdIdentify" method="post">
-				<input type="hidden" name="result" value="0" />
-				<button type="submit" class="submit_button">회원정보수정</button>
+				<button type="submit" name="result" value="0"  class="submit_button">회원정보수정</button>
 				
 				<button type="submit" class="submit_button">회원탈퇴하기</button>
 			</form>

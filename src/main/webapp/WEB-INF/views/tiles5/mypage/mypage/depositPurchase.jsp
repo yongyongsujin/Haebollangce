@@ -52,7 +52,7 @@
 
 	input#deposit_input:focus ~ label#deposit_label, input#deposit_input:valid ~ label#deposit_label {
 		font-size: 16px;
-		margin-left: -28.3%;
+		margin-left: -27.8%;
 		margin-top: -24px;
 		color: #666;
 		font-weight: bold;
@@ -86,6 +86,7 @@
 		font-size: 13pt;
 		height: 60px;
 		border-bottom: solid 1px #aaa;
+		text-align: center;
 	}
 
 	td#purchase_deposit {
@@ -93,6 +94,7 @@
 		font-weight: bold;
 		color: red;
 		height: 60px;
+		text-align: center;
 	}
 	
 	td.after_title {
@@ -159,9 +161,9 @@
 		
 		let success_flag = false; 
 		
-		$("td#purchase_deposit").html(0);
+		$("td#purchase_deposit").html("0 원");
 		
-		$("td#final_payment").html("0원");
+		$("td#final_payment").html("0 원");
 		
 		$("div.error").hide();
 		
@@ -176,11 +178,11 @@
 			<%-- 표에 값 넣기 시작 --%>
 			$("input#deposit_input").val($(e.target).val());
 				
-			$("td#purchase_deposit").html($(this).val());
+			$("td#purchase_deposit").html($(this).val() + " 원");
 			
 			const change_user_deposit = Number($("input#user_deposit").val()) + Number($(this).val());
 			
-			$("td#deposit_after").html(change_user_deposit);
+			$("td#deposit_after").html(change_user_deposit + " 원");
 			<%-- 표에 값 넣기 끝 --%>
 			
 			$("input#deposit").val($(this).val());
@@ -210,13 +212,13 @@
 			if(bool) {
 				
 				<%-- 표에 값 넣기 시작 --%>
-				$("td#purchase_deposit").html($(this).val());
+				$("td#purchase_deposit").html($(this).val() + " 원");
 									
 				$("input#deposit_input").css("border-bottom","solid #aaaaaa 1px");	
 				
 				const change_user_deposit = Number($("input#user_deposit").val()) + Number($(this).val());
 				
-				$("td#deposit_after").html(change_user_deposit);	
+				$("td#deposit_after").html(change_user_deposit + " 원");	
 				<%-- 표에 값 넣기 끝 --%>
 				
 				$("input#deposit").val($(this).val());
@@ -238,11 +240,11 @@
 				// 사용자가 문자를 입력한 경우
 				$("div#error_only_num").show();
 				
-				$("td#purchase_deposit").html("0");
+				$("td#purchase_deposit").html("0 원");
 				
 				$(this).val("");
 				
-				$("td#deposit_after").html($("input#user_deposit").val());				
+				$("td#deposit_after").html($("input#user_deposit").val() + " 원");				
 				
 				$("input#deposit_input").css("border-bottom","solid red 2px");	
 				
@@ -313,16 +315,14 @@
 	       merchant_uid : 'merchant_' + new Date().getTime(), // 가맹점에서 생성/관리하는 고유 주문번호
 	       name : '결제테스트(코인충전|주문명)',	 // 코인충전 또는 order 테이블에 들어갈 주문명 혹은 주문 번호. (선택항목)원활한 결제정보 확인을 위해 입력 권장(PG사 마다 차이가 있지만) 16자 이내로 작성하기를 권장
 	       amount : $("input#deposit").val(),	  // '${coinmoney}'  결제 금액 number 타입. 필수항목. 
-	       buyer_email : 'yoonjisu81@gmail.com',  // 구매자 email
-	       buyer_name : '윤지수',	  // 구매자 이름 
-	       buyer_tel : '01062314942',    // 구매자 전화번호 (필수항목)
+	       buyer_email : "${requestScope.udto.email}",  // 구매자 email
+	       buyer_name : "${requestScope.udto.name}",	  // 구매자 이름 
+	       buyer_tel : "${requestScope.udto.mobile}",    // 구매자 전화번호 (필수항목)
 	       buyer_addr : '',  
 	       buyer_postcode : ''
 	   }, function(rsp) {
 	       
 			if ( rsp.success ) { 
-				
-				alert("결제가 완료되었습니다.");
 				
 				<%-- 결제 성공시 문자보내기 시작 --%>
 			/* 
@@ -330,7 +330,7 @@
 					url:"/mypage/sms_ajax",
 					type:"post",
 					data:{
-						"mobile":"01062314942",
+						"mobile":"${requestScope.udto.mobile}",
 						"smsContent":"[해볼랑스] "
 									 +$("input#deposit").val()+"원 예치금 충전\n에 성공했습니다."
 					},
@@ -352,10 +352,11 @@
 					url:"/mypage/email_ajax",
 					type:"post",
 					data:{
-						 userid : $("input#userid").val(),
-					     deposit : $("input#deposit").val(),
-					     email : $("input#email").val(),
-					     merchant : $("input#purchase_code").val()
+						 "userid" : "${requestScope.udto.userid}",
+						 "name" : "${requestScope.udto.name}",
+					     "deposit" : $("input#deposit").val(),
+					     "email" : "${requestScope.udto.email}",
+					     "merchant" : $("input#purchase_code").val()
 					},
 					dataType:"json",
 					success:function(json){
@@ -374,14 +375,14 @@
 				<%-- 예치금 테이블에 데이터 넣어주기 시작 --%>
 				const frm = document.purchase_form;
 			     
-			     frm.action = '/mypage/purchase_success';
-			     frm.method = 'POST';
-			     frm.submit();
-			     <%-- 예치금 테이블에 데이터 넣어주기 끝 --%>
+				frm.action = '/mypage/purchase_success';
+				frm.method = 'GET';
+				frm.submit();
+				<%-- 예치금 테이블에 데이터 넣어주기 끝 --%>
 			     
-	        } else {
-	            alert( "실패 : 코드(" + rsp.error_code + ") / 메세지(" + rsp.error_msg + ")" );
-	       }
+			} else {
+				alert( "실패 : 코드(" + rsp.error_code + ") / 메세지(" + rsp.error_msg + ")" );
+			}
 	   
 
 	   });
@@ -423,8 +424,8 @@
 							<table style="width:100%;">
 								<tr>
 									<td class="after_title">충전 후 예치금 보유량</td>
-									<td id="deposit_after">0</td>
-									<input type="hidden" name="user_deposit" id="user_deposit" value="1000" />
+									<td id="deposit_after">${requestScope.depo_dto.allDeposit} 원</td>
+									<input type="hidden" name="user_deposit" id="user_deposit" value="${requestScope.depo_dto.allDeposit}" />
 								</tr>
 								<tr>
 									<td class="after_title" style="border:none">충천할 예치금</td>
@@ -453,9 +454,9 @@
 					</div>
 					<div class="row" style="padding:0 14px;">
 						<form name="purchase_form" style="width:100%;">
-							<input type="hidden" name="userid" id="userid" value="jisu" />
+							<input type="hidden" name="userid" id="userid" value="${requestScope.udto.userid}" />
 							<input type="hidden" name="deposit" id="deposit"/>
-							<input type="hidden" name="email" id="email" value="yoonjisu81@gmail.com" />
+							<input type="hidden" name="email" id="email" value="${requestScope.udto.email}" />
 							<input type="hidden" name="purchase_code" id="purchase_code" />
 							<button type="button" class="col-lg-12" id="go_payment">결 제 하 기</button>
 						</form>
