@@ -48,7 +48,10 @@ public class SecurityConfig {
 //                    .mvcMatchers("/api/v1/user/**").access("hasAnyRole('ADMIN', 'MANAGER', 'USER')")
                     .mvcMatchers("/manager/**").access("hasAnyRole('ADMIN', 'MANAGER')")
                     .mvcMatchers("/admin/**").access("hasRole('ADMIN')")
-                    .mvcMatchers("/mypage/**", "/challenge/add_challenge").authenticated()
+                    .mvcMatchers("/mypage/**",
+                                 "/challenge/add_challenge","/challenge/join","/challenge/joinEnd",
+                                 "/challenge/certifyList","/challenge/certify","/challenge/certifyMyInfo","/challenge/userReport",
+                                 "/lounge/loungeAdd").authenticated()
                     .anyRequest().permitAll()
                 .and()
                 .exceptionHandling()
@@ -63,7 +66,7 @@ public class SecurityConfig {
                 .and()
                 .headers()
                     .frameOptions().sameOrigin()
-                    .and()
+                .and()
                 .build();
     }
 

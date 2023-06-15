@@ -66,7 +66,7 @@
 			url: "/mypage/like_lounge_ajax",
 			type: "get",
 			data: {
-				"userid":"sudin"
+				"userid":"${requestScope.userid}"
 			},
 			dataType: "json",
 			success:function(json){
@@ -114,7 +114,7 @@
 				
 				else {
 					html += "<div class='no_like_style'>좋아요를 누른 라운지글이 없습니다.<div>"
-						 +  "<button type='button' class='button_style' onclick='go_lounge();'>라운지 글 보러가기</button>"
+						 +  "<button type='button' class='button_style' style='font-size:13pt;' onclick='go_lounge();'>라운지 글 보러가기</button>"
 					
 				}
 				

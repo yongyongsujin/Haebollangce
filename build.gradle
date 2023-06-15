@@ -66,6 +66,11 @@ dependencies {
 //	Lombok
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
+	
+// Excel
+	implementation group: 'org.apache.poi', name: 'poi', version: '4.1.2'
+	implementation group: 'org.apache.poi', name: 'poi-ooxml', version: '4.1.2'
+	implementation group: 'org.apache.tika', name: 'tika-core', version: '2.3.0'
 
 // 비밀번호 비교
 	implementation 'org.springframework.boot:spring-boot-starter-websocket'

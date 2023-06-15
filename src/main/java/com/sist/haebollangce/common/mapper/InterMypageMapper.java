@@ -4,9 +4,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 
-import com.google.gson.JsonArray;
+import com.sist.haebollangce.user.dto.DepositDTO;
+import com.sist.haebollangce.user.dto.RewardDTO;
 import com.sist.haebollangce.user.dto.UserDTO;
 
 @Mapper
@@ -22,7 +22,7 @@ public interface InterMypageMapper {
 	int reward_convert(Map<String, String> paraMap);
 
 	// 사용자가 보유하고 있는 예치금 알아오기
-	int user_deposit(String userid);
+	// int user_deposit(String userid);
 	
 	// 유저가 보유한 상금
 	int user_reward(String userid);
@@ -64,6 +64,9 @@ public interface InterMypageMapper {
 	// 예치금 그래프 보여주기
 	List<Map<String, String>> deposit_chart(Map<String, String> paraMap);
 	
+	// 상금 그래프 보여주기
+	List<Map<String, String>> reward_chart(Map<String, String> paraMap);
+	
 	// 비밀번호 확인 후 회원 정보수정 페이지 가기
 	UserDTO select_info(Map<String, String> paraMap);
 
@@ -104,8 +107,8 @@ public interface InterMypageMapper {
 	// 사용자가 관심태그로 가지고 있으면서 참여하고 있는 챌린지 알아오기
 	List<Map<String, String>> interest_during_challenge(String userid);
 
-	// 마이페이지 홈화면 사용자 정보 불러오기
-	List<Map<String, String>> user_information(String userid);
+	// 마이페이지 충전도 불러오기
+	int user_exp(String userid);
 
 	// 진행중인 챌린지 중 오늘 하루 인증했는지 여부
 	List<Map<String, String>> mypage_certify_challenge(Map<String, String> paraMap);
@@ -119,6 +122,16 @@ public interface InterMypageMapper {
 	// 마이페이지 홈 챌린지 그래프-챌린지 참여 횟수
 	List<Map<String, String>> chart_challenging(Map<String, String> paraMap);
 	List<Map<String, String>> chart_category(Map<String, String> paraMap);
+
+	
+	int user_deposit(Map<String, String> paraMap);
+
+	RewardDTO all_reward(Map<String, String> paraMap);
+
+	// 유저 보유 예치금
+	DepositDTO depo_dto(Map<String, String> paraMap);
+
+	void modifyPw(UserDTO udto);
 
 
 }

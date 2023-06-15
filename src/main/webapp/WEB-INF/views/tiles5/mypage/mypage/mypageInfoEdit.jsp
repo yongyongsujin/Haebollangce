@@ -15,7 +15,7 @@
 	
 	td {
 		font-size: 15pt;
-		height: 84px;
+		height: 103px;
 	}
 	
 	.font_weight {
@@ -73,12 +73,19 @@
 		background-color: #e6e1e1;
 		border: none;
 		color: black;
-		padding: 4% 9%;
+		padding: 10px 0;
 		text-align: center;
-		font-size: 10pt;
+		font-size: 12pt;
 		transition: 0.3s;
-		border-radius: 10px;
-		width: 51%;
+		border-radius: 41px;
+		width: 141px;
+		margin-left: 6%;
+		font-weight: bold;
+	}
+	button#plz_identify:hover,
+	button#button_identify:hover {
+		background-color: #f43630;
+		color: white;
 	}
 	
 	div#timer {
@@ -87,16 +94,16 @@
 	}
 	
 	button#button_identify {
-		background-color: #f43630;
+		background-color: #e6e1e1;
 		border: none;
-		color: white;
-		padding: 6px 0;
+		color: black;
+		padding: 10px 0;
 		text-align: center;
-		font-size: 23pt;
+		font-size: 12pt;
 		font-weight: bold;
 		transition: 0.3s;
-		border-radius: 10px;
-		width: 23%;
+		border-radius: 41px;
+		width: 70%;
 	}
 	
 	button#email_button {
@@ -105,7 +112,7 @@
 		color: black;
 		padding: 6px 9px;
 		text-align: center;
-		font-size: 10pt;
+		font-size: 12pt;
 		margin: 4px 27px;
 		transition: 0.3s;
 		border-radius: 10px;
@@ -205,6 +212,24 @@
     	position: absolute;
     	z-index: 99;
     }
+    
+    td#identify_td {
+    	height: 68px;
+    	font-size: 15pt;
+    	width: 40%;
+    }
+    
+    div.identify_div_position {
+    	padding: 0 30%;
+    }
+    
+    td.identify_table_style {
+    	width: 30%
+    }
+    
+    td.text_align_right {
+    	text-align: right;
+    }
  
 	/* 툴팁 시작 */
     .balloon,
@@ -237,6 +262,45 @@
     }
 	/* 툴팁 끝 */
 	
+	/* The Modal (background) */
+	.modal {
+	  display: none; /* Hidden by default */
+	  position: fixed; /* Stay in place */
+	  z-index: 1; /* Sit on top */
+	  padding-top: 100px; /* Location of the box */
+	  left: 0;
+	  top: 0;
+	  width: 100%; /* Full width */
+	  height: 100%; /* Full height */
+	  overflow: auto; /* Enable scroll if needed */
+	  background-color: rgb(0,0,0); /* Fallback color */
+	  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+	}
+	
+	/* Modal Content */
+	.modal-content {
+	  background-color: #fefefe;
+	  margin: 14% 38%;
+	  padding: 55px;
+	  border: 1px solid #888;
+	  width: 37%;
+	}
+	
+	/* The Close Button */
+	.close {
+	  color: #aaaaaa;
+	  float: right;
+	  font-size: 28px;
+	  font-weight: bold;
+	}
+	
+	.close:hover,
+	.close:focus {
+	  color: #000;
+	  text-decoration: none;
+	  cursor: pointer;
+	}
+	
 </style>
 
 <script type="text/javascript">
@@ -258,6 +322,11 @@
 	
 	$(document).ready(function(){
 		
+		const backURL = sessionStorage.getItem("URL")
+	    if ( backURL != null ){
+			location.href = backURL;
+			sessionStorage.removeItem("URL");
+	    }
 		
 		//$("input#email").val("${requestScope.udto.email}");
 		
@@ -279,8 +348,6 @@
 		
 		<%-- 관심태그 시작 --%>
 		all_interest();
-		
-		// interest();
 		<%-- 관심태그 끝 --%>
 		
 		<%-- 비밀번호 입력 시작 --%>
@@ -327,19 +394,20 @@
 			if( $("input#input_pwd").val() == $(this).val() ) {
 				// 암호가 일치하였을 경우
 				$("button#plz_identify").prop("disabled", false);
-				$("button#plz_identify").addClass("sucess_button_change");
 				
 				$("div#pwd_check_error").hide();
 				
 				b_flag_showidfDuplicate_click = true;
 				b_flag_pwdDuplicate_click = true;
 				
-				$("input#pwd").val($(this).val());
+				$("button#edit_button").prop("disabled", false);
+				$("button#edit_button").addClass("sucess_button_change");
+				
+				$("input#pw").val($(this).val());
 			}
 			else {
 				// 암호가 일치하지 않을 경우
 				$("button#plz_identify").prop("disabled", true);
-				$("button#plz_identify").removeClass("sucess_button_change");
 				
 				$("div#pwd_check_error").show();
 				
@@ -376,7 +444,6 @@
 				$("div#error").hide();
 				
 				$("button#plz_identify").prop("disabled", true);
-				$("button#plz_identify").removeClass("sucess_button_change");
 				
 				$("button#edit_button").prop("disabled", true);
 				$("button#edit_button").removeClass("sucess_button_change");
@@ -389,9 +456,6 @@
 			else {
 				// 국번이 정규표현식에 맞는 경우
 				$("button#plz_identify").prop("disabled", false);
-				
-				$("button#plz_identify").prop("disabled", false);
-				$("button#plz_identify").addClass("sucess_button_change");
 				
 				b_flag_showidfDuplicate_click = true;
 				b_flag_hp2_click = true;
@@ -426,7 +490,6 @@
 				// 마지막4자리번호가 정규표현식에 위배된 경우
 				$("div#error").hide();
 				$("button#plz_identify").prop("disabled", true);
-				$("button#plz_identify").removeClass("sucess_button_change");
 				
 				$("button#edit_button").prop("disabled", true);
 				$("button#edit_button").removeClass("sucess_button_change");
@@ -440,7 +503,6 @@
 			else {
 				// 마지막4자리번호가 정규표현식에 맞는 경우
 				$("button#plz_identify").prop("disabled", false);
-				$("button#plz_identify").addClass("sucess_button_change");
 				
 				b_flag_showidfDuplicate_click = true;
 				b_flag_hp3_click = true;
@@ -531,6 +593,8 @@
     	   }
     	    
        });
+       <%-- 계좌번호 끝 --%>
+       
        
 	}); // end of document.ready -----
 
@@ -566,7 +630,7 @@
 			url: "/mypage/all_interest_ajax",
 			type: "get",
 			data: {
-				"userid":"jisu"
+				"userid":"${requestScope.udto.userid}"
 			},
 			dataType: "json",
 			success:function(json){
@@ -784,23 +848,40 @@
 	};
 	<%-- 이메일 중복확인버튼 누르기 끝 --%> 
 	
+	let timer_flag = true;
+	
 	<%-- 인증하기 버튼 보이기 및 인증번호 보내기 시작 --%> 
 	function show_identify(){
 		
 		$("div#timer_error").hide();
 		
-		var time = 300;
-		var min = "";
-		var sec = "";
+		randomStr = Math.random().toString(36).substring(2, 12);
+		console.log(randomStr);
 		
-		var x = setInterval(function(){
+		$(".mobile_identify").show(); // 인증하기 버튼 보이기
+		
+		$("div#go_identify").show();
+		
+		setTimeout(function(){
+			$("div#go_identify").fadeOut();
+		}, 1000);
+		
+		if(timer_flag) {
+			
+			timer_flag = false;
+			
+			// 타이머 시작
+			var time = 300;
+			var min = "";
+			var sec = "";
+			
+			var x = setInterval(function(){
+				
 				min = parseInt(time/60);
 				sec = time%60;
 				
 				var timer = min + "분" + sec + "초";
-				/*  
-				document.getElementById("timer").innerHTML = min + "분" + sec + "초";
-				  */
+				
 				$("div#timer").html(timer); 
 				time--;
 				
@@ -813,63 +894,64 @@
 					$("div#timer_error").show();
 					
 					$(".mobile_identify").hide(); // 모바일 인증하기 숨기기
-				}
-				
-		}, 1000);
-		
-		if(b_flag_pwdDuplicate_click || b_flag_hp2_click || b_flag_hp3_click) {
-			// 비밀번호 변경, 휴대폰 번호 변경을 할 경우 인증번호를 입력하도록 한다.
-			
-			randomStr = Math.random().toString(36).substring(2, 12);
-			console.log(randomStr);
-			
-			$(".mobile_identify").show(); // 인증하기 버튼 보이기
-			
-			// 인증번호 보내기 메소드
-			/*
-			$.ajax({
-				url:"/mypage/sms_ajax",
-				type:"post",
-				data:{
-					"mobile":"${requestScope.udto.mobile}",
-					"smsContent":"[해볼랑스] 인증번호는 " + randomStr + "입니다."
-				},
-				dataType:"json",
-				success:function(json){
-					// console.log("~~~~ 확인용 : " + JSON.stringify(json));
 					
-				},
-				error: function(request, status, error){
-					alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
-		        }
-			});
-			*/ 
-		} 
+					timer_flag = true;
+				}
+					
+			}, 1000);
+			// 타이머 끝
+		}	
+		// 인증번호 보내기 메소드
+		/*
+		$.ajax({
+			url:"/mypage/sms_ajax",
+			type:"post",
+			data:{
+				"mobile":"${requestScope.udto.mobile}",
+				"smsContent":"[해볼랑스] 인증번호는 " + randomStr + "입니다."
+			},
+			dataType:"json",
+			success:function(json){
+				// console.log("~~~~ 확인용 : " + JSON.stringify(json));
+				
+			},
+			error: function(request, status, error){
+				alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+	        }
+		});
+		*/ 
 		
+		<%-- 입력한 인증번호가 맞는지 아닌지 확인하기 시작 --%>
+		$("button#button_identify").click(function(){
+			if( $("input#input_identify").val() != randomStr ) {
+				// 인증번호가 틀렸을때
+				$("div.error").hide();
+				$("div#identify_error").show();
+				
+				$("button#edit_button").prop("disabled", true);
+				$("button#edit_button").removeClass("sucess_button_change");
+			}
+			else {
+				// 인증 번호가 맞을 때
+				$("div.error").hide();
+				$("div#identify_success").show();
+				b_flag_idfDuplicate_click = true;
+				
+				clearInterval(x);
+				$("div#timer").hide();
+				
+				var modal = document.getElementById("myModal");
+
+				modal.style.display = "none";
+				
+				edit(); // 수정하기
+			}
+			<%-- 입력한 인증번호가 맞는지 아닌지 확인하기 끝 --%>
+		});
+			
 	};
 	<%-- 인증하기 버튼 보이기 및 인증번호 보내기 끝 --%> 
 	
-	<%-- 입력한 인증번호가 맞는지 아닌지 확인하기 시작 --%>
-	function go_identify() {
-		
-		if( $("input#input_identify").val() != randomStr ) {
-			$("div.error").hide();
-			$("div#identify_error").show();
-			
-			$("button#edit_button").prop("disabled", true);
-			$("button#edit_button").removeClass("sucess_button_change");
-		}
-		else {
-			$("div.error").hide();
-			$("div#identify_success").show();
-			b_flag_idfDuplicate_click = true;
-			
-			$("button#edit_button").prop("disabled", false);
-			$("button#edit_button").addClass("sucess_button_change");
-		}
-		
-	}
-	<%-- 입력한 인증번호가 맞는지 아닌지 확인하기 끝 --%>
 	
 	<%-- 수정하기 버튼 누르기 시작 --%>
 	function go_edit() {
@@ -884,14 +966,34 @@
 			$("button#edit_button").removeClass("sucess_button_change");
 			
 		}
+		
 		else if(b_flag_showidfDuplicate_click && !b_flag_idfDuplicate_click) {
 			// 인증하기가 필요하나 인증을 하지 않은 경우
-			$("div.error").hide();
-			
-			$("div#plz_identify_error").show();
-			
-			$("button#edit_button").prop("disabled", true);
-			$("button#edit_button").removeClass("sucess_button_change");
+			// Get the modal
+			var modal = document.getElementById("myModal");
+
+	       // Get the button that opens the modal
+	       var btn = document.getElementById("myBtn");
+
+	       // Get the <span> element that closes the modal
+	       var span = document.getElementsByClassName("close")[0];
+
+	       // When the user clicks the button, open the modal 
+	       
+	       modal.style.display = "block";
+	       
+
+	       // When the user clicks on <span> (x), close the modal
+	       span.onclick = function() {
+	         modal.style.display = "none";
+	       }
+
+	       // When the user clicks anywhere outside of the modal, close it
+	       window.onclick = function(event) {
+	         if (event.target == modal) {
+	           modal.style.display = "none";
+	         }
+	       }
 			
 		}
 		else {
@@ -918,7 +1020,7 @@
                // console.log("~~~ 확인용 : " + JSON.stringify(json));
                 
                 if(json.n == 1) {
-                	alert("정보수정에 성공했습니다.");
+                	alert("정보수정이 완료되었습니다.");
                 	
                 	const frm = document.editFrm;
            	     
@@ -1026,21 +1128,6 @@
 			         </tr>
 			         
 			         <tr>
-			         	<td style="height: 0;">
-				        	<button type="button" id="plz_identify" onclick="show_identify();">인증번호요청하기</button>
-				        </td>
-				        <td>
-			                <input type="text" id="input_identify" class="mobile_identify" style="margin-right:7%;" />
-			                <button type="button" id="button_identify" class="mobile_identify" onclick="go_identify();">인증하기</button>
-			                <div id="timer"></div>
-			                <div id="identify_success" class="error" style="color:blue;">인증을 성공하였습니다.</div>
-			                <div id="identify_error" class="error">인증번호가 틀렸습니다.</div>
-			                <div id="timer_error" class="error">5분이 지났습니다. 다시 인증번호를 받아주세요.</div>
-			                <div id="plz_identify_error" class="error">인증번호를 입력해주시기 바랍니다.</div>
-			        	</td>
-			         </tr>
-			         
-			         <tr>
 			            <td style="width: 26%; font-weight: bold;">이메일&nbsp;</td>
 			            <td style="width: 74%; text-align: left;">
 			            	<input type="text" name="email" id="email" value="${requestScope.udto.email}" class="requiredInfo" /> 
@@ -1071,6 +1158,39 @@
 			<button type="button" id="edit_button" class="col-lg-12 font_weight" onclick="go_edit();">수  정</button> 
 		</form>
 	</div>
+	
+	  <!-- Modal content -->
+	  <div id="myModal" class="modal">
+
+	  <!-- Modal content -->
+	  <div class="modal-content">
+	    <span class="close">&times;</span>
+	    <table>
+	    	<tr>
+	         	<td class="identify_table_style">
+		        	<button type="button" id="plz_identify" onclick="show_identify();">인증번호요청하기</button>
+		        </td>
+		        <td id="identify_td">
+	                <input type="text" id="input_identify" class="mobile_identify" style="margin-right:7%;" />
+	            </td>
+	            <td class="text_align_right identify_table_style">
+	                <button type="button" id="button_identify" class="mobile_identify">인증하기</button>
+	            </td>
+	        </tr>
+	                
+	    </table>
+	    
+	     <div id="timer" class="identify_div_position"></div>
+         <div id="go_identify" class="error identify_div_position" style="color:blue;">인증번호를 발송했습니다.</div>
+         <div id="identify_error" class="error identify_div_position">인증번호가 틀렸습니다.</div>
+         <div id="timer_error" class="error identify_div_position">5분이 지났습니다. 다시 인증번호를 받아주세요.</div>
+         <div id="plz_identify_error" class="error identify_div_position">인증번호를 입력해주시기 바랍니다.</div>
+	   
+	  </div>
+
+</div>
+
+	
 
 </body>
 </html> 

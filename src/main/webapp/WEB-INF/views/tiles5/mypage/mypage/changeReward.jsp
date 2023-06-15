@@ -158,47 +158,24 @@
 
 	$(document).ready(function(){
 		
-		<%-- 보유 상금 가지고 오기 시작 --%>
-		$.ajax ({
-			url:"/mypage/user_deposit_ajax",
-			type:"GET",
-			data:{
-				"userid":"jisu"
-			},
-			dataType:"json",
-			success:function(json){
-				// 사용자가 관심태그로 설정한 카테고리로 있는 챌린지들 추천
-				// console.log(JSON.stringify(json));
-				
-				if(json.user_all_reward > 3000) {
-				
-					$("td#change_reward").html(json.user_all_reward + " 원");
-					
-					$("button#all_use").val(json.user_all_reward);
-					
-				}
-				else {
-					
-					alert("상금은 3000원부터 환전이 가능합니다.\n현재 보유중인 상금: " + json.user_all_reward);
-					
-					let frm = document.reward_form;
-				     
-				    frm.action = '/mypage/mypageHome';
-				    frm.method = 'POST';
-				    frm.submit();
-				    
-				}
-			},
-			error: function(request, status, error){
-				alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
-			}
-		});
-		<%-- 보유 상금 가지고 오기 끝 --%>
+		if("${requestScope.rdto.allReward}" < 3000) {
+			
+			alert("상금은 3000원부터 환전이 가능합니다.\n현재 보유중인 상금: ${requestScope.rdto.allReward}");
+			
+			let frm = document.reward_form;
+		     
+		    frm.action = '/mypage/mypageHome';
+		    frm.method = 'POST';
+		    frm.submit();
+			
+		} 
 		
 		
 		let all_payment = 0;
 		
 		let success_flag = false; 
+		
+		let all_use_flag = false;
 		
 		$("td#get_reward").html("0원");
 		
@@ -213,15 +190,17 @@
 		<%-- 코인을 버튼을 눌러 사용하였을 경우 --%>
 		$("button#all_use").click(function(){
 			
-			if( Number($(this).val()) > 3000 ) {
+			if( !all_use_flag ) {
 				// 환전 가능할 경우
 				$("div.error").hide();
 				
 				$("input#reward_input").val($(this).val());
 				
-				$("td#td_input_reward").val($(this).val() + "원");
+				$("td#td_input_reward").html($(this).val() + "원");
 				
-				const final_get_reward = $(this).val() - ($(this).val()*0.01);
+				//const final_get_reward = $(this).val() - ($(this).val()*0.01);
+				
+				const final_get_reward = Math.ceil( ($(this).val() - ($(this).val()*0.01)) / 10 ) * 10;
 				
 				$("td#get_reward").html( final_get_reward + "원");
 				
@@ -233,24 +212,25 @@
 				
 				success_flag = true; 
 				
+				all_use_flag = true;
+				
 				$("input#reward").val($(this).val());
 				
 				$("button#reward_covert").prop("disabled", true);
 			}
 			else {
-				$("div.error").hide();
 				
-				$("div#error_min").show();
-
-				$("td#get_reward").html("0원");
+				$("td#get_reward").html("0 원");
 				
-				$("td#td_input_reward").html("0원");
+				$("td#td_input_reward").html("0 원");
 				
-				$("td#change_reward").html("0원");
+				$("td#change_reward").html("0 원");
 				
-				$("input#reward_input").css("border-bottom","solid red 2px");	
+				$("input#reward_input").val("");
 				
-				success_flag = false; 
+				success_flag = false;
+				
+				all_use_flag = false;
 				
 				$("button#reward_covert").prop("disabled", false);
 			}
@@ -281,11 +261,13 @@
 					
 					$("div#error_min").show();
 					
-					$("td#get_reward").html("0원");
+					$("td#get_reward").html("0 원");
 					
-					$("td#td_input_reward").html("0원");
+					$("td#td_input_reward").html("0 원");
 					
-					$("td#change_reward").html("0원");
+					$("td#change_reward").html("0 원");
+					
+					$("input#reward_input").val("");
 					
 					$(this).css("border-bottom","solid red 2px");	
 					
@@ -301,11 +283,11 @@
 						
 						$("div#error_max").show();
 						
-						$("td#get_reward").html("0원");
+						$("td#get_reward").html("0 원");
 						
-						$("td#td_input_reward").html("0원");
+						$("td#td_input_reward").html("0 원");
 						
-						$("td#change_reward").html("0원");
+						$("td#change_reward").html("0 원");
 						
 						$(this).css("border-bottom","solid red 2px");	
 						
@@ -317,15 +299,15 @@
 						// 3000원 이상, 올바르게 입력할 경우
 						$("input#reward").val($(this).val());
 						
-						$("td#td_input_reward").html($(this).val() + "원");
+						$("td#td_input_reward").html($(this).val() + " 원");
 						
 						const final_get_reward = $(this).val() - ($(this).val()*0.01);
 						
-						$("td#get_reward").html( final_get_reward + "원");
+						$("td#get_reward").html( final_get_reward + " 원");
 						
 						const change_user_reward = Number($("button#all_use").val()) - Number($(this).val());
 						
-						$("td#change_reward").html(change_user_reward + "원");
+						$("td#change_reward").html(change_user_reward + " 원");
 											
 						$(this).css("border-bottom","solid #aaaaaa 1px");
 						
@@ -342,11 +324,11 @@
 				// 사용자가 문자를 입력한 경우
 				$("div#error_only_num").show();
 				
-				$("td#td_input_reward").html("0원");
+				$("td#td_input_reward").html("0 원");
 				
-				$("td#change_reward").html("0원");
+				$("td#change_reward").html("0 원");
 				
-				$("td#get_reward").html("0원");
+				$("td#get_reward").html("0 원");
 				
 				$(this).val("");
 				
@@ -467,8 +449,8 @@
 					<div id="error_max" class="error">현재 가지고 있는 상금보다 더 큰 금액은 입력하지 못합니다.</div>
 					<div id="error_min" class="error">상금은 3,000원부터 환전이 가능합니다.</div>
 					<div id="error_only_num" class="error">숫자만 입력해주세요.</div>
-					<div style="font-size:14pt; margin:32px 19%;">현재 보유 상금:</div>
-					<button type="button" id="all_use">상금 전액 사용</button>  
+					<div style="font-size:14pt; margin:32px 19%;">현재 보유 상금: <span style="font-weight:bold;">${requestScope.rdto.allReward} 원</span></div>
+					<button type="button" id="all_use" value="${requestScope.rdto.allReward}">상금 전액 사용</button>  
 					
 				</div>
 				<%-- 상금 입력 끝 --%>
@@ -484,7 +466,7 @@
 							</tr>
 							<tr>	
 								<td class="after_title" style="border-bottom: solid 1px #aaa;">상금 보유량</td>
-								<td id="change_reward"></td>
+								<td id="change_reward">${requestScope.rdto.allReward} 원</td>
 							</tr>
 							<tr>
 								<td class="after_title">최종 환전 상금<a style="font-size:10pt;color:red;">1%의 수수료가 있습니다.</a></td>
@@ -520,7 +502,7 @@
 				<%-- 환전하기 버튼 시작 --%>
 				<div class="row" style="padding:0 14px;">
 					<form name="reward_form" style="width:100%;">
-						<input type="hidden" name="userid" value="jisu" />
+						<input type="hidden" name="userid" value=${requestScope.userid} />
 						<input type="hidden" name="reward" id="reward" />
 						<button type="button" class="reward_convert" id="reward_convert">환 전 하 기</button>
 					</form>

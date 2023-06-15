@@ -6,28 +6,26 @@ import java.util.Map;
 
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.sist.haebollangce.user.dao.InterMypageDAO;
+import com.sist.haebollangce.user.dto.DepositDTO;
+import com.sist.haebollangce.user.dto.RewardDTO;
 import com.sist.haebollangce.user.dto.UserDTO;
-import com.sist.haebollangce.user.util.AES256;
-import com.sist.haebollangce.common.GoogleMail;
 
 @Service
 public class MypageService implements InterMypageService {
 
 	@Autowired // DAO
 	private InterMypageDAO dao;
+	
+	@Autowired	// 비밀번호 복호화
+	private PasswordEncoder passwordEncoder;
  
-	@Autowired // 암호, 이메일 복호화
-	private AES256 aes;
-	
-	@Autowired   // type 에 따라 알아서 Bean 을 주입해준다.
-	private GoogleMail mail;
-	
 	// 결제하기
 	@Override
 	public int go_purchase(Map<String, String> paraMap) {
@@ -38,6 +36,7 @@ public class MypageService implements InterMypageService {
 	}
 	
 	// 사용자가 보유하고 있는 예치금 알아오기
+	/*
 	@Override
 	public JsonObject user_deposit(String userid) {
 		
@@ -70,7 +69,8 @@ public class MypageService implements InterMypageService {
 		
 		return jsonObj;
 	}
-
+*/
+	
 	// 상금 전환 테이블에 전환된 내용 넣기
 	@Override
 	public int reward_convert(Map<String, String> paraMap) {
@@ -286,7 +286,7 @@ public class MypageService implements InterMypageService {
 		String userid = paraMap.get("userid");
 		
 		search_list = dao.deposit_data(paraMap);  // 예치금 테이블에서 예치금 충전, 취소내역 알아오기
-		
+		/*
 		// 유저가 보유하고 있는 예치금
 		int user_deposit = dao.user_deposit(userid);
 				
@@ -295,7 +295,12 @@ public class MypageService implements InterMypageService {
 		
 		// 유저가 현재 보유하고 있는 총 예치금
 		int user_all_deposit = user_deposit - user_challenge_deposit;
-				
+		*/
+		
+		// DepositDTO depo_dto = dao.depo_dto(paraMap);
+		
+		
+		
 		JsonArray jsonArr = new JsonArray();
 		
 		if (search_list != null && search_list.size() > 0) {
@@ -307,7 +312,7 @@ public class MypageService implements InterMypageService {
 				jsonObj.addProperty("purchase_date", (String) map.get("purchase_date"));
 				jsonObj.addProperty("purchase_price", (int) map.get("purchase_price"));
 				jsonObj.addProperty("purchase_status", (int) map.get("purchase_status"));
-				jsonObj.addProperty("user_all_deposit", user_all_deposit);
+			//	jsonObj.addProperty("user_all_deposit", user_all_deposit);
 				
 				jsonArr.add(jsonObj);
 			}
@@ -324,7 +329,51 @@ public class MypageService implements InterMypageService {
 		
 		List<Map<String, String>> chart_list = dao.deposit_chart(paraMap);
 		
-		return "";
+		JsonArray jsonArr = new JsonArray();
+		
+		if(chart_list.size() > 0) {
+			
+			for(Map<String, String> map : chart_list) {
+				
+				JsonObject jsonObj = new JsonObject();
+				
+				jsonObj.addProperty("purchase_price", map.get("purchase_price"));
+				jsonObj.addProperty("entry_fee", map.get("entry_fee"));
+				jsonObj.addProperty("price", map.get("price"));
+				
+				jsonArr.add(jsonObj);
+			}
+			
+		} // end of if(chart_list.size() > 0) {} -----
+		
+		return new Gson().toJson(jsonArr);
+	}
+
+	
+	// 상금 그래프 보여주기
+	@Override
+	public String reward_chart(Map<String, String> paraMap) {
+		
+		List<Map<String, String>> chart_list = dao.reward_chart(paraMap);
+		
+		JsonArray jsonArr = new JsonArray();
+		
+		if(chart_list.size() > 0) {
+			
+			for(Map<String, String> map : chart_list) {
+				
+				JsonObject jsonObj = new JsonObject();
+				
+				jsonObj.addProperty("reward", map.get("reward"));
+				jsonObj.addProperty("convert_reward", map.get("convert_reward"));
+				jsonObj.addProperty("user_reward", map.get("user_reward"));
+				
+				jsonArr.add(jsonObj);
+			}
+			
+		} // end of if(chart_list.size() > 0) {} -----
+		
+		return new Gson().toJson(jsonArr);
 	}
 
 	
@@ -631,12 +680,17 @@ public class MypageService implements InterMypageService {
 		return new Gson().toJson(jsonArr);
 	}
 
-	// 마이페이지 홈화면 사용자 정보 불러오기
+	// 마이페이지 충전도 불러오기
 	@Override
-	public String user_information(String userid) {
+	public String user_exp(String userid) {
 		
-		List<Map<String, String>> information_list = dao.user_information(userid);
+		int exp = dao.user_exp(userid);
 		
+		JsonObject jsonObj = new JsonObject();
+		
+		jsonObj.addProperty("exp", exp);
+		
+		/*
 		JsonArray jsonArr = new JsonArray();
 		
 		JsonObject jsonObj = new JsonObject();
@@ -647,14 +701,14 @@ public class MypageService implements InterMypageService {
 				
 				jsonObj.addProperty("userid", (String) map.get("userid"));
 				jsonObj.addProperty("name", (String) map.get("name"));
-				jsonObj.addProperty("fk_level", (String) map.get("fk_level"));
 				jsonObj.addProperty("exp", (String) map.get("exp"));
 				jsonObj.addProperty("profile_pic", (String) map.get("profile_pic"));
 				
 			}
 			
 		}
-		
+		*/
+		/*
 		// 유저가 보유하고 있는 예치금
 		int user_deposit = dao.user_deposit(userid);
 		
@@ -677,10 +731,10 @@ public class MypageService implements InterMypageService {
 		jsonObj.addProperty("user_all_deposit", user_all_deposit);
 		
 		jsonObj.addProperty("user_all_reward", user_all_reward);
-				
-		jsonArr.add(jsonObj);
 		
-		return new Gson().toJson(jsonArr);
+		jsonArr.add(jsonObj);
+		*/	
+		return jsonObj.toString();
 	}
 
 	// 마이페이지 홈에서 인증 필요한 챌린지 불러오기
@@ -833,6 +887,65 @@ public class MypageService implements InterMypageService {
 		return new Gson().toJson(jsonArr);
 	}
 
+	
+	// 엑셀을 만들기 위한 예치금 불러오기
+	@Override
+	public List<Map<String, String>> deposit_excel(Map<String, String> paraMap) {
 
+		List<Map<String, String>> chart_list = dao.deposit_chart(paraMap);
+		
+		return chart_list;
+	}
+
+	// 엑셀을 만들기 위한 상금 불러오기
+	@Override
+	public List<Map<String, String>> reward_excel(Map<String, String> paraMap) {
+
+		List<Map<String, String>> chart_list = dao.reward_chart(paraMap);
+		
+		return chart_list;
+	}
+
+	// 유저 보유 예치금 총 합만 가져오기
+	@Override
+	public int user_deposit(Map<String, String> paraMap) {
+
+		int user_deposit = dao.user_deposit(paraMap);
+		
+		return user_deposit;
+	}
+	
+	// 유저 보유 예치금
+	@Override
+	public RewardDTO all_reward(Map<String, String> paraMap) {
+
+		RewardDTO rdto = dao.all_reward(paraMap);
+		
+		return rdto;
+	}
+
+	// 유저 보유 예치금
+	@Override
+	public DepositDTO depo_dto(Map<String, String> paraMap) {
+		
+		DepositDTO depo_dto = dao.depo_dto(paraMap);
+		
+		return depo_dto;
+	}
+
+	// 비밀번호 변경하기
+	@Override
+	public void modifyPw(UserDTO udto) {
+		
+		// System.out.println("암호화 전 비밀번호 : " + udto.getPw());
+		
+		String new_pw = passwordEncoder.encode(udto.getPw());
+		udto.setUserid(udto.getUserid());
+		udto.setPw(new_pw);
+		
+		// System.out.println("암호화 후 비밀번호 : " + udto.getPw());
+		
+		dao.modifyPw(udto);
+	}
 
 }
