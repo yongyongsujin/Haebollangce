@@ -683,13 +683,13 @@ public class MypageController {
 			
 			if(n==1) {
 				request.setAttribute("message", "회원탈퇴에 성공했습니다.\\n지금까지 이용해주셔서 감사합니다.");
-				request.setAttribute("loc", "/challenge/main");
+				request.setAttribute("loc", "/api/v1/user/logout");
 			}
 			else {
 				request.setAttribute("message", "회원탈퇴에 실패했습니다.\\n고객센터에 문의해주세요.");
 				request.setAttribute("loc", "/challenge/main");
 			}
-			
+			 
 			return "msg";
 		}
 	}
@@ -812,38 +812,34 @@ public class MypageController {
 		
 		String newFileName = "";
 		
-		if (profile_pic_file != null) {
-			try {
-				MultipartFile mtfile = mtp_request.getFile("profile_pic_file");
+		try {
+			MultipartFile mtfile = mtp_request.getFile("profile_pic_file");
+		
+			// System.out.println(mtfile);
 			
-				// System.out.println(mtfile);
-				
-				byte[] bytes = null;
-				// 첨부파일의 내용물을 담는 것
-				
-				long fileSize = 0;
-				// 첨부파일의 크기
-				
-				// 첨부파일의 내용물을 읽어오는 것
-				bytes = mtfile.getBytes();
-				
-				originalFilename = mtfile.getOriginalFilename();
-				
-				// System.out.println("originalFilename : " + originalFilename);
-				
-				newFileName = fileManager.doFileUpload(bytes, originalFilename, path);
-				
-				// System.out.println("newFileName : " + newFileName);
-				
-			} catch (IllegalStateException | IOException e) {
-				e.printStackTrace();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+			byte[] bytes = null;
+			// 첨부파일의 내용물을 담는 것
+			
+			long fileSize = 0;
+			// 첨부파일의 크기
+			
+			// 첨부파일의 내용물을 읽어오는 것
+			bytes = mtfile.getBytes();
+			
+			originalFilename = mtfile.getOriginalFilename();
+			
+			// System.out.println("originalFilename : " + originalFilename);
+			
+			newFileName = fileManager.doFileUpload(bytes, originalFilename, path);
+			
+			// System.out.println("newFileName : " + newFileName);
+			
+		} catch (IllegalStateException | IOException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-		else {
-			newFileName = udto.getProfilePic();
-		}
+		
 		// System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1 확인용 : " + newFileName);
 		
 		if( !passwordEncoder.matches(pw, udto.getPw() )) {

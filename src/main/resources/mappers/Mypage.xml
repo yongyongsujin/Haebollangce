@@ -468,11 +468,11 @@
 		<result property="commentCount" column="commentCount" javaType="String" />
 		<result property="readCount" 	column="readCount" 	  javaType="String" />
 		<result property="profile_pic" 	column="profile_pic"  javaType="String" />
-		<result property="filename" 	column="filename"     javaType="String" />
+		<result property="thumbnail" 	column="thumbnail"     javaType="String" />
 	</resultMap>
 	<select id="select_like_lounge" parameterType="String" resultMap="mypage_select_like_lounge_map">
 		select seq, B.name, subject, content, likeCount, 
-			   commentCount, readCount, profile_pic, filename
+			   commentCount, readCount, profile_pic, thumbnail
 		from tbl_lounge_like L join tbl_lounge_board B
 									on L.fk_seq = B.seq
 							   join tbl_user U

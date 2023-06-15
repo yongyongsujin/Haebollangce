@@ -22,15 +22,10 @@
 const isLogined = localStorage.getItem("login");
 
 const login_false = `
-	    	<button type="button" class="btn btn-sm btn-habol mx-2 my-2" style="color:white; font-weight:bold;" onclick="javascript:location.href='/user/signup'">
-	    	회원가입
-	    	</button>
-	    	<button type="button" class="btn btn-sm btn-habol mx-2 my-2 " style="color:white; font-weight:bold;" onclick="javascript:location.href='/user/login'">
-	    	로그인
-	    	</button>`;
+	    	<button type="button" class="btn btn-sm btn-habol mx-2 my-2" style="color:white; font-weight:bold;" onclick="javascript:location.href='/user/signup'">회원가입</button>
+	    	<button type="button" class="btn btn-sm btn-habol mx-2 my-2 " style="color:white; font-weight:bold;" onclick="javascript:location.href='/user/login'">로그인</button>`;
 
 const login_true = `
-			<i type="button" class="fa-solid fa-paper-plane mx-2" onclick="javascript:location.href='/messenger/messengerView'"></i>
-	    	<button type="button" class="btn btn-sm btn-habol mx-2 my-2" style="color:white; font-weight:bold;" onclick="javascript:location.href='/mypage/mypageHome'">마이페이지</button>
+			<button type="button" class="btn btn-sm btn-habol mx-2 my-2" style="color:white; font-weight:bold;" onclick="javascript:location.href='/mypage/mypageHome'">마이페이지</button>
 	    	<button type="button" id= "logout" class="btn btn-sm btn-habol mx-2 my-2 " style="color:white; font-weight:bold;" onclick="javascript:location.href='/api/v1/user/logout'">로그아웃</button>`;
 

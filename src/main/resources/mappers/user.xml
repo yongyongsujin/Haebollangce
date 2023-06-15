@@ -7,7 +7,7 @@
 
 
 	<select id="findByUserid" parameterType="String" resultType="com.sist.haebollangce.user.dto.UserDTO">
-		select * from tbl_user where userid = #{userid}
+		select * from tbl_user where userid = #{userid} and status = 0
 	</select>
 
 	<insert id="formSignup" parameterType="com.sist.haebollangce.user.dto.UserDTO">
