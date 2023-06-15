@@ -44,6 +44,11 @@ public class ChallengeDTO {
 	
 	private String profilePic;
 	
+	private String userid;
+	
+	private String checkJoinUser; // 챌린지에 참가중인지 아닌지 확인용 
+	private int checkDate; // 시작날짜 지났는지 확인용 
+	
 	public ChallengeDTO() {};
 	
 	
@@ -275,6 +280,48 @@ public class ChallengeDTO {
 	}
 	public void setTodayCheckCertify(String todayCheckCertify) {
 		this.todayCheckCertify = todayCheckCertify;
+	}
+
+
+
+
+	public String getUserid() {
+		return userid;
+	}
+
+
+
+
+	public void setUserid(String userid) {
+		this.userid = userid;
+	}
+
+
+
+
+	public String getCheckJoinUser() {
+		return checkJoinUser;
+	}
+
+
+
+
+	public void setCheckJoinUser(String checkJoinUser) {
+		this.checkJoinUser = checkJoinUser;
+	}
+
+
+
+
+	public int getCheckDate() {
+		return checkDate;
+	}
+
+
+
+
+	public void setCheckDate(int checkDate) {
+		this.checkDate = checkDate;
 	}
 	
 	

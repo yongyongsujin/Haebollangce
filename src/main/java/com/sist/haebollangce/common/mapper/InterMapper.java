@@ -102,45 +102,18 @@ public interface InterMapper {
    // 카테고리 리스트 가져오기
    List<ChallengeDTO> getcategoryList();
 
+   // 좋아요 되어 있는지 안 되어 있는지 확인 
+   int checkLike(Map<String, String> paraMap);
+   
+   // 챌린지 북마크(관심)등록
+   int challengelikeadd(ChallengeDTO challengedto);
+   
+   // 챌린지 북마크(관심)해제
+   int likedelete(ChallengeDTO challengedto);
+
    void formSignup(UserDTO signupUser);
 
    void oauthSignup(UserDTO user);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 	List<challengeVO> challengeList();
