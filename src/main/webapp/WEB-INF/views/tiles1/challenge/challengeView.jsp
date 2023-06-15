@@ -331,7 +331,7 @@
 		function participate() { // 참가하기 클릭시 
 			
 			if("${userid}" != "") {
-				location.href='<%= ctxPath%>/challenge/join?challenge_code="${challengedto.challengeCode}"';
+				location.href='<%= ctxPath%>/challenge/join?challenge_code='+${challengedto.challengeCode};
 			}
 			else {
 				location.href='<%= ctxPath%>/user/login';
