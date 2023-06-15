@@ -7,6 +7,37 @@
 
 <style type="text/css">
 	
+	/* 게시물 호버 */
+	div#loungeListCard {
+  		position: relative;
+  		transition: transform 0.2s, box-shadow 0.2s;
+  		border-radius: 20px; /* 여기에 추가 */
+	}
+
+	div#loungeListCard:hover {
+  		transform: translateY(-5px);
+  		box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+	}
+
+	div#loungeListCard::before {
+  		content: '';
+  		position: absolute;
+  		top: 0;
+  		left: 0;
+  		right: 0;
+  		bottom: 0;
+  		z-index: -1;
+  		background-color: #fffbec;
+  		transform: scaleX(0);
+  		transform-origin: top left;
+  		transition: transform 0.2s;
+  		border-radius: 20px; /* 여기에 추가 */
+	}
+
+	div#loungeListCard:hover::before {
+  		transform: scaleX(1);
+	}
+	
 	/* 페이지바 */
 	div.pagination-wrapper {
 		border-radius: 35px;
@@ -81,68 +112,59 @@
 	/* 글검색 폼 */
 
 	body{
-	
-	  background-color: #eee; 
+		background-color: #eee; 
 	}
 	
 	.card{
-	
-	  background-color: #fff;
-	  padding: 15px;
-	  border:none;
+		background-color: #fff;
+	  	padding: 15px;
+	  	border:none;
 	}
 	
 	.input-box{
-	  position: relative;
+	  	position: relative;
 	}
 	
 	.input-box i {
-	  position: absolute;
-	  right: 13px;
-	  top:15px;
-	  color:#ced4da;
-	
+	  	position: absolute;
+	  	right: 13px;
+	  	top:15px;
+	  	color:#ced4da;
 	}
 	
 	.form-control{
-	
-	  height: 50px;
-	  background-color:#eeeeee69;
+		height: 50px;
+	  	background-color:#eeeeee69;
 	}
 	
 	.form-control:focus{
-	  background-color: #eeeeee69;
-	  box-shadow: none;
-	  border-color: #eee;
+	  	background-color: #eeeeee69;
+	  	box-shadow: none;
+	  	border-color: #eee;
 	}
 	
-	
 	.list{
-	
-	  padding-top: 20px;
-	  padding-bottom: 10px;
-	  display: flex;
-	  align-items: center;
-	
+	  	padding-top: 20px;
+	 	padding-bottom: 10px;
+	  	display: flex;
+	  	align-items: center;
 	}
 	
 	.border-bottom{
-	
-	  border-bottom: 2px solid #eee;
+	  	border-bottom: 2px solid #eee;
 	}
 	
 	.list i{
-	  font-size: 19px;
-	  color: red;
+	  	font-size: 19px;
+	  	color: red;
 	}
 	
 	.list small{
-	
-	  color:#dedddd;
+		color:#dedddd;
 	}
 
 	div.oneresult:hover {
-	  background-color: #eee;
+	  	background-color: #eee;
 	}
 
 </style>
@@ -264,7 +286,7 @@
 			<div class="col-md-5">
 				<div class="card">
 					
-					<select name="searchType" id="searchType" type="button" class="col-sm-3 btn dropdown-toggle" data-toggle="dropdown">
+					<select name="searchType" id="searchType" type="button" class="col-sm-3 col-md-5 col-lg-3 btn dropdown-toggle" data-toggle="dropdown">
                     	<option value="subject">글제목</option>
         				<option value="name">글쓴이</option>
                     </select>
@@ -292,8 +314,8 @@
     <div class="row">
     	<c:if test="${not empty requestScope.lgboardList}">
 			<c:forEach items="${requestScope.lgboardList}" var="lgboarddto">
-			    <div class="col-lg-3 col-md-4 col-sm-6">
-			        <div class="card p-3 mb-5 " style="min-height: 400px;">
+			    <div class="col-lg-3 col-md-4 col-sm-6" id="loungeListCard">
+			        <div class="card p-3 my-3" style="min-height: 400px;">
 			            <div class="d-flex justify-content-between">
 			                <div class="d-flex flex-row align-items-center">
 		                        <div><img style="border-radius:60%; width:35px;" src="<%= ctxPath%>/images/${lgboarddto.lgbprofile}" /> </div>
@@ -320,17 +342,22 @@
 		                        </c:if>
 		                        <!-- === 첨부파일이 있는 경우 === -->
 			        			<c:if test="${lgboarddto.orgFilename != null}">
-			        				<div class="lgsubject mb-1">${lgboarddto.subject}&nbsp;&nbsp;<i class="fa-solid fa-file-arrow-down" style="color: #fed85d;"></i></div>
+			        				<div class="lgsubject mb-1"><i class="fa-solid fa-file-arrow-down" style="color: #fed85d;"></i>&nbsp;&nbsp;${lgboarddto.subject}</div>
 			        				<div class="lgcontent">${lgboarddto.content}</div>
 			        			</c:if>
-			        			
 		                        <div class="mt-3"> 
 		                        	<span class="text1">
-		                        		<img src="https://images.munto.kr/munto-web/ic_action_like-empty-black_30px.svg?s=32x32" />${lgboarddto.likeCount}
+		                        		<c:if test="${lgboarddto.isLike == 1 && loginuser != null}"> <%-- 로그인한 유저가 좋아요를 누른상태면 빨간하트를 --%>
+					                		<img src="/images/lounge-redheart.jpg" width="29" height="29" />
+		                        		</c:if>
+		                        		<c:if test="${lgboarddto.isLike == 0 || loginuser == null}"> <%-- 로그인한 유저가 좋아요를 누르지 않은 상태면 빈 하트를 보이자  --%>
+		                        			<img src="/images/lounge-emptyheart.jpg" width="29" height="29" />
+			                        	</c:if>
+			                        	${lgboarddto.likeCount}
 			                        	<span class="text2">
-			                        		<img src="https://images.munto.kr/munto-web/ic_action_comment_30px.svg?s=32x32"/>${lgboarddto.commentCount}
+			                        		<img src="/images/comment.png" width="29" height="29" />${lgboarddto.commentCount}
 			                        	</span>
-			                        	<img src="https://images.munto.kr/munto-web/info_group.svg?s=32x32"/>${lgboarddto.readCount}
+			                        	<img src="/images/readcount.png" width="29" height="29" />${lgboarddto.readCount}
 		                        	</span> 
 		                        </div>
 		                    </div>

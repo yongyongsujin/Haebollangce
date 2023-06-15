@@ -37,6 +37,21 @@ public class LoungeDAO implements InterLoungeDAO {
 	@Override
 	public List<LoungeBoardDTO> lgboardListSearch(Map<String, String> paraMap) {
 		List<LoungeBoardDTO> lgboardList = mapper.lgboardListSearch(paraMap);
+
+		if(paraMap.get("userid") != null) { // userid 가 있을때
+			if(lgboardList != null && lgboardList.size() > 0) {
+				for(LoungeBoardDTO lgboard : lgboardList) {
+					
+					LoungelikeDTO lglikedto = new LoungelikeDTO();
+					lglikedto.setFk_seq(lgboard.getSeq());
+					lglikedto.setFk_userid(paraMap.get("userid"));
+					
+					int isLike = mapper.loungelikeCheck(lglikedto);
+					lgboard.setIsLike(String.valueOf(isLike));
+				} // end of for
+			}
+		}
+		
 		return lgboardList;
 	}
 	

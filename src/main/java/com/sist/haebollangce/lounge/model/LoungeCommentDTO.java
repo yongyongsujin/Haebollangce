@@ -4,7 +4,7 @@ package com.sist.haebollangce.lounge.model;
 public class LoungeCommentDTO {
 	
 	private String seq;          // 댓글번호
-	private String fk_userid;    // 사용자ID
+	private String fkUserid;     // 사용자ID fk_userid
 	private String name;         // 성명
 	private String content;      // 댓글내용
 	private String regDate;      // 작성일자
@@ -26,12 +26,12 @@ public class LoungeCommentDTO {
 		this.seq = seq;
 	}
 
-	public String getFk_userid() {
-		return fk_userid;
+	public String getFkUserid() {
+		return fkUserid;
 	}
 
-	public void setFk_userid(String fk_userid) {
-		this.fk_userid = fk_userid;
+	public void setFkUserid(String fkUserid) {
+		this.fkUserid = fkUserid;
 	}
 
 	public String getName() {

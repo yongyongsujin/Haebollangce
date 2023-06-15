@@ -56,7 +56,7 @@ String ctxPath = request.getContextPath();
 	  	top: 0;
 	  	left: 0;
 	  	right: 0;
-	  	z-index: 1;
+	  	z-index: 300;
 	}
 	
 	.headerlogo {
@@ -287,7 +287,7 @@ String ctxPath = request.getContextPath();
 <header>
 	<div id="main_header" class="container-fluid px-0">
 		<!-- 상단 네비게이션 시작 -->
-		<nav class="navbar navbar-expand-lg navbar-light py-3 " style="padding: 15px 100px; background-color: #e6e1e1; color: black;">
+		<nav class="navbar navbar-expand-lg navbar-light py-3 " style="padding: 15px 100px; background-color: #dcd5d5; color: black;">
 		
 			<a class="navbar-brand headerlogo active" href="<%=ctxPath%>/challenge/main">HAEBOLLANGCE</a>
 			
@@ -315,11 +315,7 @@ String ctxPath = request.getContextPath();
 					        <a class="dropdown-item" href="<%=ctxPath%>/lounge/loungeList">라운지 둘러보기</a>
 					    </div>
 			      	</li>
-			<%--<c:if test="${sessionScope.loginuser != null and sessionScope.loginuser.userid == 'admin'}"> <%-- admin 으로 로그인 했으면 --%>
-			      	<li class="nav-item">
-			        	<a class="nav-link headerfont fromCenter disabled" style="font-weight:bold;" href="<%= ctxPath %>/haebol_admin" tabindex="-1" aria-disabled="true">관리자</a>
-			      	</li>
-		    <%--</c:if> --%>
+	
 			    </ul>
 			    <div class="form-inline my-2 my-lg-0" id="islogin">
 			    	

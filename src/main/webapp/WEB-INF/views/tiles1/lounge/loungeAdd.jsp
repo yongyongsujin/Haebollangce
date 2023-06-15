@@ -12,7 +12,7 @@
 
   	$(document).ready(function(){
 	  
-	  	<%-- #5. 스마트 에디터 구현  --%>
+	  	<%-- === #5. 스마트 에디터 구현 === --%>
 	  	//전역변수
 	    var obj = [];
 	    
@@ -97,15 +97,15 @@
 		<h4 class="d-flex justify-content-center mb-1 pb-1" style="padding-top:50px;"><span style="border-bottom: solid 3px;">라운지 글작성하기</span></h4>
 	
 		<form name="addFrm" enctype="multipart/form-data">
-		
+			
 			<div class="card p-3 mb-5 mt-3" >
 			
 		        <div class="d-flex justify-content-between">
 		            <div class="d-flex flex-row align-items-center ">
-		                <div><img style="border-radius:60%; width:60px; height: 60px;" src="<%= ctxPath%>/images/" /> </div> <!-- *여기는 지금 로그인 한 사람의 profile_pic 정보가 와야함!* -->
+		                <div><img style="border-radius:60%; width:60px; height: 60px;" src="<%= ctxPath%>/images/${loginuser.profilePic}" /> </div> 
 		                <div class="c-details">
-		                    <input type="hidden" name="fk_userid" id="fk_userid" value="sudin" /> <!-- value="${sessionScope.loginuser.userid}" --> <!-- *여기는 지금 로그인 한 사람의 userid 정보가 와야함!* -->
-	                    	<input type="text" name="name" style="border:none; font-size:16pt; margin-left:10px;" value="슈딘쓰"></input> <!-- value="${sessionScope.loginuser.name}" readonly --> <!-- *여기는 지금 로그인 한 사람의 name 정보가 와야함!* -->
+		                    <input type="hidden" name="fkUserid" id="fk_userid" value="${loginuser.userid}" />
+	                    	<input type="text" name="name" style="border:none; font-size:16pt; margin-left:10px;" value="${loginuser.name}"></input>
             			</div>
 		            </div>
 		        </div>
