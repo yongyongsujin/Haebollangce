@@ -748,7 +748,7 @@ a:hover { text-decoration: none;}
               for (var key in data) {
                 if (data.hasOwnProperty(key)) {
                   var items = data[key];
-                  console.log(items);
+                  
                   
                   
                   items.forEach(function(item) {
