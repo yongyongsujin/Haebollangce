@@ -26,8 +26,8 @@
 	
 	<!-- Font Awesome 6 Icons -->
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-	    
-	
+	<!-- 로그인 체크 -->
+	<script type="text/javascript" src="/js/loginCheck.js"></script>
 	<!-- Optional JavaScript : jQuery 쓸래 -->
 	<script type="text/javascript" src="<%= ctxPath%>/js/jquery-3.6.4.min.js"></script>
 	<script type="text/javascript" src="<%= ctxPath%>/bootstrap-4.6.0-dist/js/bootstrap.bundle.min.js" ></script> 

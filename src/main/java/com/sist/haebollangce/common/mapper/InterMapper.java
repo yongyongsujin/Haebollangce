@@ -148,7 +148,7 @@ public interface InterMapper {
     List<challengeVO> categoryList();
 
     List<challengeVO> challengelist();
-   
+
     // 챌린지 삭제하기
 	challengeVO challViewWithNoAddCount(Map<String, String> paraMap);
 
