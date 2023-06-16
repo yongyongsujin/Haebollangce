@@ -455,7 +455,7 @@
 								
 									html += "<tr>"
 		               		        	 +  "	<td class='td_width_33'>"
-		               		        	 +  "		<img class='img-fluid px-3 px-sm-4 mt-3 mb-4 cha_img'  src='<%=ctxPath%>/images" + json[i].thumbnail + "' alt='챌린지이미지'>"
+		               		        	 +  "		<img class='img-fluid px-3 px-sm-4 mt-3 mb-4 cha_img'  src='<%=ctxPath%>/images/" + json[i].thumbnail + "' alt='챌린지이미지'>"
 		               		        	 +  "	</td>"
 		               		        	 +  "	<td>"
 		               		        	 +	"		<div class='div_info div_title'>" + json[i].challenge_name + " 챌린지</div>"
@@ -524,7 +524,7 @@
 							
 							html += "<tr>"
 								 +	"	<td class='td_width_33'>"
-								 +  "		<img class='img-fluid px-3 px-sm-4 mt-3 mb-4 cha_img' src='<%=ctxPath%>/images" + json[i].thumbnail + "' alt='챌린지이미지'>"
+								 +  "		<img class='img-fluid px-3 px-sm-4 mt-3 mb-4 cha_img' src='<%=ctxPath%>/images/" + json[i].thumbnail + "' alt='챌린지이미지'>"
 								 +	"	</td>"
 								 +	"	<td>"
 								 +	"		<div class='div_info div_title'>" + json[i].challenge_name + " 챌린지</div>"
