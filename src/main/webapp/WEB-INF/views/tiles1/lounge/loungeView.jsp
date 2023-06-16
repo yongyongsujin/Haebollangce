@@ -113,8 +113,7 @@
 			  	             }
 			  	             if (item.fk_userid == "${requestScope.loginuser.userid}") {				
 			  	                				
-				  	               html += `	<small type="button" class="mb-0 ml-2 p-1" style="color:gray; background-color:#eee; border-radius:5px;">수정</small>
-				  	                			<small type="button" class="mb-0 ml-1 p-1" style="color:gray; background-color:#eee; border-radius:5px;" onclick="lgcommentDel('\${item.seq}')">삭제</small>`;
+				  	               html += `	<small type="button" class="mb-0 ml-1 p-1" style="color:gray; background-color:#eee; border-radius:5px;" onclick="lgcommentDel('\${item.seq}')">삭제</small>`;
 			  	             }
 			  	             html += `		</div>
 			  	                		</div> 
@@ -138,8 +137,7 @@
 			  	            }			  	                				
   							if (item.fk_userid == "${requestScope.loginuser.userid}") {				
 	                				
-			  	                html += `		<small type="button" class="mb-0 ml-2 p-1" style="color:gray; background-color:#eee; border-radius:5px;">수정</small>
-				  	                			<small type="button" class="mb-0 ml-1 p-1" style="color:gray; background-color:#eee; border-radius:5px;" onclick="lgcommentDel('\${item.seq}')">삭제</small>`;
+			  	                html += `		<small type="button" class="mb-0 ml-1 p-1" style="color:gray; background-color:#eee; border-radius:5px;" onclick="lgcommentDel('\${item.seq}')">삭제</small>`;
 			  	            }
 			  	             html += `		</div>
 			  	                		</div> 

@@ -119,7 +119,7 @@ public class LoungeController {
 				//	System.out.println("~~~ 첨부파일의 파일명 originalFilename : " + originalFilename); 
 				// ~~~ 첨부파일의 파일명 originalFilename : 댐벼.jpg
 				
-				newFilename = fileManager.doFileUpload(bytes, originalFilename, path);
+				newFilename = fileManager.lgdoFileUpload(bytes, originalFilename, path);
 				//	System.out.println("~~~ 확인용 newFilename : " + newFilename);
 				// ~~~ 확인용 newFilename : 20230605160348266890041852700.jpg
 				
@@ -157,7 +157,7 @@ public class LoungeController {
 			String originalFilename = attachThumbnail.getOriginalFilename();
 			// ~~~ 첨부파일의 파일명 originalFilename : 댐벼.jpg
 			
-			thumFilename = fileManager.doFileUpload(bytes, originalFilename, path);
+			thumFilename = fileManager.lgdoFileUpload(bytes, originalFilename, path);
 			// ~~~ 확인용 thumFilename : 20230605160348266890041852700.jpg
 			
 			// 3. LoungeBoardDTO lgboarddto 에 fileName 값과 orgFilename 값과 fileSize 값을 넣어주기 	
@@ -274,7 +274,7 @@ public class LoungeController {
 		// === 페이징 처리를 위해 먼저 총 게시물 건수(totalCount)를 구해와야 한다.
 	    // -> 총 게시물 건수(totalCount)는  - 1)검색이 있을 때 2)없을 때 로 나뉜다. 
 	    int totalCount = 0;         // 총 게시물 건수
-	    int sizePerPage = 12;       // 한 페이지당 보여줄 게시물 건수 
+	    int sizePerPage = 8;       // 한 페이지당 보여줄 게시물 건수 
 	    int currentShowPageNo = 0;  // 현재 보여주는 페이지번호로서, 초기치로는 1페이지로 설정함.
 	    int totalPage = 0;          // 총 페이지수(웹브라우저상에서 보여줄 총 페이지 개수, 페이지바)
 	    int startRno = 0;		    // 시작 행번호
@@ -339,7 +339,7 @@ public class LoungeController {
 		}
 		
 		// === #3-3. 페이지바 만들기  ===
-		int blockSize = 2; // 1개 블럭(토막)당 보여지는 페이지번호의 개수
+		int blockSize = 3; // 1개 블럭(토막)당 보여지는 페이지번호의 개수
 		int loop = 1;		// 1부터 증가하여 1개 블럭을 이루는 페이지번호의 개수[지금은 10개(== blockSize)]까지만 증가하는 용도
       	
 		int pageNo = ((currentShowPageNo - 1)/blockSize) * blockSize + 1; 
@@ -452,7 +452,6 @@ public class LoungeController {
 			
 		   mav.addObject("loginuser", loginuser);
 		}
-		
 		
 		
 		// --- 조회하고자 하는 글번호 받아오기 ---
@@ -572,11 +571,11 @@ public class LoungeController {
 				bytes = attach.getBytes();  // 첨부파일의 내용물을 읽어오는 것
 				
 				String originalFilename = attach.getOriginalFilename();
-				//	System.out.println("~~~ 첨부파일의 파일명 originalFilename : " + originalFilename); 
+				// System.out.println("~~~ 첨부파일의 파일명 originalFilename : " + originalFilename); 
 				// ~~~ 첨부파일의 파일명 originalFilename : 댐벼.jpg
 				
-				newFilename = fileManager.doFileUpload(bytes, originalFilename, path);
-				//	System.out.println("~~~ 확인용 newFilename : " + newFilename);
+				newFilename = fileManager.lgdoFileUpload(bytes, originalFilename, path);
+				// System.out.println("~~~ 확인용 newFilename : " + newFilename);
 				// ~~~ 확인용 newFilename : 20230605160348266890041852700.jpg
 				
 				// 3. LoungeBoardDTO lgboarddto 에 fileName 값과 orgFilename 값과 fileSize 값을 넣어주기 	
