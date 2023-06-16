@@ -101,7 +101,7 @@
 	  						html += ` <div class="d-flex flex-row mb-3"> 
 			                		 	<img style="border: solid 3px #eee; border-radius: 100%; width:45px; height: 45px; vertical-align: top;" src="<%= ctxPath%>/images/\${item.lgcprofile}" /> 
 			  	              		 	<div class="c-details"> 
-			  	                     		<h5 class="mb-1 ml-3 lounge_comment_userid"><span class="lounge_comment_name">\${item.fk_userid}</span></h5> 
+			  	                     		<h5 class="mb-1 ml-3 lounge_comment_userid"><span class="lounge_comment_name">\${item.name}</span></h5> 
 			  	                     		<input type="hidden" name="seq" id="seq" value="\${item.seq}" /> 
 			  	                     		<div class="c-details">
 			  		                 			<h6 class="mb-0 ml-3 lounge_comment_content">\${item.content}</h6>
@@ -113,8 +113,7 @@
 			  	             }
 			  	             if (item.fk_userid == "${requestScope.loginuser.userid}") {				
 			  	                				
-				  	               html += `	<small type="button" class="mb-0 ml-2 p-1" style="color:gray; background-color:#eee; border-radius:5px;">수정</small>
-				  	                			<small type="button" class="mb-0 ml-1 p-1" style="color:gray; background-color:#eee; border-radius:5px;" onclick="lgcommentDel('\${item.seq}')">삭제</small>`;
+				  	               html += `	<small type="button" class="mb-0 ml-1 p-1" style="color:gray; background-color:#eee; border-radius:5px;" onclick="lgcommentDel('\${item.seq}')">삭제</small>`;
 			  	             }
 			  	             html += `		</div>
 			  	                		</div> 
@@ -138,8 +137,7 @@
 			  	            }			  	                				
   							if (item.fk_userid == "${requestScope.loginuser.userid}") {				
 	                				
-			  	                html += `		<small type="button" class="mb-0 ml-2 p-1" style="color:gray; background-color:#eee; border-radius:5px;">수정</small>
-				  	                			<small type="button" class="mb-0 ml-1 p-1" style="color:gray; background-color:#eee; border-radius:5px;" onclick="lgcommentDel('\${item.seq}')">삭제</small>`;
+			  	                html += `		<small type="button" class="mb-0 ml-1 p-1" style="color:gray; background-color:#eee; border-radius:5px;" onclick="lgcommentDel('\${item.seq}')">삭제</small>`;
 			  	            }
 			  	             html += `		</div>
 			  	                		</div> 
@@ -243,7 +241,7 @@
 		                </div>
 		            </div>
 		            <c:if test="${loginuser != null && loginuser.userid == lgboarddto.fkUserid}">
-		            	<div class="badge2"> <span style="font-size=5pt;">프로필편집</span> </div>
+		            	<div class="badge2"> <span style="font-size=5pt;" onclick="javascript:location.href='/mypage/mypageHome'">프로필편집</span> </div>
 		            </c:if>
 		            <c:if test="${loginuser != null && loginuser.userid != lgboarddto.fkUserid}">
 		            	<div class="badge2"> <span>follow</span> </div>
@@ -253,14 +251,14 @@
 		            </c:if>
 		        </div>
 		        <div class="mt-4" style="padding:10px;">
-		   			<img style="width:100%;" src="<%= ctxPath%>/images/lgthumFiles/${lgboarddto.thumbnail}" />
+		   			<img style="width:100%;" src="/images/lgthumFiles/${lgboarddto.thumbnail}" />
 		            <div class="mt-3">
 		            	<h4>${lgboarddto.subject}</h4>
 		                <div>${lgboarddto.content}</div>
 		                <c:if test="${lgboarddto.orgFilename != null}">
 			                <div style="border:solid 1px silver; border-radius:7px; margin:10px; padding:7px;"> 첨부파일 |  
 			                	<c:if test="${loginuser != null}">
-			               			<a href="<%= request.getContextPath() %>/lounge/lgdownload?seq=${lgboarddto.seq}" style="color:black;">${lgboarddto.orgFilename} ( <fmt:formatNumber value="${lgboarddto.fileSize}" pattern="#,###" /> bytes ) </a>
+			               			<a href="/lounge/lgdownload?seq=${lgboarddto.seq}" style="color:black;">${lgboarddto.orgFilename} ( <fmt:formatNumber value="${lgboarddto.fileSize}" pattern="#,###" /> bytes ) </a>
 			               		</c:if>
 			               		<c:if test="${loginuser == null}">
 			               			${lgboarddto.orgFilename}
@@ -296,7 +294,7 @@
 		    	<c:if test="${empty loginuser}">
 			    	<div class="d-flex flex-row align-items-center">
 			                <div > 
-			                	<img style="border: solid 3px #eee; border-radius: 100%; width:45px; height: 45px; vertical-align: top;" src="/images/기본프로필.png"/>
+			                	<img style="border: solid 3px #eee; border-radius: 100%; width:45px; height: 45px; vertical-align: top;" src="/images/defaultProfic.png"/>
 			                </div>
 			                <div style="width:100%;">
 			                	<div class=" c-details">

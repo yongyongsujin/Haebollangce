@@ -310,7 +310,6 @@
 	
 	<!-- 글검색 폼 추가 끝 -->
 
-
     <div class="row">
     	<c:if test="${not empty requestScope.lgboardList}">
 			<c:forEach items="${requestScope.lgboardList}" var="lgboarddto">
@@ -327,7 +326,7 @@
 		                            </span>
 		                        </div>
 		                    </div>
-		                    <div class="badge"> <span>chat me</span> </div>
+		                    <div class="badge"> <span>follow</span> </div>
 		                </div>
 		                <div class="mt-3" onclick="goView(${lgboarddto.seq})" style="cursor:pointer;">
 		                	<div style="width: 100%; height: 0; padding-bottom: 100%; position: relative;">
