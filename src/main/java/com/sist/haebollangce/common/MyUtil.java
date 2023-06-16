@@ -2,6 +2,8 @@ package com.sist.haebollangce.common;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Map;
 
 public class MyUtil {
@@ -76,6 +78,67 @@ public class MyUtil {
 		}
 		
 		return totalCertify;
+	}
+	
+	
+	// 시작시간과 종료시간을 받아와 현재시간과 비교하여 boolean을 리턴하는 함수
+	public static boolean getTimeCompare(String hour_start, String hour_end) {
+		
+		boolean bool = false;
+		
+		String startHour = hour_start.substring(0,2);
+		String startMin = hour_start.substring(3,5);
+		
+		String endHour = hour_end.substring(0,2);
+		String endMin = hour_end.substring(3,5);
+		
+		LocalTime startTime = LocalTime.of(Integer.parseInt(startHour) , Integer.parseInt(startMin));
+		LocalTime nowTime = LocalTime.now();
+		LocalTime endTime = LocalTime.of(Integer.parseInt(endHour) , Integer.parseInt(endMin));
+		
+		if (startTime.isBefore(nowTime)) {
+			
+			if (endTime.isAfter(nowTime)) {
+				bool = true;
+			}
+		}
+		
+		return bool;
+	}
+	
+	
+	// frequency 타입(평일, 주말)을 받아와 현재시간과 비교하여 boolean을 리턴하는 함수
+	public static boolean getDateCompare(String fk_freq_type) {
+		
+		DayOfWeek currentDayOfWeek = LocalDate.now().getDayOfWeek();
+
+		switch (fk_freq_type) {
+			case "100":
+				// 매일
+				return true;
+			case "101":
+				// 평일 (월요일부터 금요일)
+				return currentDayOfWeek != DayOfWeek.SATURDAY && currentDayOfWeek != DayOfWeek.SUNDAY;
+			case "102":
+				// 주말 (토요일 또는 일요일)
+				return currentDayOfWeek == DayOfWeek.SATURDAY || currentDayOfWeek == DayOfWeek.SUNDAY;
+			default:
+				return false;
+		}
+		
+	}
+	
+	
+	// 시작기간과 챌린지 기간을 알아와 현재 진행중이면 boolean을 리턴하는 함수
+	public static boolean DateChecker (String startDate, String fk_during_type) {
+		LocalDate currentDate = LocalDate.now();
+        LocalDate parsedStartDate = LocalDate.parse(startDate, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+
+        int fkDuringType = Integer.parseInt(fk_during_type);
+        LocalDate calculatedEndDate = parsedStartDate.plusWeeks(fkDuringType);
+
+        return (currentDate.isEqual(parsedStartDate) || currentDate.isEqual(calculatedEndDate) ||
+                (currentDate.isAfter(parsedStartDate) && currentDate.isBefore(calculatedEndDate.plusDays(1))));
 	}
 	
 }
