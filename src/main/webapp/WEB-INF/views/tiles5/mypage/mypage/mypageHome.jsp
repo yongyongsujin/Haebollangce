@@ -505,7 +505,7 @@
 			dataType:"json",
 			success:function(json){
 				// 사용자가 관심태그로 설정한 카테고리로 있는 챌린지들 추천
-				// console.log(JSON.stringify(json));
+				console.log(JSON.stringify(json));
 				
 				let html = "";
 				
@@ -517,7 +517,6 @@
 						
 						if(resultDate <= json[i].startdate) {
 						
-							cnt++;
 							
 							if(cnt > 3) {
 								break;
@@ -539,7 +538,9 @@
 								
 							
 						} // end of if(resultDate <= json[i].startdate) -----
-						
+						else {
+							cnt++;
+						}
 						if(cnt == json.length) {	
 							// json 은 있으나, 요일, 시간 등등이 안 맞을 경우
 							html = "<tr>"

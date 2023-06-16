@@ -561,6 +561,7 @@
 							let purchase_price = json[i].purchase_price.toLocaleString('en');
 							
 							
+							
 							if(json.length >= 7 && cnt == 7) {
 								html += "<tr>"
 									 +	"	<td class='td_style' colspan='2'>"
@@ -788,34 +789,36 @@
 						
 						let purchase_price = json[i].purchase_price.toLocaleString('en');
 						
-						if(json[i].purchase_status == 0 && json[i].user_all_deposit > json[i].purchase_price){
+						if(result_date < json[i].purchase_date.substring(0,10)) {
 						
-							if(date != json[i].purchase_date.substring(0,10)) {
-								
-								html += "<tr class='table_position'>"
-									 +  "	<td colspan='3'>"+json[i].purchase_date.substring(0,10)+"</td>"
-									 + "	<td></td>"
-									 + "	<td></td>"
-									 + 	"</tr>";
-							}
+							if(json[i].purchase_status == 0 && json[i].user_all_deposit > json[i].purchase_price){
 							
-							html += "<tr>"
-								 +  "	<td class='cancel_td'>"+json[i].purchase_date+"</td>";
+								if(date != json[i].purchase_date.substring(0,10)) {
 									
-							html += "	<td class='cancel_td'></td>"
-								 +	"</tr>"
-								 +  "<tr>"
-								 +	"	<td class='cancel_td blue_font'>결제금액: " + purchase_price + " 원</td>"
-								 +	" 	<td class='cancel_td'>"
-								 +  "		<button type='button' class='go_button' onclick='purchase_cancel("+json[i].purchase_code+");'>취소하기</button>"
-								 +  "	</td>"
-								 +	"</tr>";
-							 
-									 
-							date = json[i].purchase_date.substring(0,10);
-							
-						} // end of if (json[i].user_all_deposit > json[i].purchase_price) -----
-						
+									html += "<tr class='table_position'>"
+										 +  "	<td colspan='3'>"+json[i].purchase_date.substring(0,10)+"</td>"
+										 + "	<td></td>"
+										 + "	<td></td>"
+										 + 	"</tr>";
+								}
+								
+								html += "<tr>"
+									 +  "	<td class='cancel_td'>"+json[i].purchase_date+"</td>";
+										
+								html += "	<td class='cancel_td'></td>"
+									 +	"</tr>"
+									 +  "<tr>"
+									 +	"	<td class='cancel_td blue_font'>결제금액: " + purchase_price + " 원</td>"
+									 +	" 	<td class='cancel_td'>"
+									 +  "		<button type='button' class='go_button' onclick='purchase_cancel("+json[i].purchase_code+");'>취소하기</button>"
+									 +  "	</td>"
+									 +	"</tr>";
+								 
+										 
+								date = json[i].purchase_date.substring(0,10);
+								
+							} // end of if (json[i].user_all_deposit > json[i].purchase_price) -----
+						}
 					} // end of for -----
 				
 					$("table#cancel_position").html(html);

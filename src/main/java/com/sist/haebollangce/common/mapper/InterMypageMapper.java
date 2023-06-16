@@ -138,4 +138,5 @@ public interface InterMypageMapper {
 
 	List<Map<String, Object>> selectList(Map<String, Object> paramMap);
 
+
 }

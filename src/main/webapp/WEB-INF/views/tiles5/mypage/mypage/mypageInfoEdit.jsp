@@ -42,8 +42,8 @@
 	
 	/* 이미지 시작 */
 	img#second_img_button {
-		height: 61%;
-		width: 94%;
+		height: 300px;
+		width: 300px;
 		border: solid 1px gray;
 		border-radius: 50%; 
 		object-fit: cover;
@@ -1103,7 +1103,10 @@
 		
 			<form name="editFrm" id="editFrm" class="offset-lg-2 col-lg-6" method="post" enctype="multipart/form-data" style="max-width:100%;">
 				<input type="file" id="profile_pic_file" name="profile_pic_file" accept=".gif, .jpg, .png" onchange="img_change(this);" style="display:none;" />
+<<<<<<< HEAD
+=======
 
+>>>>>>> refs/heads/main
 				<input type="hidden" name="profilePic" id="profilePic" value="${requestScope.udto.profilePic}" />
 			    <input type="hidden" name="test" id="test" />
 			    

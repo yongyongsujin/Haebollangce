@@ -145,6 +145,8 @@
 		
 		<a href="<%=ctxPath%>/mypage/mypageUsing">결재·상금 현황</a>
 		
+		<a href="<%=ctxPath%>/mypage/mypageChallengeLike">찜한 챌린지</a>
+		<%-- 
 		<button class="dropdown-btn">찜현황
 			<i class="fa fa-caret-down"></i>
 		</button>
@@ -152,7 +154,7 @@
 			<a href="<%=ctxPath%>/mypage/mypageChallengeLike" style="color:black;">찜한 챌린지</a>
 			<a href="<%=ctxPath%>/mypage/mypageLoungeLike" style="color:black;">찜한 라운지글</a>
 		</div>
-		
+		 --%>
 		<button class="dropdown-btn">개인정보 수정 
 		    <i class="fa fa-caret-down"></i>
 		</button>

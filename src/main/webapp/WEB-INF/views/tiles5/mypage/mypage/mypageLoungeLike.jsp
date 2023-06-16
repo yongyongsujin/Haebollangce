@@ -70,7 +70,7 @@
 			},
 			dataType: "json",
 			success:function(json){
-				// console.log(JSON.stringify(json));
+				console.log(JSON.stringify(json));
 			
 				let html = "";
 				
@@ -110,6 +110,8 @@
 						
 					}
 					
+					$("div#position").append(html); 
+					
 				} // end of if(json.length > 0) {} -----
 				
 				else {
@@ -130,7 +132,7 @@
 
 	function go_lounge() {
 		
-		location.href = "/lounge/loungeAdd";
+		location.href = "/lounge/loungeList";
 		
 	} // end of function go_lounge() {} -----
 

@@ -338,8 +338,8 @@
 								 + "	<td class='td_style'>사용</td>"
 								 +	"</tr>"
 								 +  "<tr>"
-								 +	"	<td class='blue_font td_style'>" + json[i].challenge_name + " 챌린지</td>"
-								 +	"	<td class='blue_font td_style'>" + entry_fee + "</td>"
+								 +	"	<td class='red_font td_style'>" + json[i].challenge_name + " 챌린지</td>"
+								 +	"	<td class='red_font td_style'>" + entry_fee + "</td>"
 								 +	"</tr>";
 							
 							date = json[i].startdate.substring(0,10);
@@ -414,7 +414,7 @@
 								 + "	<td class='td_style'>환전</td>"
 								 +	"</tr>"
 								 +  "<tr>"
-								 +	"	<td class='blue_font td_style'>" + convert_reward + "</td>"
+								 +	"	<td class='red_font td_style'>" + convert_reward + "</td>"
 								 +	"</tr>";
 							
 							date = json[i].convert_date.substring(0,10);

@@ -458,6 +458,38 @@
 		order by C.startdate asc
 	</select>
 	
+	
+	<!-- 찜한 라운지 불러오기 
+	<resultMap type="HashMap" id="mypage_select_like_lounge_map">
+		<result property="fk_seq" 	 	    column="fk_seq" 		  javaType="String" />
+	</resultMap>
+	<select id="select_like_lounge" parameterType="String" resultMap="mypage_select_like_lounge_map">
+		select fk_seq
+    	from tbl_lounge_like
+    	where fk_userid = #{userid}
+	</select>
+	
+	<resultMap type="HashMap" id="selectList_map">
+		<result property="seq" 	 	    column="seq" 		  javaType="String" />
+		<result property="name" 	 	    column="name" 		  javaType="String" />
+		<result property="subject" 	 	    column="subject" 		  javaType="String" />
+		<result property="content" 	 	    column="content" 		  javaType="String" />
+		<result property="likeCount" 	 	    column="likeCount" 		  javaType="String" />
+		<result property="commentCount" 	 	    column="commentCount" 		  javaType="String" />
+		<result property="readCount" 	 	    column="readCount" 		  javaType="String" />
+		<result property="filename" 	 	    column="filename" 		  javaType="String" />
+		<result property="thumbnail" 	 	    column="thumbnail" 		  javaType="String" />
+	</resultMap>
+	<select id="selectList" parameterType="String" resultMap="selectList_map">
+		select seq, name, subject, content, likeCount, 
+			   commentCount, readCount, filename, thumbnail
+		from tbl_lounge_board B 
+		<foreach collection="like_lounge_list" item="item" open="(" separator="," close=")">
+        	seq = #{item.fk_seq}
+   		</foreach>
+	</select>
+	-->
+	
 	<!-- 찜한 라운지 불러오기 -->
 	<resultMap type="HashMap" id="mypage_select_like_lounge_map">
 		<result property="seq" 	 	    column="seq" 		  javaType="String" />
@@ -600,6 +632,8 @@
 		group by G.category_name
 		order by percentage desc
 	</select>
+	
+	
 
 
 	<select id="user_deposit" parameterType="HashMap" resultType="int">
