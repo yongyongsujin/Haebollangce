@@ -462,7 +462,7 @@
 				</c:if>
 				
 				<c:if test="${userid != '' && challengedto.checkJoinUser != 0}">
-					<button class="challenge_join" type="button" onclick="location.href='<%=ctxPath%>/challenge/certifyList'">챌린지 인증하기</button>
+					<button class="challenge_join" type="button" onclick="location.href='<%=ctxPath%>/challenge/certify?challenge_code=${challengedto.challengeCode}'">챌린지 인증하기</button>
 				</c:if>
 
 			</div>
