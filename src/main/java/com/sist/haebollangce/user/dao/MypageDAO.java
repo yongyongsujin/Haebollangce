@@ -6,6 +6,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.google.gson.JsonObject;
 import com.sist.haebollangce.common.mapper.InterMypageMapper;
 import com.sist.haebollangce.user.dto.DepositDTO;
 import com.sist.haebollangce.user.dto.RewardDTO;
@@ -390,6 +391,13 @@ public class MypageDAO implements InterMypageDAO {
 
 		mapper.modifyPw(udto);
 		
+	}
+
+	@Override
+	public String image(String userid) {
+		String jsonobj = mapper.image(userid);
+		
+		return jsonobj;
 	}
 	
 }
