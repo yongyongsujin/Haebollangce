@@ -24,7 +24,7 @@
      JOIN tbl_category a ON b.fk_category_code = a.category_code
      JOIN tbl_challenge_during c ON b.fk_during_type = c.during_type
      JOIN tbl_certify_freq f ON b.fk_freq_type = f.freq_type
-     
+     order by b.startDate desc
      
      
    </select>
