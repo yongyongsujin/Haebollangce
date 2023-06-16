@@ -617,6 +617,8 @@
 			
 			$("#profilePic").val(fileName);
 			
+			$("#test").val($("input#profile_pic_file").val());
+			
 			$("button#edit_button").prop("disabled", false);
 			$("button#edit_button").addClass("sucess_button_change");
 		}
@@ -1010,6 +1012,8 @@
 	<%-- 정보수정하기 시작 --%>
 	function edit() {
 	
+		// alert($("input#profile_pic_file").val());
+		
 		let formData = new FormData(document.getElementById("editFrm"));
 		
 		$.ajax ({
@@ -1025,7 +1029,11 @@
                 if(json.n == 1) {
                 	alert("정보수정이 완료되었습니다.");
                 	
-                	image();
+                	const frm = document.editFrm;
+             	     
+               	    frm.action = '/mypage/mypageHome';
+               	    frm.method = 'POST';
+               	    frm.submit();
                 }
                 else {
                    alert("정보수정에 실패했습니다.\n고객센터에 문의바랍니다.");
@@ -1038,7 +1046,7 @@
 		
 	}
 	<%-- 정보수정하기 끝 --%>
-	
+	/*
 	function image() {
 		
 		const frm = document.editFrm;
@@ -1048,7 +1056,7 @@
    	    frm.submit();
 		
 	}
-	
+	*/
 </script>
 
 	<div id="mainPosition">
@@ -1095,8 +1103,9 @@
 		
 			<form name="editFrm" id="editFrm" class="offset-lg-2 col-lg-6" method="post" enctype="multipart/form-data" style="max-width:100%;">
 				<input type="file" id="profile_pic_file" name="profile_pic_file" accept=".gif, .jpg, .png" onchange="img_change(this);" style="display:none;" />
-        
+
 				<input type="hidden" name="profilePic" id="profilePic" value="${requestScope.udto.profilePic}" />
+			    <input type="hidden" name="test" id="test" />
 			    
 			    <input type="hidden" name="userid" id="userid" value="${requestScope.udto.userid}" />
 			    

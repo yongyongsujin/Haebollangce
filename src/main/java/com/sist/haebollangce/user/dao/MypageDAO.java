@@ -29,11 +29,12 @@ public class MypageDAO implements InterMypageDAO {
 	
 	// 사용자가 보유하고 있는 예치금 알아오기
 	/*
-	 * @Override public int user_deposit(String userid) {
-	 * 
-	 * int user_deposit = mapper.user_deposit(userid);
-	 * 
-	 * return user_deposit; }
+	@Override 
+	public int user_deposit(Map<String, String> paraMap) {
+	 
+	int user_deposit = mapper.user_deposit(paraMap);
+	 
+	return user_deposit; }
 	 */
 	
 	// 상금 전환 테이블에 전환된 내용 넣기
@@ -399,5 +400,20 @@ public class MypageDAO implements InterMypageDAO {
 		
 		return jsonobj;
 	}
+	
+	@Override
+	public int user_deposit(String userid) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public List<Map<String, Object>> selectList(Map<String, Object> paramMap) {
+		
+		List<Map<String, Object>> result = mapper.selectList(paramMap);
+		
+		return result;
+	}
+
 	
 }

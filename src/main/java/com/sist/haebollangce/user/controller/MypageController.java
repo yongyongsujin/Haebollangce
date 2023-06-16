@@ -781,8 +781,11 @@ public class MypageController {
 		
 		String profile_pic_file = mtp_request.getParameter("profile_pic_file");
 		
+		String test = mtp_request.getParameter("test");
+		
 		System.out.println("확인용 pw : " + pw);
 		System.out.println("확인용 pro : " + profile_pic_file);
+		System.out.println("확인용 originalFilename : " + originalFilename);
 		
 		Map<String, String> dtoMap = new HashMap<>();
 		dtoMap.put("userid", userid);
@@ -816,34 +819,38 @@ public class MypageController {
 		
 		String newFileName = "";
 		
-		try {
-			MultipartFile mtfile = mtp_request.getFile("profile_pic_file");
-		
-			// System.out.println(mtfile);
+		if (test != null) {
+			try {
+				MultipartFile mtfile = mtp_request.getFile("profile_pic_file");
 			
-			byte[] bytes = null;
-			// 첨부파일의 내용물을 담는 것
-			
-			long fileSize = 0;
-			// 첨부파일의 크기
-			
-			// 첨부파일의 내용물을 읽어오는 것
-			bytes = mtfile.getBytes();
-			
-			originalFilename = mtfile.getOriginalFilename();
-			
-			// System.out.println("originalFilename : " + originalFilename);
-			
-			newFileName = fileManager.doFileUpload(bytes, originalFilename, path);
-			
-			// System.out.println("newFileName : " + newFileName);
-			
-		} catch (IllegalStateException | IOException e) {
-			e.printStackTrace();
-		} catch (Exception e) {
-			e.printStackTrace();
+				// System.out.println(mtfile);
+				
+				byte[] bytes = null;
+				// 첨부파일의 내용물을 담는 것
+				
+				long fileSize = 0;
+				// 첨부파일의 크기
+				
+				// 첨부파일의 내용물을 읽어오는 것
+				bytes = mtfile.getBytes();
+				
+				originalFilename = mtfile.getOriginalFilename();
+				
+				// System.out.println("originalFilename : " + originalFilename);
+				
+				newFileName = fileManager.doFileUpload(bytes, originalFilename, path);
+				
+				// System.out.println("newFileName : " + newFileName);
+				
+			} catch (IllegalStateException | IOException e) {
+				e.printStackTrace();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
-		
+		else {
+			newFileName = udto.getProfilePic();
+		}
 		// System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1 확인용 : " + newFileName);
 		
 		
