@@ -31,7 +31,7 @@
                        // 비번 확인하기
                        if(result == "success") {
                           
-                        if(confirm("정말로 챌린지를 삭제 하시겠습니까?")) {
+                        if(confirm("챌린지를 삭제 하시겠습니까?")) {
                            // 폼(form)을 전송(submit)
                            const frm = document.delFrm;
                            frm.method = "post";
