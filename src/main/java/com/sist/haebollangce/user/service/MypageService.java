@@ -1,5 +1,6 @@
 package com.sist.haebollangce.user.service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -286,18 +287,18 @@ public class MypageService implements InterMypageService {
 		String userid = paraMap.get("userid");
 		
 		search_list = dao.deposit_data(paraMap);  // 예치금 테이블에서 예치금 충전, 취소내역 알아오기
-		/*
+		
 		// 유저가 보유하고 있는 예치금
-		int user_deposit = dao.user_deposit(userid);
+		int user_deposit = dao.user_deposit(paraMap);
 				
 		// 유저가 챌린지에 사용한 모든 예치금
 		int user_challenge_deposit = dao.user_challenge_deposit(userid);
 		
 		// 유저가 현재 보유하고 있는 총 예치금
 		int user_all_deposit = user_deposit - user_challenge_deposit;
-		*/
 		
-		// DepositDTO depo_dto = dao.depo_dto(paraMap);
+		
+		//DepositDTO depo_dto = dao.depo_dto(paraMap);
 		
 		
 		
@@ -312,7 +313,7 @@ public class MypageService implements InterMypageService {
 				jsonObj.addProperty("purchase_date", (String) map.get("purchase_date"));
 				jsonObj.addProperty("purchase_price", (int) map.get("purchase_price"));
 				jsonObj.addProperty("purchase_status", (int) map.get("purchase_status"));
-			//	jsonObj.addProperty("user_all_deposit", user_all_deposit);
+				jsonObj.addProperty("user_all_deposit", user_all_deposit);
 				
 				jsonArr.add(jsonObj);
 			}
@@ -560,6 +561,43 @@ public class MypageService implements InterMypageService {
 		
 		JsonArray jsonArr = new JsonArray();
 		
+		for (Map<String, Object> item : like_lounge_list) {
+		    int fk_seq = (int) item.get("fk_seq");
+		    
+		    Map<String, Object> paramMap = new HashMap<>();
+		    paramMap.put("fk_seq", fk_seq);
+		    
+		    List<Map<String, Object>> result = dao.selectList(paramMap);
+		    
+		    
+		    if(result != null && result.size() > 0) {
+				
+				for(Map<String, Object> map : result) {
+					
+					JsonObject jsonObj = new JsonObject();
+					
+					jsonObj.addProperty("seq", (String) map.get("seq"));
+					jsonObj.addProperty("name", (String) map.get("name"));
+					jsonObj.addProperty("subject", (String) map.get("subject"));
+					jsonObj.addProperty("content", (String) map.get("content"));
+					jsonObj.addProperty("likeCount", (String) map.get("likeCount"));
+					jsonObj.addProperty("commentCount", (String) map.get("commentCount"));
+					jsonObj.addProperty("readCount", (String) map.get("readCount"));
+					jsonObj.addProperty("filename", (String) map.get("filename"));
+					jsonObj.addProperty("thumbnail", (String) map.get("thumbnail"));
+					
+					jsonArr.add(jsonObj);
+				}
+				
+			}
+		}
+		
+		
+		/*
+		List<Map<String, Object>>  like_lounge_list = dao.select_like_lounge(userid);
+		
+		JsonArray jsonArr = new JsonArray();
+		
 		if(like_lounge_list != null && like_lounge_list.size() > 0) {
 			
 			for(Map<String, Object> map : like_lounge_list) {
@@ -580,7 +618,7 @@ public class MypageService implements InterMypageService {
 			}
 			
 		}
-		
+		*/
 		return new Gson().toJson(jsonArr);
 	}
 
@@ -744,34 +782,61 @@ public class MypageService implements InterMypageService {
 			// 진행중인 챌린지 알아오기
 			List<Map<String, String>> mypage_challenging_list = dao.mypage_challenging(paraMap); 
 			
+			// System.out.println("mypage_challenging_list" + mypage_challenging_list);
+			
 			// 진행중인 챌린지 중 오늘 하루 인증했는지 여부, 인증한 챌린지들 번호가 반환된다.
 			List<Map<String, String>> certify_list = dao.mypage_certify_challenge(paraMap);
 			
-			// 인증한 챌린지 번호는 mypage_challenging_list에서 삭제해준다.
-			for(int i=0; i<mypage_challenging_list.size(); i++) {
-				
-				for(int j=0; j<certify_list.size(); j++) {
+			// System.out.println("certify_list" + certify_list);
+			/*
+			if(mypage_challenging_list.size() > 0 && certify_list.size() > 0) {
+				// 인증한 챌린지 번호는 mypage_challenging_list에서 삭제해준다.
+				for(int i=0; i<mypage_challenging_list.size(); i++) {
 					
-					Map<String, String> map_cha = mypage_challenging_list.get(i);
-					
-					String cha_challenge_code = map_cha.get("fk_challenge_code");
-					
-					Map<String, String> map_cer = certify_list.get(j);
-					
-					String cer_challenge_code = map_cer.get("fk_challenge_code");
-					
-					if(cha_challenge_code.equals(cer_challenge_code)) {
+					for(int j=0; j<certify_list.size(); j++) {
 						
-						// System.out.println("cha_challenge_code " + cha_challenge_code);
+						Map<String, String> map_cha = mypage_challenging_list.get(i);
 						
-						// System.out.println("cer_challenge_code " + cer_challenge_code);
+						String cha_challenge_code = map_cha.get("fk_challenge_code");
 						
-						mypage_challenging_list.remove(i);
+						Map<String, String> map_cer = certify_list.get(j);
+						
+						String cer_challenge_code = map_cer.get("fk_challenge_code");
+						
+						if(cha_challenge_code.equals(cer_challenge_code)) {
+							
+							System.out.println("cha_challenge_code " + cha_challenge_code);
+							
+							System.out.println("cer_challenge_code " + cer_challenge_code);
+							
+							mypage_challenging_list.remove(i);
+							
+						}
 						
 					}
 					
 				}
-				
+			}
+			*/
+			
+			if (mypage_challenging_list.size() > 0 && certify_list.size() > 0) {
+			    List<Map<String, String>> removeList = new ArrayList<>();
+
+			    for (int i = 0; i < mypage_challenging_list.size(); i++) {
+			        Map<String, String> map_cha = mypage_challenging_list.get(i);
+			        String cha_challenge_code = map_cha.get("fk_challenge_code");
+
+			        for (Map<String, String> map_cer : certify_list) {
+			            String cer_challenge_code = map_cer.get("fk_challenge_code");
+
+			            if (cha_challenge_code.equals(cer_challenge_code)) {
+			                removeList.add(map_cha);
+			                break;
+			            }
+			        }
+			    }
+
+			    mypage_challenging_list.removeAll(removeList);
 			}
 			
 			// System.out.println("제거 후 : " + mypage_challenging_list.toString());

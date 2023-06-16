@@ -207,6 +207,8 @@
 			dataType:"json",
 			success:function(json){
 				
+				console.log(JSON.stringify(json));
+				
 				// 참가중인 챌린지
 				let ing_cnt = 0; 
 				
@@ -316,7 +318,7 @@
 									 +	"			<div class='div_info'>인증시간 : " + json[i].hour_start + " ~ " + json[i].hour_end + "</div>"
 									 +  " 		</td>"
 									 +	"		<td class='td_width_22'>"
-									 +	"			<div type='button' class='go_button' onclick='go_certify(" +json[i].fk_challenge_code ");'>인증하러가기</div>"
+									 +	"			<div type='button' class='go_button' onclick='go_certify(" +json[i].fk_challenge_code +");'>인증하러가기</div>"
 									 +  "		</td>"
 									 +  "	</tr>"
 									 +	"</table>";
@@ -397,7 +399,7 @@
 									  +	 "				<div class='div_info'>인증시간 : " + json[i].hour_start + " ~ " + json[i].hour_end + "</div>"
 									  +  " 			</td>"
 									  +	 "			<td class='td_width_22'>"
-									  +	 "				<div class='go_button' onclick='go_certify();'>인증하러가기</div>"
+									  +	 "				<div class='go_button' onclick='go_certify("+json[i].fk_challenge_code+");'>인증하러가기</div>"
 									  +  "			</td>"
 									  +  "		</tr>"
 									  +	 "</table>";
@@ -687,7 +689,7 @@
 						
 						for(var i=0; i<json.length; i++) {
 							
-							if('admin4' == json[i].fk_userid) {
+							if("${requestScope.userid}" == json[i].fk_userid) {
 								
 								if(resultToday > json[i].finish_day) {
 									// 끝난 챌린지
@@ -708,7 +710,7 @@
 										 +  "	</tr>"
 										 +	"</table>";
 								}
-								else {
+								else  {
 									// 진행중인 챌린지
 									html += "<table class='col-lg-6 table_margin'>"
 										 +	"	<tr>"
@@ -721,7 +723,7 @@
 										 +	"			<div class='div_info'>인증시간: " + json[i].hour_start + "~" + json[i].hour_end + "</div>"
 										 +  " 		</td>"
 										 +	"		<td class='td_width_22'>"
-										 +	"			<div class='go_button' onclick='go_certify();'>인증하러가기</div>"
+										 +	"			<div class='go_button' onclick='go_certify("+json[i].fk_challenge_code+");'>인증하러가기</div>"
 										 +  "		</td>"
 										 +  "	</tr>"
 										 +	"</table>";
@@ -732,18 +734,6 @@
 								
 							} 
 							
-							else {
-								html = "<table class='no_challenging'>"
-									 + "	<tr>"
-									 + "		<td>개설한 챌린지가 없습니다.</td>"
-									 + "	</tr>"
-									 + "	<tr>"
-									 + "		<td><button type='button' class='go_button_style' onclick='go_create();'>개설하러가기</button></td>"
-									 + "	</tr>"	
-									 + "</table>"
-								
-								$("div#show_create_table").html(html);
-							}
 							
 						} // for(var i=0; i<json.length; i++) -----
 						
@@ -768,7 +758,7 @@
 							 + "		<td>개설한 챌린지가 없습니다.</td>"
 							 + "	</tr>"
 							 + "	<tr>"
-							 + "		<td><div class='go_button_style' onclick='go_create();'>개설하러가기</button></td>"
+							 + "		<td><button type='button' class='go_button_style' onclick='go_create();'>개설하러가기</button></td>"
 							 + "	</tr>"	
 							 + "</table>";
 					
@@ -780,7 +770,7 @@
 						
 						for(var i=0; i<json.length; i++) {
 							
-							if('admin4' == json[i].fk_userid) {
+							if("${requestScope.userid}" == json[i].fk_userid) {
 								
 								if(resultToday > json[i].finish_day) {
 									// 끝난 챌린지
@@ -814,7 +804,7 @@
 										 +	"			<div class='div_info'>인증시간: " + json[i].hour_start + "~" + json[i].hour_end + "</div>"
 										 +  " 		</td>"
 										 +	"		<td class='td_width_22'>"
-										 +	"			<div class='go_button' onclick='go_certify();'>인증하러가기</div>"
+										 +	"			<div class='go_button' onclick='go_certify("+json[i].fk_challenge_code+");'>인증하러가기</div>"
 										 +  "		</td>"
 										 +  "	</tr>"
 										 +	"</table>";
@@ -852,8 +842,8 @@
 	} // end of function go_create() -----
 	
 	function go_certify(e) {
-    
-		location.href = "<%=ctxPath%>/challenge/certify?challenge_code=e";
+		
+		location.href = "<%=ctxPath%>/challenge/certify?challenge_code="+e;
 		
 	} // end of function go_certify() -----
 	
