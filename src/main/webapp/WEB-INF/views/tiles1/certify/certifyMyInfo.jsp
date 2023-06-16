@@ -221,7 +221,7 @@ const imgInfo = document.querySelector('.img_info');
 		<%-- 차트 data --%>
 		const data = {
 				labels: [
-				    '100%',
+				    '100% 달성',
 				    '80% 이상',
 					'80% 미만'
 				],
@@ -436,7 +436,7 @@ const imgInfo = document.querySelector('.img_info');
 		<div class="tab-pane container fade" id="userCertifyInfo" style="font-size: 16pt;">
 			<div class="pt-5" style="display: flex;">
 				<div style="width: 50%;"><p style="margin: 0;">총 참가자 수</p><p style="font-weight: bold;">${userAchieveCharts.member_count}명</p></div>
-				<div style="width: 50%;"><p style="margin: 0;">평균 예상 달성률</p><p style="font-weight: bold;">${userAchieveCharts.achievement_pct_avg}%</p></div>
+				<div style="width: 50%;"><p style="margin: 0;">평균 달성률</p><p style="font-weight: bold;">${userAchieveCharts.achievement_pct_avg-(userAchieveCharts.achievement_pct_avg%1)}%</p></div>
 	  		</div>
   			<div class="my-5" style="width: 50%; margin: auto;">
 			  <canvas id="myChart"></canvas>
@@ -445,7 +445,7 @@ const imgInfo = document.querySelector('.img_info');
 				<div>
 					<p class="mb-1">
 						<span style="border:solid 2px #E2D5D5; border-radius: 20px; background-color: #FCEEED;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-						&nbsp;&nbsp;100%
+						&nbsp;&nbsp;100% 달성
 					</p>
 					<p style="font-weight: bold;">${userAchieveCharts.hundredCnt}명</p>
 				</div>
@@ -628,7 +628,7 @@ const imgInfo = document.querySelector('.img_info');
 			<!-- Modal body -->
 			<div class="modal-body">
 				<form name="userReportFrm">
-					<textarea id="report_content" name="report_content" rows="5" cols="54" placeholder="정확한 처리를 위해 신고하시는 구체적인 사유를 적어주세요. (최소 10자 이상)" style="outline-color: #FE6B8B;"></textarea>
+					<textarea id="report_content" name="report_content" rows="5" cols="54" placeholder="정확한 처리를 위해 신고하시는 구체적인 사유를 적어주세요. ex) 반복되는 사진이나 인증에 맞지 않는 사진 (최소 10자 이상)" style="outline-color: #FE6B8B;"></textarea>
 					<input id="certifyNo" type="hidden" name="certifyNo" value="" readonly="readonly">
 					<input name="challenge_code" type="hidden" value="${joinedChallInfo.challenge_code}">
 					<input name="userid" type="hidden" value="${joinedChallInfo.fk_userid}">

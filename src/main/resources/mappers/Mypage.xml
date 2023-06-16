@@ -526,6 +526,12 @@
 		where userid = #{userid} 
 	</select>
 	
+		<select id="image" parameterType="String" resultType="String">
+		select profile_pic
+		from tbl_user
+		where userid = #{userid} 
+	</select>
+	
 	<!-- 진행중인 챌린지 중 오늘 하루 인증했는지 여부 -->
 	<resultMap type="HashMap" id="mypage_certify_challenge_map">
 		<result property="fk_challenge_code" column="fk_challenge_code" javaType="String" />

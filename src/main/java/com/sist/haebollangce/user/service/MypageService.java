@@ -948,4 +948,16 @@ public class MypageService implements InterMypageService {
 		dao.modifyPw(udto);
 	}
 
+	@Override
+	public String image(String userid) {
+
+		String obj = dao.image(userid);
+		
+		JsonObject jsonObj = new JsonObject();
+		
+		jsonObj.addProperty("obj", obj);
+		
+		return jsonObj.toString();
+	}
+
 }

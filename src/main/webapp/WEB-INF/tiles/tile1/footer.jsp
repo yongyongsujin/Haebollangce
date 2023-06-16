@@ -176,21 +176,24 @@
 <footer class="Footer_footer">
       <div class="Footer_container">
           <div class="Footer_info">
-              <p class="Footer_info__subject">해볼랑스 정보</p>
+              <p class="Footer_info__subject">해볼랑스</p>
               <p class="Footer_info__content">
-                  <a href="/notice/list.html">공지사항</a>
+                  <a href="https://github.com/n02607">이  단</a>
               </p>
               <p class="Footer_info__content">
-                  <a href="/event/list.html">이벤트</a>
+                  <a href="https://github.com/jisu319">윤지수</a>
               </p>
               <p class="Footer_info__content">
-                  <a href="/FAQ/list.html">자주 묻는 질문</a>
+                  <a href="https://github.com/sanghyun0">서상현</a>
               </p>
               <p class="Footer_info__content">
-                  <a href="/notice/detail.html?id=311" target="_blank">제휴 및 입점 문의</a>
+                  <a href="https://github.com/SeoJaeSik">서재식</a>
               </p>
               <p class="Footer_info__content">
-                  <a href="https://people.munto.kr/" target="_blank" rel="noreferrer">채용</a>
+                  <a href="https://github.com/yongyongsujin">용수진</a>
+              </p>
+              <p class="Footer_info__content">
+                  <a href="https://github.com/JUJINP">박주진</a>
               </p>
           </div>
           <div class="Footer_sns">
@@ -210,11 +213,13 @@
                   주소 : 서울특별시 마포구 월드컵북로 21 풍성빌딩 3층 <br/>
                   사업자등록번호 : 846-86-01452 | 통신판매 : 제 2022-서울강남-00623<br/>
               </p>
+              <!-- 
               <p class="Footer_company__info">
                   <a href="/policy" target="_self">이용약관</a>
                   | <a href="/privacy" target="_self">개인정보처리방침</a>
                   | <a href="https://www.ftc.go.kr/bizCommPop.do?wrkr_no=8468601452" target="_self">사업자정보확인</a>
               </p>
+               -->
           </div>
       </div>
   </footer>

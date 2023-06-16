@@ -105,6 +105,8 @@ public interface InterMypageService {
 	// 비밀번호 변경하기
 	void modifyPw(UserDTO udto);
 
+	String image(String userid);
+
 
 
 

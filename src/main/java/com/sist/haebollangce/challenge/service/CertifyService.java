@@ -293,7 +293,7 @@ public class CertifyService implements InterCertifyService {
 			double certifyCnt = Double.parseDouble(userAchievePct.get("certifyCnt"));
 			double totalCertify = Double.parseDouble(userAchievePct.get("totalCertify"));
 			String AchievePct = String.valueOf((int)Math.floor((certifyCnt / totalCertify) * 100)) ; 
-			
+			System.out.println(AchievePct);
 			paraMap.put("AchievePct", AchievePct);
 			paraMap.put("challenge_exp", userAchievePct.get("challenge_exp")); 
 			
@@ -327,34 +327,60 @@ public class CertifyService implements InterCertifyService {
     	paraMap.put("fk_userid", fk_userid);
     	paraMap.put("challenge_code", challenge_code);
 		
-		int checkCertify = dao.checkTodayCertify(paraMap);
-		// 오늘 인증하였는지 체크 / return 1이면 오늘 인증 한 것
-
-		if ( checkCertify >= 1) {
-    		// 오늘 인증횟수가 1 이상일 경우
+    	Map<String, String> challengeInfo = dao.getJoinedChallengeInfo(paraMap);
+    	// 해당 챌린지의 정보 가져오기
+    	
+    	String fk_freq_type = challengeInfo.get("fk_freq_type");
+    	String startDate = challengeInfo.get("startDate");
+    	String fk_during_type = challengeInfo.get("fk_during_type");
+    	String hour_start = challengeInfo.get("hour_start");
+    	String hour_end = challengeInfo.get("hour_end");
+    	
+    	if (MyUtil.getTimeCompare(hour_start, hour_end) && MyUtil.getDateCompare(fk_freq_type)
+    			&& MyUtil.DateChecker(startDate, fk_during_type)) {
+    		// 3가지의 인증조건이 다맞는 경우
     		
-    		String message = "오늘 인증을 이미 완료한<br>챌린지입니다.";
+    		int checkCertify = 0;//dao.checkTodayCertify(paraMap);
+    		// 오늘 인증하였는지 체크 / return 1이면 오늘 인증 한 것
+    		
+    		if ( checkCertify >= 1) {
+    			// 오늘 인증횟수가 1 이상일 경우
+    			
+    			String message = "오늘 인증을 이미 완료한<br>챌린지입니다.";
+    			String loc = request.getContextPath()+"/challenge/certifyList";
+    			String icon = "info";
+    			
+    			mav.addObject("message", message);
+    			mav.addObject("loc", loc);
+    			mav.addObject("icon", icon);
+    			
+    			mav.setViewName("tiles1/certify/swal_msg");
+    			
+    			return mav;
+    		}
+    		
+    		Map<String, String> oneExample = dao.getCertifyInfo(paraMap);
+    		// 인증하려는 챌린지의 인증예시 데이터 가져오기
+    		
+    		mav.addObject("oneExample", oneExample);
+    		mav.addObject("paraMap", paraMap);
+    		
+    		mav.setViewName("certify/certify.tiles1");
+    		
+    	}
+    	else {
+    		String message = "인증시간이 아닙니다.";
     		String loc = request.getContextPath()+"/challenge/certifyList";
-    		String icon = "info";
+    		String icon = "error";
     		
     		mav.addObject("message", message);
     		mav.addObject("loc", loc);
     		mav.addObject("icon", icon);
-
-    		mav.setViewName("tiles1/certify/swal_msg");
     		
-    		return mav;
+    		mav.setViewName("tiles1/certify/swal_msg");
     	}
     	
-    	Map<String, String> oneExample = dao.getCertifyInfo(paraMap);
-    	// 인증하려는 챌린지의 인증예시 데이터 가져오기
-    	
-    	mav.addObject("oneExample", oneExample);
-    	mav.addObject("paraMap", paraMap);
-    	
-    	mav.setViewName("certify/certify.tiles1");
-    	
-		return mav;
+    	return mav;
 	}
 
 	
@@ -422,7 +448,7 @@ public class CertifyService implements InterCertifyService {
 
 	
 	// 매일 챌린지 정산하는 스케줄러
-	@Scheduled(cron="0 30 0 * * *") // 매일 00시 30분에 정산시작 cron="0 30 00 * * *"
+	@Scheduled(cron="0 30 0 * * *") // 매일 00시 30분에 정산시작 cron="0 30 00 * * * // 0 30 14
 	public void rewardCalculate() {
 		// 스케줄러로 사용되어지는 메소드는 반드시 파라미터는 없어야 한다.
 	      
