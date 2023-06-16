@@ -129,6 +129,7 @@
 		<result property="fk_freq_type" 	column="fk_freq_type" 	javaType="String"/>
 		<result property="fk_during_type" 	column="fk_during_type" javaType="String"/>
 		<result property="startDate" 		column="startDate" 		javaType="String"/>
+		<result property="hour_start" 		column="hour_start" 	javaType="String"/>
 		<result property="hour_end" 		column="hour_end" 		javaType="String"/>
 		<result property="enddate" 			column="enddate" 		javaType="String"/>
 		<result property="fk_userid" 		column="fk_userid" 		javaType="String"/>

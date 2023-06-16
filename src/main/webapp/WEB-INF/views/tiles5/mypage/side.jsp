@@ -83,6 +83,18 @@
 		outline: none;
 		font-weight: bold;
 	}
+	
+	button#mypage {
+		font-size: 31px;
+		color: white;
+		display: block;
+		width: 100%;
+		font-weight: bold;
+		background: none;
+		margin: 25% 0;
+		border: none;
+		text-align: left;
+	}
 
 </style>
 
@@ -114,13 +126,13 @@
 <body>
 <!-- 마이페이지 메뉴바 시작 -->
 	<div class="sidenav">
-		<!-- <form action="mypageHome" method="post">
-			<input type="hidden" name="userid" value="jisu" /> 
+		<form action="mypageHome" method="post">
+			<input type="hidden" name="userid" value="${requestScope.udto.userid}" /> 
 			<button type="submit" id="mypage">마이페이지</button>
-		</form> -->
-		
-		<a id="mypage" href="<%=ctxPath%>/mypage/mypageHome">마이페이지</a>
-		
+		</form>
+		<%-- 
+		<a id="mypage" href="<%=ctxPath%>/mypage/mypageHome?userid=${requestScope.udto.userid}">마이페이지</a>
+		 --%>
 		<a href="<%=ctxPath%>/mypage/mypageChallenging">챌린지 현황</a>
 		
 		<button class="dropdown-btn">결제·환전

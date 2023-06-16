@@ -21,7 +21,7 @@
 		border-radius: 50%;
 		margin-right: 2%;
 		margin-left: 3%;
-		width: 8%;
+		width: 100%;
 	}
 	
 	div#user_info {
@@ -150,6 +150,11 @@
 	
 	td.td_bottom {
 		padding: 5% 40% 23% 41%;
+	}
+	
+	div#position_test {
+		width: 8%;
+		margin: 0 2%;
 	}
 	
 	/* 하이차트 css 시작 */
@@ -369,6 +374,27 @@
 	        }
 		});
 		<%-- 사용자 충전도 알아오기 끝 --%>
+		
+		$.ajax({
+			url: "/mypage/image",
+			type: "post",
+			data: {
+            	"userid":"${requestScope.udto.userid}"
+            },
+            dataType:"json",
+            success:function(json){
+            	let html = "";
+            	
+            	// console.log("~~~ 확인용 : " + JSON.stringify(json));
+            	
+            	html = "<img id='promainimg' alt='프로필사진' src='<%= ctxPath%>/images/"+json.obj+"'>";
+            	
+            	$("div#position_test").html(html);
+            },
+            error: function(request, status, error){
+            	alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+            }
+		});
 		
 		
 		<%-- 100% 인증한 챌린지들 가지고 오기 시작 --%>
@@ -714,7 +740,9 @@
 				<div class="card border-left-info shadow h-100 py-2">
 					<div class="card-body">
 						<div class="row no-gutters align-items-center ">
-							 <img id='promainimg' alt='프로필사진' src='<%= ctxPath%>/images/${requestScope.udto.profilePic}'>
+							 <div id="position_test">
+							 </div>
+							 
 							<div class='col mr-2'>
 					 			<div class='text-xs font-weight-bold text-info text-uppercase mb-1 font_size_18pt'>${requestScope.udto.name}<span id="span_userid">${requestScope.udto.userid}</span></div>
 								<div id="info_position" class="row no-gutters align-items-center">

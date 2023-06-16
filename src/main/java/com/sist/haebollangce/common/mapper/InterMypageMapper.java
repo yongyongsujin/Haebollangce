@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 
+import com.google.gson.JsonObject;
 import com.sist.haebollangce.user.dto.DepositDTO;
 import com.sist.haebollangce.user.dto.RewardDTO;
 import com.sist.haebollangce.user.dto.UserDTO;
@@ -132,6 +133,8 @@ public interface InterMypageMapper {
 	DepositDTO depo_dto(Map<String, String> paraMap);
 
 	void modifyPw(UserDTO udto);
+
+	String image(String userid);
 
 
 }

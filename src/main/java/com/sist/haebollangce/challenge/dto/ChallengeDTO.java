@@ -47,7 +47,7 @@ public class ChallengeDTO {
 	private String userid;
 	
 	private String checkJoinUser; // 챌린지에 참가중인지 아닌지 확인용 
-	private int checkDate; // 시작날짜 지났는지 확인용 
+	private double checkDate; // 시작날짜 지났는지 확인용 
 	
 	public ChallengeDTO() {};
 	
@@ -313,14 +313,14 @@ public class ChallengeDTO {
 
 
 
-	public int getCheckDate() {
+	public double getCheckDate() {
 		return checkDate;
 	}
 
 
 
 
-	public void setCheckDate(int checkDate) {
+	public void setCheckDate(double checkDate) {
 		this.checkDate = checkDate;
 	}
 	

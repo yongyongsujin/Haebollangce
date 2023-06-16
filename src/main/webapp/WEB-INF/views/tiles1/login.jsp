@@ -5,8 +5,9 @@
 
     <style>
         .container {
-            margin: 20% 30% 0 30%;
+            padding-top: 6%;
             text-align: center;
+            height: 550px;
         }
     </style>
 
@@ -21,7 +22,7 @@
 <%--        <form action="/api/v1/user/login" method="POST">--%>
         <form>
             <div><input type="text" name="userid" placeholder="아이디"></div>
-            <div><input type="text" name="pw" placeholder="비밀번호"></div><br>
+            <div><input type="password" name="pw" placeholder="비밀번호"></div><br>
             <div><button id="login" type="button">로그인</button></div>
         </form>
     </div>
@@ -39,10 +40,10 @@
 
     <br><br><br>
 
-    <div>
-        <a href="/user/signup"><span>일반 회원가입</span></a>
+<%--    <div>--%>
+<%--        <a href="/user/signup"><span>일반 회원가입</span></a>--%>
 
-    </div>
+<%--    </div>--%>
 
     <input type="hidden" name="from" value="${from}"/>
 </div>

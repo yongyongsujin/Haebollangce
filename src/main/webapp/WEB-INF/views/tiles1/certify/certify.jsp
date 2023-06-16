@@ -157,7 +157,7 @@
 <div class="container-fluid" style="background-color: #f4f4f4;">
 <div class="container" style="border-radius: 20px; background-color: white; text-align: center;">
 	<br>
-	<h3 style="font-weight: bold;"><span style="line-height: 50px; height: 50px; border-radius: 8px; width:250px; display: inline-block; background-color: #EB485C; color: white;">인증하기</span></h3>
+	<h3 style="font-weight: bold;"><span style="line-height: 50px; height: 50px; border-radius: 8px; width:250px; display: inline-block; background-color: #EB534C; color: white;">인증하기</span></h3>
 	<br>
 	<div style="height: 783px; justify-content: center;">
 		<div id="img_exam" class="mb-5">

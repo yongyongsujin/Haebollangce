@@ -19,12 +19,12 @@ public class EntryPointViewController {
     public String formLogin(HttpServletRequest request) {
         String targetUrl = request.getHeader("referer");
         request.setAttribute("from", targetUrl);
-        return "/userEntryPoint/login";
+        return "login.tiles1";
     }
 
     @GetMapping("/signup")
     public String formSignup1() {
-        return "/userEntryPoint/signup";
+        return "signup.tiles1";
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////

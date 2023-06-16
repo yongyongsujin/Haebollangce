@@ -344,6 +344,7 @@
 		
 		$("div.error").hide();  // 모든 에러 숨기기
 		
+		
 		let randomStr = ""; // 비번 및 모바일 변경시 인증번호
 		
 		<%-- 관심태그 시작 --%>
@@ -561,6 +562,8 @@
         		// 정규표현식에 위배되지 않았을 경우 이메일 버튼과 수정 버튼을 활성화시켜준다.
 				$("div.email_error").hide();
         		
+        		$("table#email_identify_table").show();
+        		
 				$("button#email_button").prop("disabled", false);
 				
 				$("button#email_button").addClass("sucess_button_change");
@@ -634,7 +637,7 @@
 			},
 			dataType: "json",
 			success:function(json){
-				console.log(JSON.stringify(json));
+				// console.log(JSON.stringify(json));
 				
 				let html = "";
 				
@@ -1022,11 +1025,7 @@
                 if(json.n == 1) {
                 	alert("정보수정이 완료되었습니다.");
                 	
-                	const frm = document.editFrm;
-           	     
-	           	    frm.action = '/mypage/mypageHome';
-	           	    frm.method = 'POST';
-	           	    frm.submit();
+                	image();
                 }
                 else {
                    alert("정보수정에 실패했습니다.\n고객센터에 문의바랍니다.");
@@ -1039,6 +1038,16 @@
 		
 	}
 	<%-- 정보수정하기 끝 --%>
+	
+	function image() {
+		
+		const frm = document.editFrm;
+  	     
+   	    frm.action = '/mypage/mypageHome';
+   	    frm.method = 'POST';
+   	    frm.submit();
+		
+	}
 	
 </script>
 
@@ -1086,8 +1095,9 @@
 		
 			<form name="editFrm" id="editFrm" class="offset-lg-2 col-lg-6" method="post" enctype="multipart/form-data" style="max-width:100%;">
 				<input type="file" id="profile_pic_file" name="profile_pic_file" accept=".gif, .jpg, .png" onchange="img_change(this);" style="display:none;" />
-				<input type="text" name="profilePic" id="profilePic" value="${requestScope.udto.profilePic}" />
-			      
+        
+				<input type="hidden" name="profilePic" id="profilePic" value="${requestScope.udto.profilePic}" />
+			    
 			    <input type="hidden" name="userid" id="userid" value="${requestScope.udto.userid}" />
 			    
 			    <h6 class="text-danger">! 주의 !</h6>
@@ -1109,7 +1119,7 @@
 			            <td style="width: 26%; font-weight: bold;">비밀번호확인&nbsp;</td>
 			            <td style="width: 74%; text-align: left;">
 			            	<input type="password" id="pwdcheck" class="requiredInfo" /> 
-			            	<input type="hidden" name="pw" id="pw" value="${requestScope.udto.pw}" />
+			            	<input type="hidden" name="pw" id="pw" />
 			               <div id="pwd_check_error" class="error">암호가 일치하지 않습니다.</div>
 			            </td>
 			         </tr>
@@ -1180,12 +1190,13 @@
 	                
 	    </table>
 	    
-	     <div id="timer" class="identify_div_position"></div>
-         <div id="go_identify" class="error identify_div_position" style="color:blue;">인증번호를 발송했습니다.</div>
-         <div id="identify_error" class="error identify_div_position">인증번호가 틀렸습니다.</div>
-         <div id="timer_error" class="error identify_div_position">5분이 지났습니다. 다시 인증번호를 받아주세요.</div>
-         <div id="plz_identify_error" class="error identify_div_position">인증번호를 입력해주시기 바랍니다.</div>
+		<div id="timer" class="identify_div_position"></div>
+        <div id="go_identify" class="error identify_div_position" style="color:blue;">인증번호를 발송했습니다.</div>
+        <div id="identify_error" class="error identify_div_position">인증번호가 틀렸습니다.</div>
+        <div id="timer_error" class="error identify_div_position">5분이 지났습니다. 다시 인증번호를 받아주세요.</div>
+        <div id="plz_identify_error" class="error identify_div_position">인증번호를 입력해주시기 바랍니다.</div>
 	   
+	    
 	  </div>
 
 </div>

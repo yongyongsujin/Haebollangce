@@ -3,6 +3,7 @@ package com.sist.haebollangce.user.dao;
 import java.util.List;
 import java.util.Map;
 
+import com.google.gson.JsonObject;
 import com.sist.haebollangce.user.dto.DepositDTO;
 import com.sist.haebollangce.user.dto.RewardDTO;
 import com.sist.haebollangce.user.dto.UserDTO;
@@ -124,6 +125,8 @@ public interface InterMypageDAO {
 	DepositDTO depo_dto(Map<String, String> paraMap);
 
 	void modifyPw(UserDTO udto);
+
+	String image(String userid);
 
 	
 }
