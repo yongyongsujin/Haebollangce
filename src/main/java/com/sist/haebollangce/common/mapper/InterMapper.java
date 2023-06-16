@@ -3,6 +3,7 @@ package com.sist.haebollangce.common.mapper;
 import java.util.List;
 import java.util.Map;
 
+import com.sist.haebollangce.user.dto.ReportDTO;
 import org.apache.ibatis.annotations.Mapper;
 
 import com.sist.haebollangce.challenge.dao.challengeVO;
@@ -132,4 +133,7 @@ public interface InterMapper {
 
 
 
+    List<ReportDTO> getReports();
+
+    void deleteReports(String dels);
 }

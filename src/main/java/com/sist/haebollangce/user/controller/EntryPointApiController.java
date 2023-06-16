@@ -71,10 +71,11 @@ public class EntryPointApiController {
 
     private void headerBuilder(String priorUri,  HttpHeaders headers) throws UnsupportedEncodingException {
         String encodedDefaultUrl = URLEncoder.encode("/challenge/main", "utf-8");
-        if(priorUri != null) {
+        if(priorUri != null && priorUri.length() > 0) {
             int indexOfPortNum = priorUri.indexOf("7070");
+            System.out.println("전 "+priorUri);
             priorUri = priorUri.substring(indexOfPortNum+4);
-
+            System.out.println("후 "+priorUri);
             if("/user/login".equals(priorUri) || priorUri.length() == 0) {
                 headers.add(HttpHeaders.LOCATION, "/user/login-process?redirect="+encodedDefaultUrl+"&xduTvAAQVxq=true");
             }
