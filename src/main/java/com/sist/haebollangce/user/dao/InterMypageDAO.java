@@ -128,5 +128,8 @@ public interface InterMypageDAO {
 
 	String image(String userid);
 
+	int user_deposit(String userid);
+
+	List<Map<String, Object>> selectList(Map<String, Object> paramMap);
 	
 }
