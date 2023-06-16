@@ -111,11 +111,6 @@ public interface InterMapper {
    // 챌린지 북마크(관심)해제
    int likedelete(ChallengeDTO challengedto);
 
-   void formSignup(UserDTO signupUser);
-
-   void oauthSignup(UserDTO user);
-
-
 	List<challengeVO> challengeList();
 
     List<challengeVO> categoryList();
@@ -130,6 +125,11 @@ public interface InterMapper {
 
 	// 라운지 리스트 불러오기
 	List<LoungeBoardDTO> index_loungeList();
+
+    void formSignup(UserDTO signupUser);
+
+    void oauthSignup(UserDTO user);
+
 
 
 }

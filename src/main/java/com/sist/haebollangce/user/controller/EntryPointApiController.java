@@ -6,10 +6,7 @@ import com.sist.haebollangce.user.dto.TokenDTO;
 import com.sist.haebollangce.user.dto.UserDTO;
 import com.sist.haebollangce.user.service.InterUserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseCookie;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,7 +24,7 @@ public class EntryPointApiController {
     private final CookieUtil cookieUtil;
 
     @PostMapping("/login")
-    public ResponseEntity login(@RequestBody UserDTO.UserLoginDTO loginUser, HttpServletRequest request) throws UnsupportedEncodingException {
+    public ResponseEntity login(@RequestBody UserDTO.UserLoginDTO loginUser , HttpServletRequest request) throws UnsupportedEncodingException {
 
         UserDTO user = service.formLogin(loginUser);
 
@@ -38,19 +35,11 @@ public class EntryPointApiController {
         TokenDTO tokens = service.getTokens(user);
         ResponseCookie cookie = cookieUtil.saveAccessToken("accessToken", tokens.getAccessToken());
 
-        String priorUrl = request.getHeader("custom-from");
         HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.SET_COOKIE, String.valueOf(cookie));
-        System.out.println("이전 페이지 찾기 "+priorUrl);
-        String encodedPriorUrl = URLEncoder.encode(priorUrl, "utf-8");
-        String encodedDefaultUrl = URLEncoder.encode("/challenge/main", "utf-8");
-        if(priorUrl.length() > 0) {
-            headers.add(HttpHeaders.LOCATION, "/user/login-process?redirect="+encodedPriorUrl+"&xduTvAAQVxq=true");
-        } else if("http://localhost:7070/user/login".equals(priorUrl)) {
-            headers.add(HttpHeaders.LOCATION, "/user/login-process?redirect="+encodedDefaultUrl+"&xduTvAAQVxq=true");
-        } else {
-            headers.add(HttpHeaders.LOCATION, "/user/login-process?redirect="+encodedDefaultUrl+"&xduTvAAQVxq=true");
-        }
+            headers.add(HttpHeaders.SET_COOKIE, String.valueOf(cookie));
+
+            String priorUri = request.getHeader("custom-from");
+            headerBuilder(priorUri, headers);
 
         return new ResponseEntity(headers,HttpStatus.FOUND);
     }
@@ -67,24 +56,34 @@ public class EntryPointApiController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity formSignup2(UserDTO signupUser) {
+    public ResponseEntity formSignup2(UserDTO signupUser, HttpServletRequest request) throws UnsupportedEncodingException {
+
+        UserDTO.UserLoginDTO loginDTO = new UserDTO.UserLoginDTO();
+        loginDTO.setUserid(signupUser.getUserid());
+        loginDTO.setPw(signupUser.getPw());
 
         signupUser.setPw(passwordEncoder.encode(signupUser.getPw()));
         signupUser.setRoleId(Role.USER.getName());
-
         service.formSignup(signupUser);
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Location", "/challenge/main");
-
-        return new ResponseEntity(headers,HttpStatus.FOUND);
+        return login(loginDTO, request);
     }
 
-    @GetMapping("/info")
-    public ResponseEntity<String> info(){
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Content-Type", "text/html; charset=UTF-8");
-        return new ResponseEntity<String>("API Controller 내 info 페이지", headers, HttpStatus.CREATED);
+    private void headerBuilder(String priorUri,  HttpHeaders headers) throws UnsupportedEncodingException {
+        String encodedDefaultUrl = URLEncoder.encode("/challenge/main", "utf-8");
+        if(priorUri != null) {
+            int indexOfPortNum = priorUri.indexOf("7070");
+            priorUri = priorUri.substring(indexOfPortNum+4);
+
+            if("/user/login".equals(priorUri) || priorUri.length() == 0) {
+                headers.add(HttpHeaders.LOCATION, "/user/login-process?redirect="+encodedDefaultUrl+"&xduTvAAQVxq=true");
+            }
+
+            String encodedPriorUrl = URLEncoder.encode(priorUri, "utf-8");
+            headers.add(HttpHeaders.LOCATION, "/user/login-process?redirect="+encodedPriorUrl+"&xduTvAAQVxq=true");
+        } else {
+            headers.add(HttpHeaders.LOCATION, "/user/login-process?redirect="+encodedDefaultUrl+"&xduTvAAQVxq=true");
+        }
     }
 
 }
