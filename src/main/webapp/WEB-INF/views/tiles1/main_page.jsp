@@ -238,6 +238,7 @@ font-weight: 400;
   row-gap: 24px;
   justify-content: center;
   padding-top: 40px;
+  overflow: hidden;
   
   
 }
@@ -284,6 +285,7 @@ font-weight: 400;
   row-gap: 24px;
   justify-content: center;
   padding-top: 40px;
+  overflow: hidden;
   
   
 }
